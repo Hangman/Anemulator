@@ -30,11 +30,13 @@ public class Start extends ApplicationAdapter {
     }
 
 
+    /**
+     * This is expected to be run at 60Hz.
+     */
     @Override
     public void render() {
-        int cycles = 0;
-        while (cycles < 70224) {
-            cycles += this.cpu.step();
+        for (int i = 0; i < 69905; i++) {
+            this.cpu.step();
         }
 
         Gdx.gl.glClearColor(0.15f, 0.15f, 0.2f, 1f);

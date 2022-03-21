@@ -311,6 +311,7 @@ public class PrefixCB extends Instruction {
             throw new UnsupportedFeatureException("Unsupported extended opCode: " + Integer.toHexString(opCode));
         }
 
+        System.out.println("running extended opcode: " + Integer.toHexString(opCode));
         final int cycles = instruction.run();
 
         return 4 + cycles;

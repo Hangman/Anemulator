@@ -40,7 +40,7 @@ public class RomOnlyMemoryController implements MemoryController {
     @Override
     public void write(int address, int value) {
         if (address >= 0x0000 && address <= 0x7FFF) {
-            throw new AccessViolationException("Writing to ROM not allowed.");
+            throw new AccessViolationException("Writing to ROM not allowed: " + Integer.toHexString(address));
         }
 
         this.memory[address] = value;

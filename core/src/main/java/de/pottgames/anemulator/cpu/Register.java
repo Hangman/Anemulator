@@ -3,11 +3,12 @@ package de.pottgames.anemulator.cpu;
 import java.util.Arrays;
 
 public class Register {
-    private int[]     register          = new int[RegisterId.values().length];
-    private boolean[] flags             = new boolean[FlagId.values().length];
-    public int        programCounter    = 0x100;
-    public int        stackPointer      = 0xfffe;
-    public boolean    interruptsEnabled = false;
+    private int[]     register                     = new int[RegisterId.values().length];
+    private boolean[] flags                        = new boolean[FlagId.values().length];
+    public int        programCounter               = 0x100;
+    public int        stackPointer                 = 0xfffe;
+    private boolean   interruptsEnabled            = false;
+    private byte      enableInterruptsDelayCounter = 0;
 
 
     public enum RegisterId {
@@ -42,6 +43,16 @@ public class Register {
             this.index = index;
         }
 
+    }
+
+
+    void step() {
+        if (this.enableInterruptsDelayCounter > 0) {
+            this.enableInterruptsDelayCounter--;
+            if (this.enableInterruptsDelayCounter == 0) {
+                this.interruptsEnabled = true;
+            }
+        }
     }
 
 
@@ -111,6 +122,22 @@ public class Register {
 
     public boolean isFlagSet(FlagId id) {
         return this.flags[id.index];
+    }
+
+
+    public boolean isInterruptsEnabled() {
+        return this.interruptsEnabled;
+    }
+
+
+    public void setInterruptsEnabled(boolean interruptsEnabled) {
+        System.out.println("setting interrupts enabled to: " + interruptsEnabled);
+        if (interruptsEnabled) {
+            this.enableInterruptsDelayCounter = 2;
+        } else {
+            this.interruptsEnabled = false;
+            this.enableInterruptsDelayCounter = 0;
+        }
     }
 
 }

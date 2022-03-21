@@ -13,7 +13,7 @@ public class Di extends Instruction {
 
     @Override
     public int run() {
-        this.register.interruptsEnabled = false;
+        this.register.setInterruptsEnabled(false);
 
         return 4;
     }

@@ -13,7 +13,7 @@ public class Ei extends Instruction {
 
     @Override
     public int run() {
-        this.register.interruptsEnabled = true;
+        this.register.setInterruptsEnabled(true);
 
         return 4;
     }
