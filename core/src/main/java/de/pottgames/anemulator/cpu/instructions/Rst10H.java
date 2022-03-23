@@ -13,12 +13,12 @@ public class Rst10H extends Instruction {
 
     @Override
     public int run() {
-        this.register.stackPointer--;
-        this.memory.write(this.register.stackPointer, this.register.programCounter >>> 8);
-        this.register.stackPointer--;
-        this.memory.write(this.register.stackPointer, this.register.programCounter & 0xff);
+        this.register.sp--;
+        this.memory.write(this.register.sp, this.register.pc >>> 8);
+        this.register.sp--;
+        this.memory.write(this.register.sp, this.register.pc & 0xff);
 
-        this.register.programCounter = 0x10;
+        this.register.pc = 0x10;
 
         return 16;
     }

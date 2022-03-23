@@ -13,7 +13,7 @@ public class IncSP extends Instruction {
 
     @Override
     public int run() {
-        this.register.stackPointer = this.register.stackPointer + 1 & 0xffff;
+        this.register.sp = this.register.sp + 1 & 0xffff;
 
         return 8;
     }

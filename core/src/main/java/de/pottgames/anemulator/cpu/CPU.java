@@ -2,116 +2,11 @@ package de.pottgames.anemulator.cpu;
 
 import com.badlogic.gdx.utils.IntMap;
 
-import de.pottgames.anemulator.cpu.instructions.Calla16;
-import de.pottgames.anemulator.cpu.instructions.CpA;
-import de.pottgames.anemulator.cpu.instructions.CpB;
-import de.pottgames.anemulator.cpu.instructions.CpC;
-import de.pottgames.anemulator.cpu.instructions.CpD;
-import de.pottgames.anemulator.cpu.instructions.CpE;
-import de.pottgames.anemulator.cpu.instructions.CpH;
-import de.pottgames.anemulator.cpu.instructions.CpL;
-import de.pottgames.anemulator.cpu.instructions.Cp_HL_;
-import de.pottgames.anemulator.cpu.instructions.Cpd8;
-import de.pottgames.anemulator.cpu.instructions.DecA;
-import de.pottgames.anemulator.cpu.instructions.DecB;
-import de.pottgames.anemulator.cpu.instructions.DecC;
-import de.pottgames.anemulator.cpu.instructions.DecD;
-import de.pottgames.anemulator.cpu.instructions.DecE;
-import de.pottgames.anemulator.cpu.instructions.DecH;
-import de.pottgames.anemulator.cpu.instructions.DecL;
-import de.pottgames.anemulator.cpu.instructions.Dec_HL_;
-import de.pottgames.anemulator.cpu.instructions.Di;
-import de.pottgames.anemulator.cpu.instructions.Ei;
-import de.pottgames.anemulator.cpu.instructions.IncA;
-import de.pottgames.anemulator.cpu.instructions.IncB;
-import de.pottgames.anemulator.cpu.instructions.IncBC;
-import de.pottgames.anemulator.cpu.instructions.IncC;
-import de.pottgames.anemulator.cpu.instructions.IncD;
-import de.pottgames.anemulator.cpu.instructions.IncDE;
-import de.pottgames.anemulator.cpu.instructions.IncE;
-import de.pottgames.anemulator.cpu.instructions.IncH;
-import de.pottgames.anemulator.cpu.instructions.IncHL;
-import de.pottgames.anemulator.cpu.instructions.IncL;
-import de.pottgames.anemulator.cpu.instructions.IncSP;
-import de.pottgames.anemulator.cpu.instructions.Inc_HL_;
-import de.pottgames.anemulator.cpu.instructions.Jpa16;
-import de.pottgames.anemulator.cpu.instructions.JrCr8;
-import de.pottgames.anemulator.cpu.instructions.JrNCr8;
-import de.pottgames.anemulator.cpu.instructions.JrNZr8;
-import de.pottgames.anemulator.cpu.instructions.JrZr8;
-import de.pottgames.anemulator.cpu.instructions.Jrr8;
-import de.pottgames.anemulator.cpu.instructions.LdAA;
-import de.pottgames.anemulator.cpu.instructions.LdAE;
-import de.pottgames.anemulator.cpu.instructions.LdA_BC_;
-import de.pottgames.anemulator.cpu.instructions.LdA_DE_;
-import de.pottgames.anemulator.cpu.instructions.LdA_HL_;
-import de.pottgames.anemulator.cpu.instructions.LdAd8;
-import de.pottgames.anemulator.cpu.instructions.LdBA;
-import de.pottgames.anemulator.cpu.instructions.LdBCd16;
-import de.pottgames.anemulator.cpu.instructions.LdBd8;
-import de.pottgames.anemulator.cpu.instructions.LdCA;
-import de.pottgames.anemulator.cpu.instructions.LdCd8;
-import de.pottgames.anemulator.cpu.instructions.LdDA;
-import de.pottgames.anemulator.cpu.instructions.LdDEd16;
-import de.pottgames.anemulator.cpu.instructions.LdDd8;
-import de.pottgames.anemulator.cpu.instructions.LdEA;
-import de.pottgames.anemulator.cpu.instructions.LdEd8;
-import de.pottgames.anemulator.cpu.instructions.LdHA;
-import de.pottgames.anemulator.cpu.instructions.LdHLd16;
-import de.pottgames.anemulator.cpu.instructions.LdHd8;
-import de.pottgames.anemulator.cpu.instructions.LdLA;
-import de.pottgames.anemulator.cpu.instructions.LdLd8;
-import de.pottgames.anemulator.cpu.instructions.LdSPd16;
-import de.pottgames.anemulator.cpu.instructions.Ld_BC_A;
-import de.pottgames.anemulator.cpu.instructions.Ld_C_A;
-import de.pottgames.anemulator.cpu.instructions.Ld_DE_A;
-import de.pottgames.anemulator.cpu.instructions.Ld_HL_A;
-import de.pottgames.anemulator.cpu.instructions.Ld_HLminus_A;
-import de.pottgames.anemulator.cpu.instructions.Ld_HLplus_A;
-import de.pottgames.anemulator.cpu.instructions.Ld_a16_A;
-import de.pottgames.anemulator.cpu.instructions.LdhA_a8_;
-import de.pottgames.anemulator.cpu.instructions.Ldh_a8_A;
-import de.pottgames.anemulator.cpu.instructions.Nop;
-import de.pottgames.anemulator.cpu.instructions.PopBC;
-import de.pottgames.anemulator.cpu.instructions.PopDE;
-import de.pottgames.anemulator.cpu.instructions.PopHL;
-import de.pottgames.anemulator.cpu.instructions.PrefixCB;
-import de.pottgames.anemulator.cpu.instructions.PushBC;
-import de.pottgames.anemulator.cpu.instructions.PushDE;
-import de.pottgames.anemulator.cpu.instructions.PushHL;
-import de.pottgames.anemulator.cpu.instructions.RLA;
-import de.pottgames.anemulator.cpu.instructions.Ret;
-import de.pottgames.anemulator.cpu.instructions.Rst00H;
-import de.pottgames.anemulator.cpu.instructions.Rst08H;
-import de.pottgames.anemulator.cpu.instructions.Rst10H;
-import de.pottgames.anemulator.cpu.instructions.Rst18H;
-import de.pottgames.anemulator.cpu.instructions.Rst20H;
-import de.pottgames.anemulator.cpu.instructions.Rst28H;
-import de.pottgames.anemulator.cpu.instructions.Rst30H;
-import de.pottgames.anemulator.cpu.instructions.Rst38H;
-import de.pottgames.anemulator.cpu.instructions.XorA;
-import de.pottgames.anemulator.cpu.instructions.XorB;
-import de.pottgames.anemulator.cpu.instructions.XorC;
-import de.pottgames.anemulator.cpu.instructions.XorD;
-import de.pottgames.anemulator.cpu.instructions.XorE;
-import de.pottgames.anemulator.cpu.instructions.XorH;
-import de.pottgames.anemulator.cpu.instructions.XorL;
-import de.pottgames.anemulator.cpu.instructions.Xor_HL_;
-import de.pottgames.anemulator.cpu.instructions.Xord8;
+import de.pottgames.anemulator.cpu.instructions.*;
 import de.pottgames.anemulator.error.UnsupportedFeatureException;
 import de.pottgames.anemulator.memory.MemoryController;
 
 public class CPU {
-    /**
-     * Interrupt Flag Register
-     */
-    private static final int IF_ADDRESS = 0xFF0F;
-
-    /**
-     * Interrupt Enable Register
-     */
-    private static final int IE_ADDRESS = 0xFFFF;
-
     private final MemoryController    memory;
     private final Register            register;
     private final IntMap<Instruction> instructions     = new IntMap<>();
@@ -122,7 +17,7 @@ public class CPU {
         System.out.println("CPU INIT");
         this.memory = memory;
         this.register = new Register();
-        this.register.programCounter = memory.isBootstrap() ? 0 : 0x100;
+        this.register.pc = memory.isBootstrap() ? 0 : 0x100;
 
         this.initInstructions();
     }
@@ -138,9 +33,9 @@ public class CPU {
         this.instructions.put(0x06, new LdBd8(this.register, this.memory));
         this.instructions.put(0x07, null);
         this.instructions.put(0x08, null);
-        this.instructions.put(0x09, null);
+        this.instructions.put(0x09, new AddHLBC(this.register, this.memory));
         this.instructions.put(0x0A, new LdA_BC_(this.register, this.memory));
-        this.instructions.put(0x0B, null);
+        this.instructions.put(0x0B, new DecBC(this.register, this.memory));
         this.instructions.put(0x0C, new IncC(this.register, this.memory));
         this.instructions.put(0x0D, new DecC(this.register, this.memory));
         this.instructions.put(0x0E, new LdCd8(this.register, this.memory));
@@ -155,7 +50,7 @@ public class CPU {
         this.instructions.put(0x16, new LdDd8(this.register, this.memory));
         this.instructions.put(0x17, new RLA(this.register, this.memory));
         this.instructions.put(0x18, new Jrr8(this.register, this.memory));
-        this.instructions.put(0x19, null);
+        this.instructions.put(0x19, new AddHLDE(this.register, this.memory));
         this.instructions.put(0x1A, new LdA_DE_(this.register, this.memory));
         this.instructions.put(0x1B, null);
         this.instructions.put(0x1C, new IncE(this.register, this.memory));
@@ -172,8 +67,8 @@ public class CPU {
         this.instructions.put(0x26, new LdHd8(this.register, this.memory));
         this.instructions.put(0x27, null);
         this.instructions.put(0x28, new JrZr8(this.register, this.memory));
-        this.instructions.put(0x29, null);
-        this.instructions.put(0x2A, null);
+        this.instructions.put(0x29, new AddHLHL(this.register, this.memory));
+        this.instructions.put(0x2A, new LdA_HLplus_(this.register, this.memory));
         this.instructions.put(0x2B, null);
         this.instructions.put(0x2C, new IncL(this.register, this.memory));
         this.instructions.put(0x2D, new DecL(this.register, this.memory));
@@ -186,11 +81,11 @@ public class CPU {
         this.instructions.put(0x33, new IncSP(this.register, this.memory));
         this.instructions.put(0x34, new Inc_HL_(this.register, this.memory));
         this.instructions.put(0x35, new Dec_HL_(this.register, this.memory));
-        this.instructions.put(0x36, null);
+        this.instructions.put(0x36, new Ld_HL_d8(this.register, this.memory));
         this.instructions.put(0x37, null);
         this.instructions.put(0x38, new JrCr8(this.register, this.memory));
-        this.instructions.put(0x39, null);
-        this.instructions.put(0x3A, null);
+        this.instructions.put(0x39, new AddHLSP(this.register, this.memory));
+        this.instructions.put(0x3A, new LdA_HLminus_(this.register, this.memory));
         this.instructions.put(0x3B, null);
         this.instructions.put(0x3C, new IncA(this.register, this.memory));
         this.instructions.put(0x3D, new DecA(this.register, this.memory));
@@ -201,7 +96,7 @@ public class CPU {
         this.instructions.put(0x41, null);
         this.instructions.put(0x42, null);
         this.instructions.put(0x43, null);
-        this.instructions.put(0x44, null);
+        this.instructions.put(0x44, new LdBH(this.register, this.memory));
         this.instructions.put(0x45, null);
         this.instructions.put(0x46, null);
         this.instructions.put(0x47, new LdBA(this.register, this.memory));
@@ -210,7 +105,7 @@ public class CPU {
         this.instructions.put(0x4A, null);
         this.instructions.put(0x4B, null);
         this.instructions.put(0x4C, null);
-        this.instructions.put(0x4D, null);
+        this.instructions.put(0x4D, new LdCL(this.register, this.memory));
         this.instructions.put(0x4E, null);
         this.instructions.put(0x4F, new LdCA(this.register, this.memory));
 
@@ -256,23 +151,23 @@ public class CPU {
         this.instructions.put(0x75, null);
         this.instructions.put(0x76, null);
         this.instructions.put(0x77, new Ld_HL_A(this.register, this.memory));
-        this.instructions.put(0x78, null);
-        this.instructions.put(0x79, null);
+        this.instructions.put(0x78, new LdAB(this.register, this.memory));
+        this.instructions.put(0x79, new LdAC(this.register, this.memory));
         this.instructions.put(0x7A, null);
         this.instructions.put(0x7B, new LdAE(this.register, this.memory));
-        this.instructions.put(0x7C, null);
+        this.instructions.put(0x7C, new LdAH(this.register, this.memory));
         this.instructions.put(0x7D, null);
         this.instructions.put(0x7E, new LdA_HL_(this.register, this.memory));
         this.instructions.put(0x7F, new LdAA(this.register, this.memory));
 
-        this.instructions.put(0x80, null);
-        this.instructions.put(0x81, null);
-        this.instructions.put(0x82, null);
-        this.instructions.put(0x83, null);
-        this.instructions.put(0x84, null);
-        this.instructions.put(0x85, null);
-        this.instructions.put(0x86, null);
-        this.instructions.put(0x87, null);
+        this.instructions.put(0x80, new AddAB(this.register, this.memory));
+        this.instructions.put(0x81, new AddAC(this.register, this.memory));
+        this.instructions.put(0x82, new AddAD(this.register, this.memory));
+        this.instructions.put(0x83, new AddAE(this.register, this.memory));
+        this.instructions.put(0x84, new AddAH(this.register, this.memory));
+        this.instructions.put(0x85, new AddAL(this.register, this.memory));
+        this.instructions.put(0x86, new AddA_HL_(this.register, this.memory));
+        this.instructions.put(0x87, new AddAA(this.register, this.memory));
         this.instructions.put(0x88, null);
         this.instructions.put(0x89, null);
         this.instructions.put(0x8A, null);
@@ -282,14 +177,14 @@ public class CPU {
         this.instructions.put(0x8E, null);
         this.instructions.put(0x8F, null);
 
-        this.instructions.put(0x90, null);
-        this.instructions.put(0x91, null);
-        this.instructions.put(0x92, null);
-        this.instructions.put(0x93, null);
-        this.instructions.put(0x94, null);
-        this.instructions.put(0x95, null);
-        this.instructions.put(0x96, null);
-        this.instructions.put(0x97, null);
+        this.instructions.put(0x90, new SubB(this.register, this.memory));
+        this.instructions.put(0x91, new SubC(this.register, this.memory));
+        this.instructions.put(0x92, new SubD(this.register, this.memory));
+        this.instructions.put(0x93, new SubE(this.register, this.memory));
+        this.instructions.put(0x94, new SubH(this.register, this.memory));
+        this.instructions.put(0x95, new SubL(this.register, this.memory));
+        this.instructions.put(0x96, new Sub_HL_(this.register, this.memory));
+        this.instructions.put(0x97, new SubA(this.register, this.memory));
         this.instructions.put(0x98, null);
         this.instructions.put(0x99, null);
         this.instructions.put(0x9A, null);
@@ -299,14 +194,14 @@ public class CPU {
         this.instructions.put(0x9E, null);
         this.instructions.put(0x9F, null);
 
-        this.instructions.put(0xA0, null);
-        this.instructions.put(0xA1, null);
-        this.instructions.put(0xA2, null);
-        this.instructions.put(0xA3, null);
-        this.instructions.put(0xA4, null);
-        this.instructions.put(0xA5, null);
-        this.instructions.put(0xA6, null);
-        this.instructions.put(0xA7, null);
+        this.instructions.put(0xA0, new AndB(this.register, this.memory));
+        this.instructions.put(0xA1, new AndC(this.register, this.memory));
+        this.instructions.put(0xA2, new AndD(this.register, this.memory));
+        this.instructions.put(0xA3, new AndE(this.register, this.memory));
+        this.instructions.put(0xA4, new AndH(this.register, this.memory));
+        this.instructions.put(0xA5, new AndL(this.register, this.memory));
+        this.instructions.put(0xA6, new And_HL_(this.register, this.memory));
+        this.instructions.put(0xA7, new AndA(this.register, this.memory));
         this.instructions.put(0xA8, new XorB(this.register, this.memory));
         this.instructions.put(0xA9, new XorC(this.register, this.memory));
         this.instructions.put(0xAA, new XorD(this.register, this.memory));
@@ -316,14 +211,14 @@ public class CPU {
         this.instructions.put(0xAE, new Xor_HL_(this.register, this.memory));
         this.instructions.put(0xAF, new XorA(this.register, this.memory));
 
-        this.instructions.put(0xB0, null);
-        this.instructions.put(0xB1, null);
-        this.instructions.put(0xB2, null);
-        this.instructions.put(0xB3, null);
-        this.instructions.put(0xB4, null);
-        this.instructions.put(0xB5, null);
-        this.instructions.put(0xB6, null);
-        this.instructions.put(0xB7, null);
+        this.instructions.put(0xB0, new OrB(this.register, this.memory));
+        this.instructions.put(0xB1, new OrC(this.register, this.memory));
+        this.instructions.put(0xB2, new OrD(this.register, this.memory));
+        this.instructions.put(0xB3, new OrE(this.register, this.memory));
+        this.instructions.put(0xB4, new OrH(this.register, this.memory));
+        this.instructions.put(0xB5, new OrL(this.register, this.memory));
+        this.instructions.put(0xB6, new Or_HL_(this.register, this.memory));
+        this.instructions.put(0xB7, new OrA(this.register, this.memory));
         this.instructions.put(0xB8, new CpB(this.register, this.memory));
         this.instructions.put(0xB9, new CpC(this.register, this.memory));
         this.instructions.put(0xBA, new CpD(this.register, this.memory));
@@ -335,32 +230,32 @@ public class CPU {
 
         this.instructions.put(0xC0, null);
         this.instructions.put(0xC1, new PopBC(this.register, this.memory));
-        this.instructions.put(0xC2, null);
+        this.instructions.put(0xC2, new JpNZa16(this.register, this.memory));
         this.instructions.put(0xC3, new Jpa16(this.register, this.memory));
-        this.instructions.put(0xC4, null);
+        this.instructions.put(0xC4, new CallNZa16(this.register, this.memory));
         this.instructions.put(0xC5, new PushBC(this.register, this.memory));
-        this.instructions.put(0xC6, null);
+        this.instructions.put(0xC6, new AddAd8(this.register, this.memory));
         this.instructions.put(0xC7, new Rst00H(this.register, this.memory));
         this.instructions.put(0xC8, null);
         this.instructions.put(0xC9, new Ret(this.register, this.memory));
-        this.instructions.put(0xCA, null);
+        this.instructions.put(0xCA, new JpZa16(this.register, this.memory));
         this.instructions.put(0xCB, new PrefixCB(this.register, this.memory));
-        this.instructions.put(0xCC, null);
+        this.instructions.put(0xCC, new CallZa16(this.register, this.memory));
         this.instructions.put(0xCD, new Calla16(this.register, this.memory));
         this.instructions.put(0xCE, null);
         this.instructions.put(0xCF, new Rst08H(this.register, this.memory));
 
         this.instructions.put(0xD0, null);
         this.instructions.put(0xD1, new PopDE(this.register, this.memory));
-        this.instructions.put(0xD2, null);
-        this.instructions.put(0xD4, null);
+        this.instructions.put(0xD2, new JpNCa16(this.register, this.memory));
+        this.instructions.put(0xD4, new CallNCa16(this.register, this.memory));
         this.instructions.put(0xD5, new PushDE(this.register, this.memory));
         this.instructions.put(0xD6, null);
         this.instructions.put(0xD7, new Rst10H(this.register, this.memory));
         this.instructions.put(0xD8, null);
         this.instructions.put(0xD9, null);
-        this.instructions.put(0xDA, null);
-        this.instructions.put(0xDC, null);
+        this.instructions.put(0xDA, new JpCa16(this.register, this.memory));
+        this.instructions.put(0xDC, new CallCa16(this.register, this.memory));
         this.instructions.put(0xDE, null);
         this.instructions.put(0xDF, new Rst18H(this.register, this.memory));
 
@@ -368,7 +263,7 @@ public class CPU {
         this.instructions.put(0xE1, new PopHL(this.register, this.memory));
         this.instructions.put(0xE2, new Ld_C_A(this.register, this.memory));
         this.instructions.put(0xE5, new PushHL(this.register, this.memory));
-        this.instructions.put(0xE6, null);
+        this.instructions.put(0xE6, new Andd8(this.register, this.memory));
         this.instructions.put(0xE7, new Rst20H(this.register, this.memory));
         this.instructions.put(0xE8, null);
         this.instructions.put(0xE9, null);
@@ -377,15 +272,15 @@ public class CPU {
         this.instructions.put(0xEF, new Rst28H(this.register, this.memory));
 
         this.instructions.put(0xF0, new LdhA_a8_(this.register, this.memory));
-        this.instructions.put(0xF1, null);
+        this.instructions.put(0xF1, new PopAF(this.register, this.memory));
         this.instructions.put(0xF2, null);
         this.instructions.put(0xF3, new Di(this.register, this.memory));
-        this.instructions.put(0xF5, null);
+        this.instructions.put(0xF5, new PushAF(this.register, this.memory));
         this.instructions.put(0xF6, null);
         this.instructions.put(0xF7, new Rst30H(this.register, this.memory));
         this.instructions.put(0xF8, null);
         this.instructions.put(0xF9, null);
-        this.instructions.put(0xFA, null);
+        this.instructions.put(0xFA, new LdA_a16_(this.register, this.memory));
         this.instructions.put(0xFB, new Ei(this.register, this.memory));
         this.instructions.put(0xFE, new Cpd8(this.register, this.memory));
         this.instructions.put(0xFF, new Rst38H(this.register, this.memory));
@@ -403,10 +298,8 @@ public class CPU {
                 }
             }
 
-            final int opCode = this.memory.read8Bit(this.register.programCounter);
-            this.register.programCounter++;
-            System.out.println("running opcode: " + Integer.toHexString(opCode));
-            System.out.println("pc: " + Integer.toHexString(this.register.programCounter - 1));
+            final int opCode = this.memory.read8Bit(this.register.pc);
+            this.register.pc++;
 
             this.cycleAccumulator -= this.runInstruction(opCode);
             this.register.step();
@@ -415,24 +308,24 @@ public class CPU {
 
 
     private boolean handleInterrupts() {
-        final int enabledRegister = this.memory.read8Bit(CPU.IE_ADDRESS);
-        int flagRegister = this.memory.read8Bit(CPU.IF_ADDRESS);
+        final int enabledRegister = this.memory.read8Bit(MemoryController.IE);
+        final int flagRegister = this.memory.read8Bit(MemoryController.IF);
         if (enabledRegister > 0 && flagRegister > 0) {
             for (final Interrupt interrupt : Interrupt.values()) {
                 final int mask = interrupt.getFlagMask();
                 if ((enabledRegister & mask) > 0 && (flagRegister & mask) > 0) {
                     // PUSH PC TO THE STACK
-                    this.register.stackPointer--;
-                    this.memory.write(this.register.stackPointer, this.register.programCounter >>> 8);
-                    this.register.stackPointer--;
-                    this.memory.write(this.register.stackPointer, this.register.programCounter & 0xff);
+                    this.register.sp--;
+                    this.memory.write(this.register.sp, this.register.pc >>> 8);
+                    this.register.sp--;
+                    this.memory.write(this.register.sp, this.register.pc & 0xff);
 
                     // JUMP
-                    this.register.programCounter = interrupt.getJumpAddress();
+                    this.register.pc = interrupt.getJumpAddress();
 
                     // CLEAR IME AND IF
                     this.register.setInterruptsEnabled(false);
-                    this.memory.write(CPU.IF_ADDRESS, flagRegister &= ~(1 << mask));
+                    this.memory.setBit(MemoryController.IF, interrupt.getBitnum(), false);
 
                     this.cycleAccumulator -= 20;
                     return true;

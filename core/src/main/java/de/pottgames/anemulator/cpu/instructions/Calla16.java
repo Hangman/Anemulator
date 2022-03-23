@@ -13,13 +13,13 @@ public class Calla16 extends Instruction {
 
     @Override
     public int run() {
-        final int address = this.memory.read16Bit(this.register.programCounter);
-        this.register.programCounter += 2;
-        this.register.stackPointer--;
-        this.memory.write(this.register.stackPointer, this.register.programCounter >>> 8);
-        this.register.stackPointer--;
-        this.memory.write(this.register.stackPointer, this.register.programCounter & 0xff);
-        this.register.programCounter = address;
+        final int address = this.memory.read16Bit(this.register.pc);
+        this.register.pc += 2;
+        this.register.sp--;
+        this.memory.write(this.register.sp, this.register.pc >>> 8);
+        this.register.sp--;
+        this.memory.write(this.register.sp, this.register.pc & 0xFF);
+        this.register.pc = address;
 
         return 24;
     }

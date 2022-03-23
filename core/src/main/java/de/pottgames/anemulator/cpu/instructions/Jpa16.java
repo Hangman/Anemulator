@@ -13,7 +13,7 @@ public class Jpa16 extends Instruction {
 
     @Override
     public int run() {
-        this.register.programCounter = this.memory.read16Bit(this.register.programCounter);
+        this.register.pc = this.memory.read16Bit(this.register.pc);
         return 16;
     }
 

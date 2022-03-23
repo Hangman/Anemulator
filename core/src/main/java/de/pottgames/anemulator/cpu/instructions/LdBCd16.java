@@ -14,8 +14,8 @@ public class LdBCd16 extends Instruction {
 
     @Override
     public int run() {
-        this.register.set(RegisterId.BC, this.memory.read16Bit(this.register.programCounter));
-        this.register.programCounter += 2;
+        this.register.set(RegisterId.BC, this.memory.read16Bit(this.register.pc));
+        this.register.pc += 2;
 
         return 12;
     }

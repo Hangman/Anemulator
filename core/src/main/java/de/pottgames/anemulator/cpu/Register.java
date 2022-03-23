@@ -1,18 +1,26 @@
 package de.pottgames.anemulator.cpu;
 
-import java.util.Arrays;
-
 public class Register {
-    private int[]     register                     = new int[RegisterId.values().length];
-    private boolean[] flags                        = new boolean[FlagId.values().length];
-    public int        programCounter               = 0x100;
-    public int        stackPointer                 = 0xfffe;
-    private boolean   interruptsEnabled            = false;
-    private byte      enableInterruptsDelayCounter = 0;
+    private int[]   register                     = new int[RegisterId.values().length];
+    public int      pc                           = 0x100;
+    public int      sp                           = 0xfffe;
+    private boolean interruptsEnabled            = false;
+    private byte    enableInterruptsDelayCounter = 0;
 
 
     public enum RegisterId {
-        A(0, false), B(1, false), C(2, false), D(3, false), E(4, false), H(5, false), L(6, false), BC(7, true), DE(8, true), HL(9, true);
+        A(0, false),
+        F(1, false),
+        B(2, false),
+        C(3, false),
+        D(4, false),
+        E(5, false),
+        H(6, false),
+        L(7, false),
+        AF(8, true),
+        BC(9, true),
+        DE(10, true),
+        HL(11, true);
 
 
         private final int     index;
@@ -33,14 +41,14 @@ public class Register {
 
 
     public enum FlagId {
-        Z(0), N(1), H(2), C(3);
+        Z(7), N(6), H(5), C(4);
 
 
-        private final int index;
+        private final int bitnum;
 
 
-        FlagId(int index) {
-            this.index = index;
+        FlagId(int bitnum) {
+            this.bitnum = bitnum;
         }
 
     }
@@ -102,26 +110,33 @@ public class Register {
                     this.setInternal(RegisterId.HL, this.get(RegisterId.HL) & 0xFF00 | value, false);
                     break;
                 case A:
+                    this.setInternal(RegisterId.AF, value << 8 | this.get(RegisterId.AF) & 0x00FF, false);
                     break;
-                default:
+                case F:
+                    this.setInternal(RegisterId.AF, this.get(RegisterId.AF) & 0xFF00 | value, false);
+                    break;
+                case AF:
+                    this.setInternal(RegisterId.A, value >>> 8, false);
+                    this.setInternal(RegisterId.F, value & 0x00FF, false);
                     break;
             }
         }
     }
 
 
-    public void resetFlags() {
-        Arrays.fill(this.flags, false);
-    }
-
-
     public void setFlag(FlagId id, boolean value) {
-        this.flags[id.index] = value;
+        int f = this.get(RegisterId.F);
+        if (value) {
+            f |= 1 << id.bitnum;
+        } else {
+            f &= ~(1 << id.bitnum);
+        }
+        this.set(RegisterId.F, f);
     }
 
 
     public boolean isFlagSet(FlagId id) {
-        return this.flags[id.index];
+        return (this.get(RegisterId.F) & 1 << id.bitnum) > 0;
     }
 
 
@@ -131,7 +146,6 @@ public class Register {
 
 
     public void setInterruptsEnabled(boolean interruptsEnabled) {
-        System.out.println("setting interrupts enabled to: " + interruptsEnabled);
         if (interruptsEnabled) {
             this.enableInterruptsDelayCounter = 2;
         } else {

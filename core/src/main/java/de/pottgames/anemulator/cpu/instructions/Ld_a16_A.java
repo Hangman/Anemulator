@@ -14,8 +14,8 @@ public class Ld_a16_A extends Instruction {
 
     @Override
     public int run() {
-        final int address = this.memory.read16Bit(this.register.programCounter);
-        this.register.programCounter += 2;
+        final int address = this.memory.read16Bit(this.register.pc);
+        this.register.pc += 2;
         final int value = this.register.get(RegisterId.A);
         this.memory.write(address, value);
 

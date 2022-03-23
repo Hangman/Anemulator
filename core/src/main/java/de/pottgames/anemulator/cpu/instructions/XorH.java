@@ -15,10 +15,14 @@ public class XorH extends Instruction {
 
     @Override
     public int run() {
-        this.register.resetFlags();
         final int result = this.register.get(RegisterId.A) ^ this.register.get(RegisterId.H);
         this.register.set(RegisterId.A, result);
+
+        // SET FLAGS
         this.register.setFlag(FlagId.Z, result == 0);
+        this.register.setFlag(FlagId.N, false);
+        this.register.setFlag(FlagId.H, false);
+        this.register.setFlag(FlagId.C, false);
 
         return 4;
     }

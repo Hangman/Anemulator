@@ -13,8 +13,8 @@ public class LdSPd16 extends Instruction {
 
     @Override
     public int run() {
-        this.register.stackPointer = this.memory.read16Bit(this.register.programCounter);
-        this.register.programCounter += 2;
+        this.register.sp = this.memory.read16Bit(this.register.pc);
+        this.register.pc += 2;
         return 12;
     }
 

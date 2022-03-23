@@ -15,13 +15,13 @@ public class JrZr8 extends Instruction {
     @Override
     public int run() {
         if (this.register.isFlagSet(FlagId.Z) == true) {
-            final byte offset = (byte) this.memory.read8Bit(this.register.programCounter);
-            this.register.programCounter++;
-            this.register.programCounter += offset;
+            final byte offset = (byte) this.memory.read8Bit(this.register.pc);
+            this.register.pc++;
+            this.register.pc += offset;
             return 12;
         }
 
-        this.register.programCounter++;
+        this.register.pc++;
         return 8;
     }
 

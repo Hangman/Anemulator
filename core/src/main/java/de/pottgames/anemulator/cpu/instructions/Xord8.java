@@ -15,11 +15,15 @@ public class Xord8 extends Instruction {
 
     @Override
     public int run() {
-        this.register.resetFlags();
-        final int result = this.register.get(RegisterId.A) ^ this.memory.read8Bit(this.register.programCounter);
-        this.register.programCounter++;
+        final int result = this.register.get(RegisterId.A) ^ this.memory.read8Bit(this.register.pc);
+        this.register.pc++;
         this.register.set(RegisterId.A, result);
+
+        // SET FLAGS
         this.register.setFlag(FlagId.Z, result == 0);
+        this.register.setFlag(FlagId.N, false);
+        this.register.setFlag(FlagId.H, false);
+        this.register.setFlag(FlagId.C, false);
 
         return 8;
     }

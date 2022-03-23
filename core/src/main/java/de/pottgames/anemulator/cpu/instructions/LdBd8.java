@@ -14,8 +14,8 @@ public class LdBd8 extends Instruction {
 
     @Override
     public int run() {
-        this.register.set(RegisterId.B, this.memory.read8Bit(this.register.programCounter));
-        this.register.programCounter++;
+        this.register.set(RegisterId.B, this.memory.read8Bit(this.register.pc));
+        this.register.pc++;
 
         return 8;
     }

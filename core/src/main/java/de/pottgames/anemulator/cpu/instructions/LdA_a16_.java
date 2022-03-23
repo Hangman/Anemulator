@@ -1,0 +1,25 @@
+package de.pottgames.anemulator.cpu.instructions;
+
+import de.pottgames.anemulator.cpu.Instruction;
+import de.pottgames.anemulator.cpu.Register;
+import de.pottgames.anemulator.cpu.Register.RegisterId;
+import de.pottgames.anemulator.memory.MemoryController;
+
+public class LdA_a16_ extends Instruction {
+
+    public LdA_a16_(Register register, MemoryController memory) {
+        super(register, memory);
+    }
+
+
+    @Override
+    public int run() {
+        final int address = this.memory.read16Bit(this.register.pc);
+        this.register.pc += 2;
+        final int value = this.memory.read8Bit(address);
+        this.register.set(RegisterId.A, value);
+
+        return 16;
+    }
+
+}

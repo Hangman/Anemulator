@@ -13,10 +13,10 @@ public class Ret extends Instruction {
 
     @Override
     public int run() {
-        int data = this.memory.read8Bit(this.register.stackPointer);
-        data = this.memory.read8Bit(this.register.stackPointer + 1) << 8 | data;
-        this.register.programCounter = data;
-        this.register.stackPointer += 2;
+        int data = this.memory.read8Bit(this.register.sp);
+        data = this.memory.read8Bit(this.register.sp + 1) << 8 | data;
+        this.register.pc = data;
+        this.register.sp += 2;
 
         return 16;
     }

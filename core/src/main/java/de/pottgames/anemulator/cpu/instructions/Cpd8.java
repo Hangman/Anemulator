@@ -16,8 +16,8 @@ public class Cpd8 extends Instruction {
     @Override
     public int run() {
         final int a = this.register.get(RegisterId.A);
-        final int compareValue = this.memory.read8Bit(this.register.programCounter);
-        this.register.programCounter++;
+        final int compareValue = this.memory.read8Bit(this.register.pc);
+        this.register.pc++;
 
         this.register.setFlag(FlagId.Z, a == compareValue);
         this.register.setFlag(FlagId.N, true);

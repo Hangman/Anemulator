@@ -17,12 +17,12 @@ public class Dec_HL_ extends Instruction {
     public int run() {
         final int address = this.register.get(RegisterId.HL);
         final int newValue = this.memory.read8Bit(address) - 1;
-        this.memory.write(address, newValue & 0xff);
+        this.memory.write(address, newValue & 0xFF);
 
         // SET FLAGS
         this.register.setFlag(FlagId.Z, newValue == 0);
         this.register.setFlag(FlagId.N, true);
-        this.register.setFlag(FlagId.H, (newValue + 1 & 0xf0) != (newValue & 0xf0));
+        this.register.setFlag(FlagId.H, (newValue + 1 & 0xF0) != (newValue & 0xF0));
 
         return 12;
     }

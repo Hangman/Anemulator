@@ -14,8 +14,8 @@ public class LdhA_a8_ extends Instruction {
 
     @Override
     public int run() {
-        final int offset = this.memory.read8Bit(this.register.programCounter);
-        this.register.programCounter++;
+        final int offset = this.memory.read8Bit(this.register.pc);
+        this.register.pc++;
         this.register.set(RegisterId.A, this.memory.read8Bit(0xff00 + offset));
 
         return 12;

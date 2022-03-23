@@ -15,10 +15,10 @@ public class PushHL extends Instruction {
     @Override
     public int run() {
         final int data = this.register.get(RegisterId.HL);
-        this.register.stackPointer--;
-        this.memory.write(this.register.stackPointer, data >>> 8);
-        this.register.stackPointer--;
-        this.memory.write(this.register.stackPointer, data & 0xff);
+        this.register.sp--;
+        this.memory.write(this.register.sp, data >>> 8);
+        this.register.sp--;
+        this.memory.write(this.register.sp, data & 0xFF);
 
         return 16;
     }
