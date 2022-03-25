@@ -47,6 +47,7 @@ public class Start extends ApplicationAdapter {
             this.input = new KeyboardInput();
             this.input.addListener(memoryController);
             this.input.addListener(this.cpu);
+            Gdx.input.setInputProcessor(this.input);
         } catch (final IOException e) {
             e.printStackTrace();
         }

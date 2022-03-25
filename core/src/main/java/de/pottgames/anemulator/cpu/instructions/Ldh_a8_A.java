@@ -18,9 +18,6 @@ public class Ldh_a8_A extends Instruction {
         final int value = this.register.get(RegisterId.A);
         this.register.pc++;
         this.memory.write(address, value);
-        if (address == 0xFF50 && value == 0x01) {
-            this.memory.finishBoot();
-        }
 
         return 12;
     }

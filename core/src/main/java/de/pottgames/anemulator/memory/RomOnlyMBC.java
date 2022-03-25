@@ -18,10 +18,8 @@ public class RomOnlyMBC implements MemoryBankController {
      */
     private int[] memory = new int[0xffff + 1];
 
-    private int[]     bootRomGameCache = new int[MemoryBankController.BOOT_ROM.length];
     private String    gameName;
-    private boolean   bootFinished     = false;
-    private boolean[] buttonsPressed   = new boolean[JoypadKey.values().length];
+    private boolean[] buttonsPressed = new boolean[JoypadKey.values().length];
 
 
     public RomOnlyMBC(int[] romData) {
@@ -31,9 +29,6 @@ public class RomOnlyMBC implements MemoryBankController {
             gameNameChars[i] = (char) this.read8Bit(0x134 + i);
         }
         this.gameName = new String(gameNameChars).trim();
-
-        System.arraycopy(this.memory, 0, this.bootRomGameCache, 0, MemoryBankController.BOOT_ROM.length);
-        System.arraycopy(MemoryBankController.BOOT_ROM, 0, this.memory, 0, MemoryBankController.BOOT_ROM.length);
 
         this.memory[MemoryBankController.JOYPAD] = 0b00111111;
     }
@@ -66,23 +61,26 @@ public class RomOnlyMBC implements MemoryBankController {
         if (address == MemoryBankController.JOYPAD) {
             this.updateInput();
         }
+
+        // RESET DIVIDER REGISTER
+        if (address == MemoryBankController.DIV) {
+            this.memory[address] = 0;
+        }
+    }
+
+
+    @Override
+    public void incDiv() {
+        this.memory[MemoryBankController.DIV]++;
+        if (this.memory[MemoryBankController.DIV] > 0xFF) {
+            this.memory[MemoryBankController.DIV] = 0;
+        }
     }
 
 
     @Override
     public String getGameName() {
         return this.gameName;
-    }
-
-
-    @Override
-    public void finishBoot() {
-        if (!this.bootFinished) {
-            System.arraycopy(this.bootRomGameCache, 0, this.memory, 0, this.bootRomGameCache.length);
-            this.bootRomGameCache = null;
-            this.bootFinished = true;
-            System.out.println("BOOT COMPLETE");
-        }
     }
 
 
