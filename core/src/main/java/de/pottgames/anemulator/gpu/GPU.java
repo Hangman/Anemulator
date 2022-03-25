@@ -6,12 +6,12 @@ import com.badlogic.gdx.graphics.Pixmap;
 import de.pottgames.anemulator.memory.MemoryBankController;
 
 public class GPU {
-    private final Color[]          colorPalette     = { new Color(0x203732ff), new Color(0x38554Cff), new Color(0x517158ff), new Color(0x869054ff) };
+    private final Color[]              colorPalette     = { new Color(0x203732ff), new Color(0x38554Cff), new Color(0x517158ff), new Color(0x869054ff) };
     private final MemoryBankController memory;
-    private GpuMode                state            = GpuMode.OAM_SEARCH;
-    private int                    cycleAccumulator = 0;
-    private final Pixmap           backbuffer;
-    private final int[]            tileCache        = new int[16];
+    private GpuMode                    state            = GpuMode.OAM_SEARCH;
+    private int                        cycleAccumulator = 0;
+    private final Pixmap               backbuffer;
+    private final int[]                tileCache        = new int[16];
 
 
     public GPU(MemoryBankController memory, Pixmap backBuffer) {
@@ -48,7 +48,7 @@ public class GPU {
 
     private void oamSearch() {
         this.cycleAccumulator -= 80;
-        this.state = GpuMode.PIXEL_TRANSFER;
+        this.setState(GpuMode.PIXEL_TRANSFER);
     }
 
 
@@ -113,7 +113,7 @@ public class GPU {
         // TODO
 
         this.cycleAccumulator -= 172;
-        this.state = GpuMode.H_BLANK;
+        this.setState(GpuMode.H_BLANK);
     }
 
 
@@ -121,14 +121,9 @@ public class GPU {
         final int currentLine = this.memory.read8Bit(MemoryBankController.LCD_LY);
         this.setLine(currentLine + 1);
         if (currentLine + 1 > 143) {
-            this.state = GpuMode.V_BLANK;
-
-            // REQUEST INTERRUPT IF VBLANK IS ENABLED AS SOURCE OF INTERRUPTS
-            if (this.memory.isBitSet(MemoryBankController.LCD_STAT, 4)) {
-                this.memory.setBit(MemoryBankController.IF, 1, true);
-            }
+            this.setState(GpuMode.V_BLANK);
         } else {
-            this.state = GpuMode.OAM_SEARCH;
+            this.setState(GpuMode.OAM_SEARCH);
         }
         this.cycleAccumulator -= 204;
     }
@@ -138,7 +133,7 @@ public class GPU {
         final int currentLine = this.memory.read8Bit(0xFF44);
         if (currentLine + 1 > 153) {
             this.setLine(0);
-            this.state = GpuMode.OAM_SEARCH;
+            this.setState(GpuMode.OAM_SEARCH);
         } else {
             this.setLine(currentLine + 1);
         }
@@ -152,6 +147,34 @@ public class GPU {
         // REQUEST INTERRUPT IF LYC = LY
         if (this.memory.isBitSet(MemoryBankController.LCD_STAT, 6) && this.memory.read8Bit(MemoryBankController.LCD_LYC) == number) {
             this.memory.setBit(MemoryBankController.IF, 1, true);
+        }
+    }
+
+
+    private void setState(GpuMode state) {
+        this.state = state;
+
+        switch (state) {
+            case H_BLANK:
+                // REQUEST INTERRUPT IF HBLANK IS ENABLED AS SOURCE OF INTERRUPTS
+                if (this.memory.isBitSet(MemoryBankController.LCD_STAT, 3)) {
+                    this.memory.setBit(MemoryBankController.IF, 1, true);
+                }
+                break;
+            case OAM_SEARCH:
+                // REQUEST INTERRUPT IF OAM SEARCH IS ENABLED AS SOURCE OF INTERRUPTS
+                if (this.memory.isBitSet(MemoryBankController.LCD_STAT, 5)) {
+                    this.memory.setBit(MemoryBankController.IF, 1, true);
+                }
+                break;
+            case PIXEL_TRANSFER:
+                break;
+            case V_BLANK:
+                // REQUEST INTERRUPT IF VBLANK IS ENABLED AS SOURCE OF INTERRUPTS
+                if (this.memory.isBitSet(MemoryBankController.LCD_STAT, 4)) {
+                    this.memory.setBit(MemoryBankController.IF, 1, true);
+                }
+                break;
         }
     }
 
