@@ -13,6 +13,7 @@ public class CPU implements JoypadStateChangeListener {
     private final Register             register;
     private final IntMap<Instruction>  instructions        = new IntMap<>();
     private final DividerTimer         dividerTimer;
+    private final Timer                timer;
     private int                        cycleAccumulator    = 0;
     private boolean                    halted              = false;
     private boolean                    skipNextInstruction = false;
@@ -23,6 +24,7 @@ public class CPU implements JoypadStateChangeListener {
         this.memory = memory;
         this.register = new Register();
         this.dividerTimer = new DividerTimer(memory);
+        this.timer = new Timer(memory);
         this.register.pc = 0x100;
 
         this.initInstructions();
@@ -296,6 +298,10 @@ public class CPU implements JoypadStateChangeListener {
     public void step() {
         this.cycleAccumulator += 4;
         this.dividerTimer.step();
+        if (this.timer.step()) {
+            int ifRegister = this.memory.read8Bit(MemoryBankController.IF);
+            this.memory.write(MemoryBankController.IF, ifRegister |= 1 << Interrupt.TIMER.getBitnum());
+        }
 
         if (this.skipNextInstruction) {
             this.register.pc++;

@@ -26,6 +26,37 @@ public interface MemoryBankController extends JoypadStateChangeListener {
     int DIV = 0xFF04;
 
     /**
+     * Timer Counter register<br>
+     * <br>
+     * This timer is incremented at the clock frequency specified by the TAC register ($FF07).<br>
+     * When the value overflows (exceeds $FF) it is reset to the value specified in TMA (FF06) and an interrupt is requested.
+     */
+    int TIMA = 0xFF05;
+
+    /**
+     * Timer Modulo register<br>
+     * <br>
+     * When TIMA overflows, it is reset to the value in this register and an interrupt is requested. Example of use: if TMA is set to $FF, an interrupt is
+     * requested at the clock frequency selected in TAC (because every increment is an overflow). However, if TMA is set to $FE, an interrupt is only requested
+     * every two increments, which effectively divides the selected clock by two. Setting TMA to $FD would divide the clock by three, and so on.<br>
+     * <br>
+     * If a TMA write is executed on the same cycle as the content of TMA is transferred to TIMA due to a timer overflow, the old value is transferred to TIMA.
+     */
+    int TMA = 0xFF06;
+
+    /**
+     * Timer Control register<br>
+     * <br>
+     * Bit 2 = Timer Enable : 0=off, 1=on<br>
+     * Bit 1, 0 = Input Clock Select :<br>
+     * 00 = CPU Clock / 1024<br>
+     * 01 = CPU CLock / 16<br>
+     * 10 = CPU Clock / 64<br>
+     * 11 = CPU Clock / 256<br>
+     */
+    int TAC = 0xFF07;
+
+    /**
      * LCD Control register<br>
      * <br>
      * Bit 7 = LCD and GPU enable : 0=off, 1=on<br>
