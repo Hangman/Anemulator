@@ -3,11 +3,11 @@ package de.pottgames.anemulator.cpu.extendedinstructions;
 import de.pottgames.anemulator.cpu.Instruction;
 import de.pottgames.anemulator.cpu.Register;
 import de.pottgames.anemulator.cpu.Register.RegisterId;
-import de.pottgames.anemulator.memory.MemoryController;
+import de.pottgames.anemulator.memory.MemoryBankController;
 
 public class Res6C extends Instruction {
 
-    public Res6C(Register register, MemoryController memory) {
+    public Res6C(Register register, MemoryBankController memory) {
         super(register, memory);
     }
 

@@ -2,7 +2,7 @@ package de.pottgames.anemulator.cpu;
 
 public class Register {
     private int[]   register                     = new int[RegisterId.values().length];
-    public int      pc                           = 0x100;
+    public int      pc                           = 0;
     public int      sp                           = 0xfffe;
     private boolean interruptsEnabled            = false;
     private byte    enableInterruptsDelayCounter = 0;

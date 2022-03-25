@@ -2,11 +2,11 @@ package de.pottgames.anemulator.cpu.instructions;
 
 import de.pottgames.anemulator.cpu.Instruction;
 import de.pottgames.anemulator.cpu.Register;
-import de.pottgames.anemulator.memory.MemoryController;
+import de.pottgames.anemulator.memory.MemoryBankController;
 
 public class IncSP extends Instruction {
 
-    public IncSP(Register register, MemoryController memory) {
+    public IncSP(Register register, MemoryBankController memory) {
         super(register, memory);
     }
 

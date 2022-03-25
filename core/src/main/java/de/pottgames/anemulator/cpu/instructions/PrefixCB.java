@@ -77,14 +77,38 @@ import de.pottgames.anemulator.cpu.extendedinstructions.RlE;
 import de.pottgames.anemulator.cpu.extendedinstructions.RlH;
 import de.pottgames.anemulator.cpu.extendedinstructions.RlL;
 import de.pottgames.anemulator.cpu.extendedinstructions.Rl_HL_;
+import de.pottgames.anemulator.cpu.extendedinstructions.Set0_HL_;
+import de.pottgames.anemulator.cpu.extendedinstructions.Set1_HL_;
+import de.pottgames.anemulator.cpu.extendedinstructions.Set2_HL_;
+import de.pottgames.anemulator.cpu.extendedinstructions.Set3_HL_;
+import de.pottgames.anemulator.cpu.extendedinstructions.Set4_HL_;
+import de.pottgames.anemulator.cpu.extendedinstructions.Set5_HL_;
+import de.pottgames.anemulator.cpu.extendedinstructions.Set6_HL_;
+import de.pottgames.anemulator.cpu.extendedinstructions.Set7_HL_;
+import de.pottgames.anemulator.cpu.extendedinstructions.SlaA;
+import de.pottgames.anemulator.cpu.extendedinstructions.SlaB;
+import de.pottgames.anemulator.cpu.extendedinstructions.SlaC;
+import de.pottgames.anemulator.cpu.extendedinstructions.SlaD;
+import de.pottgames.anemulator.cpu.extendedinstructions.SlaE;
+import de.pottgames.anemulator.cpu.extendedinstructions.SlaH;
+import de.pottgames.anemulator.cpu.extendedinstructions.SlaL;
+import de.pottgames.anemulator.cpu.extendedinstructions.Sla_HL_;
+import de.pottgames.anemulator.cpu.extendedinstructions.SwapA;
+import de.pottgames.anemulator.cpu.extendedinstructions.SwapB;
+import de.pottgames.anemulator.cpu.extendedinstructions.SwapC;
+import de.pottgames.anemulator.cpu.extendedinstructions.SwapD;
+import de.pottgames.anemulator.cpu.extendedinstructions.SwapE;
+import de.pottgames.anemulator.cpu.extendedinstructions.SwapH;
+import de.pottgames.anemulator.cpu.extendedinstructions.SwapL;
+import de.pottgames.anemulator.cpu.extendedinstructions.Swap_HL_;
 import de.pottgames.anemulator.error.UnsupportedFeatureException;
-import de.pottgames.anemulator.memory.MemoryController;
+import de.pottgames.anemulator.memory.MemoryBankController;
 
 public class PrefixCB extends Instruction {
     private IntMap<Instruction> extendedInstructions = new IntMap<>();
 
 
-    public PrefixCB(Register register, MemoryController memory) {
+    public PrefixCB(Register register, MemoryBankController memory) {
         super(register, memory);
         this.initExtendedInstructions();
     }
@@ -125,14 +149,14 @@ public class PrefixCB extends Instruction {
         this.extendedInstructions.put(0x1E, null);
         this.extendedInstructions.put(0x1F, null);
 
-        this.extendedInstructions.put(0x20, null);
-        this.extendedInstructions.put(0x21, null);
-        this.extendedInstructions.put(0x22, null);
-        this.extendedInstructions.put(0x23, null);
-        this.extendedInstructions.put(0x24, null);
-        this.extendedInstructions.put(0x25, null);
-        this.extendedInstructions.put(0x26, null);
-        this.extendedInstructions.put(0x27, null);
+        this.extendedInstructions.put(0x20, new SlaB(this.register, this.memory));
+        this.extendedInstructions.put(0x21, new SlaC(this.register, this.memory));
+        this.extendedInstructions.put(0x22, new SlaD(this.register, this.memory));
+        this.extendedInstructions.put(0x23, new SlaE(this.register, this.memory));
+        this.extendedInstructions.put(0x24, new SlaH(this.register, this.memory));
+        this.extendedInstructions.put(0x25, new SlaL(this.register, this.memory));
+        this.extendedInstructions.put(0x26, new Sla_HL_(this.register, this.memory));
+        this.extendedInstructions.put(0x27, new SlaA(this.register, this.memory));
         this.extendedInstructions.put(0x28, null);
         this.extendedInstructions.put(0x29, null);
         this.extendedInstructions.put(0x2A, null);
@@ -142,14 +166,14 @@ public class PrefixCB extends Instruction {
         this.extendedInstructions.put(0x2E, null);
         this.extendedInstructions.put(0x2F, null);
 
-        this.extendedInstructions.put(0x30, null);
-        this.extendedInstructions.put(0x31, null);
-        this.extendedInstructions.put(0x32, null);
-        this.extendedInstructions.put(0x33, null);
-        this.extendedInstructions.put(0x34, null);
-        this.extendedInstructions.put(0x35, null);
-        this.extendedInstructions.put(0x36, null);
-        this.extendedInstructions.put(0x37, null);
+        this.extendedInstructions.put(0x30, new SwapB(this.register, this.memory));
+        this.extendedInstructions.put(0x31, new SwapC(this.register, this.memory));
+        this.extendedInstructions.put(0x32, new SwapD(this.register, this.memory));
+        this.extendedInstructions.put(0x33, new SwapE(this.register, this.memory));
+        this.extendedInstructions.put(0x34, new SwapH(this.register, this.memory));
+        this.extendedInstructions.put(0x35, new SwapL(this.register, this.memory));
+        this.extendedInstructions.put(0x36, new Swap_HL_(this.register, this.memory));
+        this.extendedInstructions.put(0x37, new SwapA(this.register, this.memory));
         this.extendedInstructions.put(0x38, null);
         this.extendedInstructions.put(0x39, null);
         this.extendedInstructions.put(0x3A, null);
@@ -301,7 +325,7 @@ public class PrefixCB extends Instruction {
         this.extendedInstructions.put(0xC3, null);
         this.extendedInstructions.put(0xC4, null);
         this.extendedInstructions.put(0xC5, null);
-        this.extendedInstructions.put(0xC6, null);
+        this.extendedInstructions.put(0xC6, new Set0_HL_(this.register, this.memory));
         this.extendedInstructions.put(0xC7, null);
         this.extendedInstructions.put(0xC8, null);
         this.extendedInstructions.put(0xC9, null);
@@ -309,7 +333,7 @@ public class PrefixCB extends Instruction {
         this.extendedInstructions.put(0xCB, null);
         this.extendedInstructions.put(0xCC, null);
         this.extendedInstructions.put(0xCD, null);
-        this.extendedInstructions.put(0xCE, null);
+        this.extendedInstructions.put(0xCE, new Set1_HL_(this.register, this.memory));
         this.extendedInstructions.put(0xCF, null);
 
         this.extendedInstructions.put(0xD0, null);
@@ -318,7 +342,7 @@ public class PrefixCB extends Instruction {
         this.extendedInstructions.put(0xD3, null);
         this.extendedInstructions.put(0xD4, null);
         this.extendedInstructions.put(0xD5, null);
-        this.extendedInstructions.put(0xD6, null);
+        this.extendedInstructions.put(0xD6, new Set2_HL_(this.register, this.memory));
         this.extendedInstructions.put(0xD7, null);
         this.extendedInstructions.put(0xD8, null);
         this.extendedInstructions.put(0xD9, null);
@@ -326,7 +350,7 @@ public class PrefixCB extends Instruction {
         this.extendedInstructions.put(0xDB, null);
         this.extendedInstructions.put(0xDC, null);
         this.extendedInstructions.put(0xDD, null);
-        this.extendedInstructions.put(0xDE, null);
+        this.extendedInstructions.put(0xDE, new Set3_HL_(this.register, this.memory));
         this.extendedInstructions.put(0xDF, null);
 
         this.extendedInstructions.put(0xE0, null);
@@ -335,7 +359,7 @@ public class PrefixCB extends Instruction {
         this.extendedInstructions.put(0xE3, null);
         this.extendedInstructions.put(0xE4, null);
         this.extendedInstructions.put(0xE5, null);
-        this.extendedInstructions.put(0xE6, null);
+        this.extendedInstructions.put(0xE6, new Set4_HL_(this.register, this.memory));
         this.extendedInstructions.put(0xE7, null);
         this.extendedInstructions.put(0xE8, null);
         this.extendedInstructions.put(0xE9, null);
@@ -343,7 +367,7 @@ public class PrefixCB extends Instruction {
         this.extendedInstructions.put(0xEB, null);
         this.extendedInstructions.put(0xEC, null);
         this.extendedInstructions.put(0xED, null);
-        this.extendedInstructions.put(0xEE, null);
+        this.extendedInstructions.put(0xEE, new Set5_HL_(this.register, this.memory));
         this.extendedInstructions.put(0xEF, null);
 
         this.extendedInstructions.put(0xF0, null);
@@ -352,7 +376,7 @@ public class PrefixCB extends Instruction {
         this.extendedInstructions.put(0xF3, null);
         this.extendedInstructions.put(0xF4, null);
         this.extendedInstructions.put(0xF5, null);
-        this.extendedInstructions.put(0xF6, null);
+        this.extendedInstructions.put(0xF6, new Set6_HL_(this.register, this.memory));
         this.extendedInstructions.put(0xF7, null);
         this.extendedInstructions.put(0xF8, null);
         this.extendedInstructions.put(0xF9, null);
@@ -360,7 +384,7 @@ public class PrefixCB extends Instruction {
         this.extendedInstructions.put(0xFB, null);
         this.extendedInstructions.put(0xFC, null);
         this.extendedInstructions.put(0xFD, null);
-        this.extendedInstructions.put(0xFE, null);
+        this.extendedInstructions.put(0xFE, new Set7_HL_(this.register, this.memory));
         this.extendedInstructions.put(0xFF, null);
     }
 

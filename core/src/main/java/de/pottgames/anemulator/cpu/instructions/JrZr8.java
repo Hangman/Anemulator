@@ -3,11 +3,11 @@ package de.pottgames.anemulator.cpu.instructions;
 import de.pottgames.anemulator.cpu.Instruction;
 import de.pottgames.anemulator.cpu.Register;
 import de.pottgames.anemulator.cpu.Register.FlagId;
-import de.pottgames.anemulator.memory.MemoryController;
+import de.pottgames.anemulator.memory.MemoryBankController;
 
 public class JrZr8 extends Instruction {
 
-    public JrZr8(Register register, MemoryController memory) {
+    public JrZr8(Register register, MemoryBankController memory) {
         super(register, memory);
     }
 

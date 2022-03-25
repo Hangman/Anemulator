@@ -5,34 +5,23 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import de.pottgames.anemulator.error.UnsupportedFeatureException;
-import de.pottgames.anemulator.memory.MemoryController;
-import de.pottgames.anemulator.memory.RomOnlyMemoryController;
+import de.pottgames.anemulator.memory.MemoryBankController;
+import de.pottgames.anemulator.memory.RomOnlyMBC;
 
 public class RomLoader {
 
-    public static MemoryController loadBootstrapRom(String path) throws IOException {
+    public static MemoryBankController load(String path) throws IOException {
         final byte[] data = Files.readAllBytes(Paths.get(path));
         final int[] intData = new int[data.length];
         for (int i = 0; i < data.length; i++) {
             intData[i] = Byte.toUnsignedInt(data[i]);
         }
 
-        return new RomOnlyMemoryController(intData, true);
-    }
-
-
-    public static MemoryController load(String path) throws IOException {
-        final byte[] data = Files.readAllBytes(Paths.get(path));
-        final int[] intData = new int[data.length];
-        for (int i = 0; i < data.length; i++) {
-            intData[i] = Byte.toUnsignedInt(data[i]);
-        }
-
-        MemoryController controller = null;
+        MemoryBankController controller = null;
         switch (intData[0x147]) {
             case 0x0:
                 // ROM ONLY
-                controller = new RomOnlyMemoryController(intData, false);
+                controller = new RomOnlyMBC(intData);
                 break;
             // case 0x1:
             // // ROM + MBC1

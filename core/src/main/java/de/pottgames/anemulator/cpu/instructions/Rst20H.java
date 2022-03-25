@@ -2,11 +2,11 @@ package de.pottgames.anemulator.cpu.instructions;
 
 import de.pottgames.anemulator.cpu.Instruction;
 import de.pottgames.anemulator.cpu.Register;
-import de.pottgames.anemulator.memory.MemoryController;
+import de.pottgames.anemulator.memory.MemoryBankController;
 
 public class Rst20H extends Instruction {
 
-    public Rst20H(Register register, MemoryController memory) {
+    public Rst20H(Register register, MemoryBankController memory) {
         super(register, memory);
     }
 

@@ -3,11 +3,11 @@ package de.pottgames.anemulator.cpu.instructions;
 import de.pottgames.anemulator.cpu.Instruction;
 import de.pottgames.anemulator.cpu.Register;
 import de.pottgames.anemulator.cpu.Register.RegisterId;
-import de.pottgames.anemulator.memory.MemoryController;
+import de.pottgames.anemulator.memory.MemoryBankController;
 
 public class Ld_HLminus_A extends Instruction {
 
-    public Ld_HLminus_A(Register register, MemoryController memory) {
+    public Ld_HLminus_A(Register register, MemoryBankController memory) {
         super(register, memory);
     }
 

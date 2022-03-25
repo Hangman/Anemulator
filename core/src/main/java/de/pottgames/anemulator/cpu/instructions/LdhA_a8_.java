@@ -3,11 +3,11 @@ package de.pottgames.anemulator.cpu.instructions;
 import de.pottgames.anemulator.cpu.Instruction;
 import de.pottgames.anemulator.cpu.Register;
 import de.pottgames.anemulator.cpu.Register.RegisterId;
-import de.pottgames.anemulator.memory.MemoryController;
+import de.pottgames.anemulator.memory.MemoryBankController;
 
 public class LdhA_a8_ extends Instruction {
 
-    public LdhA_a8_(Register register, MemoryController memory) {
+    public LdhA_a8_(Register register, MemoryBankController memory) {
         super(register, memory);
     }
 

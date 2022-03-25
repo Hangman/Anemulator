@@ -4,11 +4,11 @@ import de.pottgames.anemulator.cpu.Instruction;
 import de.pottgames.anemulator.cpu.Register;
 import de.pottgames.anemulator.cpu.Register.FlagId;
 import de.pottgames.anemulator.cpu.Register.RegisterId;
-import de.pottgames.anemulator.memory.MemoryController;
+import de.pottgames.anemulator.memory.MemoryBankController;
 
 public class AddAd8 extends Instruction {
 
-    public AddAd8(Register register, MemoryController memory) {
+    public AddAd8(Register register, MemoryBankController memory) {
         super(register, memory);
     }
 

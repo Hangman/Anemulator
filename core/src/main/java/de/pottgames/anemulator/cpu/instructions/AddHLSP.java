@@ -4,11 +4,11 @@ import de.pottgames.anemulator.cpu.Instruction;
 import de.pottgames.anemulator.cpu.Register;
 import de.pottgames.anemulator.cpu.Register.FlagId;
 import de.pottgames.anemulator.cpu.Register.RegisterId;
-import de.pottgames.anemulator.memory.MemoryController;
+import de.pottgames.anemulator.memory.MemoryBankController;
 
 public class AddHLSP extends Instruction {
 
-    public AddHLSP(Register register, MemoryController memory) {
+    public AddHLSP(Register register, MemoryBankController memory) {
         super(register, memory);
     }
 
