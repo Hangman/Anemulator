@@ -4,9 +4,11 @@ import com.badlogic.gdx.utils.IntMap;
 
 import de.pottgames.anemulator.cpu.instructions.*;
 import de.pottgames.anemulator.error.UnsupportedFeatureException;
+import de.pottgames.anemulator.input.JoypadKey;
+import de.pottgames.anemulator.input.JoypadStateChangeListener;
 import de.pottgames.anemulator.memory.MemoryBankController;
 
-public class CPU {
+public class CPU implements JoypadStateChangeListener {
     private final MemoryBankController memory;
     private final Register             register;
     private final IntMap<Instruction>  instructions        = new IntMap<>();
@@ -330,7 +332,7 @@ public class CPU {
                     this.register.sp--;
                     this.memory.write(this.register.sp, this.register.pc >>> 8);
                     this.register.sp--;
-                    this.memory.write(this.register.sp, this.register.pc & 0xff);
+                    this.memory.write(this.register.sp, this.register.pc & 0xFF);
 
                     // JUMP
                     this.register.pc = interrupt.getJumpAddress();
@@ -366,6 +368,12 @@ public class CPU {
         } else {
             this.skipNextInstruction = true;
         }
+    }
+
+
+    @Override
+    public void onJoypadStateChange(JoypadKey key, boolean pressed) {
+        this.memory.setBit(MemoryBankController.IF, Interrupt.JOYPAD.getBitnum(), true);
     }
 
 }

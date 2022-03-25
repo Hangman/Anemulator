@@ -12,17 +12,19 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import de.pottgames.anemulator.cpu.CPU;
 import de.pottgames.anemulator.gpu.GPU;
+import de.pottgames.anemulator.input.KeyboardInput;
 import de.pottgames.anemulator.memory.MemoryBankController;
 import de.pottgames.anemulator.rom.RomLoader;
 
 public class Start extends ApplicationAdapter {
-    private SpriteBatch batch;
-    private CPU         cpu;
-    private GPU         gpu;
-    private Pixmap      backbuffer;
-    private Pixmap      bgMap;
-    private Texture     texture;
-    private Texture     bgMapTexture;
+    private SpriteBatch   batch;
+    private CPU           cpu;
+    private GPU           gpu;
+    private KeyboardInput input;
+    private Pixmap        backbuffer;
+    private Pixmap        bgMap;
+    private Texture       texture;
+    private Texture       bgMapTexture;
 
 
     @Override
@@ -42,6 +44,9 @@ public class Start extends ApplicationAdapter {
             // memoryController = RomLoader.load("cpu_instrs.gb");
             this.cpu = new CPU(memoryController);
             this.gpu = new GPU(memoryController, this.backbuffer);
+            this.input = new KeyboardInput();
+            this.input.addListener(memoryController);
+            this.input.addListener(this.cpu);
         } catch (final IOException e) {
             e.printStackTrace();
         }

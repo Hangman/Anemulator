@@ -1,5 +1,8 @@
 package de.pottgames.anemulator.memory;
 
+import de.pottgames.anemulator.input.JoypadKey;
+import de.pottgames.anemulator.input.JoypadKey.JoypadKeyType;
+
 public class RomOnlyMBC implements MemoryBankController {
     /**
      * 0x0000 - 0x7FFF => ROM<br>
@@ -15,10 +18,10 @@ public class RomOnlyMBC implements MemoryBankController {
      */
     private int[] memory = new int[0xffff + 1];
 
-    private int[] bootRomGameCache = new int[MemoryBankController.BOOT_ROM.length];
-
-    private String  gameName;
-    private boolean bootFinished = false;
+    private int[]     bootRomGameCache = new int[MemoryBankController.BOOT_ROM.length];
+    private String    gameName;
+    private boolean   bootFinished     = false;
+    private boolean[] buttonsPressed   = new boolean[JoypadKey.values().length];
 
 
     public RomOnlyMBC(int[] romData) {
@@ -31,25 +34,19 @@ public class RomOnlyMBC implements MemoryBankController {
 
         System.arraycopy(this.memory, 0, this.bootRomGameCache, 0, MemoryBankController.BOOT_ROM.length);
         System.arraycopy(MemoryBankController.BOOT_ROM, 0, this.memory, 0, MemoryBankController.BOOT_ROM.length);
+
+        this.memory[MemoryBankController.JOYPAD] = 0b00111111;
     }
 
 
     @Override
     public int read8Bit(int address) {
-        // if (address == 0xFF00) {
-        // this.updateInputs();
-        // }
-
         return this.memory[address];
     }
 
 
     @Override
     public int read16Bit(int address) {
-        // if (address == 0xFF00 || address == 0xFEFF) {
-        // this.updateInputs();
-        // }
-
         return this.memory[address] | this.memory[address + 1] << 8;
     }
 
@@ -57,10 +54,17 @@ public class RomOnlyMBC implements MemoryBankController {
     @Override
     public void write(int address, int value) {
         this.memory[address] = value;
+
+        // ECHO RAM
         if (address >= 0xC000 && address <= 0xDDFF) {
             this.memory[address + 0x2000] = value;
         } else if (address >= 0xE000 && address <= 0xFDFF) {
             this.memory[address - 0x2000] = value;
+        }
+
+        // UPDATE JOYPAD REGISTER
+        if (address == MemoryBankController.JOYPAD) {
+            this.updateInput();
         }
     }
 
@@ -81,25 +85,29 @@ public class RomOnlyMBC implements MemoryBankController {
         }
     }
 
-    // private void updateInputs() {
-    // int ff00 = this.memory[0xFF00];
-    // JoypadKeyType type = JoypadKeyType.DIRECTION;
-    // if ((ff00 & 1 << 5) == 0) {
-    // type = JoypadKeyType.ACTION;
-    // }
-    //
-    // for (final JoypadKey key : JoypadKey.values()) {
-    // if (key.type == type) {
-    // final boolean pressed = this.inputController.isButtonPressed(key);
-    // if (pressed) {
-    // ff00 &= ~(1 << key.bitnum);
-    // } else {
-    // ff00 |= 1 << key.bitnum;
-    // }
-    // }
-    // }
-    //
-    // this.memory[0xFF00] = ff00;
-    // }
+
+    private void updateInput() {
+        int ff00 = this.memory[MemoryBankController.JOYPAD];
+        final JoypadKeyType typeSelected = (ff00 & 1 << 5) == 0 ? JoypadKeyType.ACTION : JoypadKeyType.DIRECTION;
+
+        for (final JoypadKey key : JoypadKey.values()) {
+            if (key.getType() == typeSelected) {
+                final boolean pressed = this.buttonsPressed[key.getIndex()];
+                if (pressed) {
+                    ff00 &= ~(1 << key.getBitnum());
+                } else {
+                    ff00 |= 1 << key.getBitnum();
+                }
+            }
+        }
+        this.memory[MemoryBankController.JOYPAD] = ff00;
+    }
+
+
+    @Override
+    public void onJoypadStateChange(JoypadKey key, boolean pressed) {
+        this.buttonsPressed[key.getIndex()] = pressed;
+        this.updateInput();
+    }
 
 }
