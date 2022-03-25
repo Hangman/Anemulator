@@ -11,4 +11,9 @@ public enum GpuMode {
         this.flagBits = flagBits;
     }
 
+
+    public int getFlagBits() {
+        return this.flagBits;
+    }
+
 }

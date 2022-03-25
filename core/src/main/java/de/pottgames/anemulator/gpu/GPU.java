@@ -154,6 +154,12 @@ public class GPU {
     private void setState(GpuMode state) {
         this.state = state;
 
+        // SET MODE BITS IN LCD_STAT REGISTER
+        int lcdStat = this.memory.read8Bit(MemoryBankController.LCD_STAT);
+        lcdStat &= ~0b11;
+        lcdStat |= state.getFlagBits();
+        this.memory.write(MemoryBankController.LCD_STAT, lcdStat);
+
         switch (state) {
             case H_BLANK:
                 // REQUEST INTERRUPT IF HBLANK IS ENABLED AS SOURCE OF INTERRUPTS
