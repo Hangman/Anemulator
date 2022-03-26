@@ -99,8 +99,8 @@ public class GPU {
                     this.tileCache[i] = this.memory.read8Bit(atlasTileAddress + i);
                 }
                 final int colorPaletteIndex = this.getColorPaletteIndexOfTilePixel(this.tileCache, tilePixelX, tilePixelY);
+                final Color color = this.getBGColor(colorPaletteIndex);
 
-                final Color color = this.colors[colorPaletteIndex];
                 this.backbuffer.setColor(color);
                 this.backbuffer.drawPixel(pixelX, currentLine);
             }
@@ -197,17 +197,17 @@ public class GPU {
     }
 
 
-    private int getBGColor(final int paletteIndex) {
+    private Color getBGColor(final int paletteIndex) {
         final int palette = this.memory.read8Bit(MemoryBankController.BGP);
         switch (paletteIndex) {
             case 3:
-                return palette >>> 6;
+                return this.colors[palette >>> 6];
             case 2:
-                return palette >>> 4 & 0b11;
+                return this.colors[palette >>> 4 & 0b11];
             case 1:
-                return palette >>> 2 & 0b11;
+                return this.colors[palette >>> 2 & 0b11];
             case 0:
-                return palette & 0b11;
+                return this.colors[palette & 0b11];
         }
 
         throw new RuntimeException("Unknown bg color palette index: " + paletteIndex);
