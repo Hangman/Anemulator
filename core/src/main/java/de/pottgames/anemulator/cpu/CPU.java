@@ -273,7 +273,7 @@ public class CPU implements JoypadStateChangeListener {
         this.instructions.put(0xE5, new PushHL(this.register, this.memory));
         this.instructions.put(0xE6, new Andd8(this.register, this.memory));
         this.instructions.put(0xE7, new Rst20H(this.register, this.memory));
-        this.instructions.put(0xE8, null);
+        this.instructions.put(0xE8, new AddSPr8(this.register, this.memory));
         this.instructions.put(0xE9, new Jp_HL_(this.register, this.memory));
         this.instructions.put(0xEA, new Ld_a16_A(this.register, this.memory));
         this.instructions.put(0xEE, new Xord8(this.register, this.memory));
@@ -281,13 +281,13 @@ public class CPU implements JoypadStateChangeListener {
 
         this.instructions.put(0xF0, new LdhA_a8_(this.register, this.memory));
         this.instructions.put(0xF1, new PopAF(this.register, this.memory));
-        this.instructions.put(0xF2, null);
+        this.instructions.put(0xF2, new LdA_C_(this.register, this.memory));
         this.instructions.put(0xF3, new Di(this.register, this.memory));
         this.instructions.put(0xF5, new PushAF(this.register, this.memory));
-        this.instructions.put(0xF6, null);
+        this.instructions.put(0xF6, new Ord8(this.register, this.memory));
         this.instructions.put(0xF7, new Rst30H(this.register, this.memory));
-        this.instructions.put(0xF8, null);
-        this.instructions.put(0xF9, null);
+        this.instructions.put(0xF8, new LdHLSPr8(this.register, this.memory));
+        this.instructions.put(0xF9, new LdSPHL(this.register, this.memory));
         this.instructions.put(0xFA, new LdA_a16_(this.register, this.memory));
         this.instructions.put(0xFB, new Ei(this.register, this.memory));
         this.instructions.put(0xFE, new Cpd8(this.register, this.memory));

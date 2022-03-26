@@ -16,7 +16,7 @@ public class Set3_HL_ extends Instruction {
     public int run() {
         final int address = this.register.get(RegisterId.HL);
         int data = this.memory.read8Bit(address);
-        data &= 1 << 3;
+        data |= 1 << 3;
         this.memory.write(address, data);
 
         return 16;

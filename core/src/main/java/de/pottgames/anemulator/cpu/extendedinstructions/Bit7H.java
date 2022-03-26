@@ -18,7 +18,7 @@ public class Bit7H extends Instruction {
         final int targetValue = this.register.get(RegisterId.H);
 
         // SET FLAGS
-        this.register.setFlag(FlagId.Z, (targetValue & 1 << 6) == 0);
+        this.register.setFlag(FlagId.Z, (targetValue & 1 << 7) == 0);
         this.register.setFlag(FlagId.N, false);
         this.register.setFlag(FlagId.H, true);
 

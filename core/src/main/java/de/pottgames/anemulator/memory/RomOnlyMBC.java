@@ -16,7 +16,7 @@ public class RomOnlyMBC implements MemoryBankController {
      * 0xFF4C - 0xFF7F => UNUSED<br>
      * 0xFF80 - 0xFFFF => INTERNAL RAM<br>
      */
-    private int[] memory = new int[0xffff + 1];
+    private int[] memory = new int[0xFFFF + 1];
 
     private String    gameName;
     private boolean[] buttonsPressed = new boolean[JoypadKey.values().length];
