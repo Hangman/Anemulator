@@ -14,17 +14,19 @@ public class Timer {
 
 
     public boolean step() {
-        this.accumulator += 4;
-        final int requiredClocks = this.requiredClocks();
-        if (this.accumulator >= requiredClocks) {
-            this.accumulator -= requiredClocks;
-            int timer = this.memory.read8Bit(MemoryBankController.TIMA);
-            timer++;
-            if (timer > 0xFF) {
-                timer = this.memory.read8Bit(MemoryBankController.TMA);
-                return true;
+        if ((this.memory.read8Bit(MemoryBankController.TAC) & 0b100) == 1) {
+            this.accumulator += 4;
+            final int requiredClocks = this.requiredClocks();
+            if (this.accumulator >= requiredClocks) {
+                this.accumulator -= requiredClocks;
+                int timer = this.memory.read8Bit(MemoryBankController.TIMA);
+                timer++;
+                if (timer > 0xFF) {
+                    timer = this.memory.read8Bit(MemoryBankController.TMA);
+                    return true;
+                }
+                this.memory.write(MemoryBankController.TIMA, timer);
             }
-            this.memory.write(MemoryBankController.TIMA, timer);
         }
 
         return false;
