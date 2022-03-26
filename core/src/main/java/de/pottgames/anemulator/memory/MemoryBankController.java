@@ -107,6 +107,16 @@ public interface MemoryBankController extends JoypadStateChangeListener {
     int LCD_LYC = 0xFF45;
 
     /**
+     * BG Palette Data register<br>
+     * <br>
+     * Bit 7, 6 = Color for index 3<br>
+     * Bit 5, 4 = Color for index 2<br>
+     * Bit 3, 2 = Color for index 1<br>
+     * Bit 1, 0 = Color for index 0<br>
+     */
+    int BGP = 0xFF47;
+
+    /**
      * Interrupt Flag register<br>
      * TODO: document
      */
