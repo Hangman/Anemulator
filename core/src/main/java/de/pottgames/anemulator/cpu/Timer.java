@@ -14,7 +14,7 @@ public class Timer {
 
 
     public boolean step() {
-        if ((this.memory.read8Bit(MemoryBankController.TAC) & 0b100) == 1) {
+        if ((this.memory.read8Bit(MemoryBankController.TAC) & 0b100) > 0) {
             this.accumulator += 4;
             final int requiredClocks = this.requiredClocks();
             if (this.accumulator >= requiredClocks) {
