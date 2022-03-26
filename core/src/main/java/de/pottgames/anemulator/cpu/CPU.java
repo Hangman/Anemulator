@@ -39,15 +39,15 @@ public class CPU implements JoypadStateChangeListener {
         this.instructions.put(0x04, new IncB(this.register, this.memory));
         this.instructions.put(0x05, new DecB(this.register, this.memory));
         this.instructions.put(0x06, new LdBd8(this.register, this.memory));
-        this.instructions.put(0x07, null);
-        this.instructions.put(0x08, null);
+        this.instructions.put(0x07, new RlcA(this.register, this.memory));
+        this.instructions.put(0x08, new Ld_a16_SP(this.register, this.memory));
         this.instructions.put(0x09, new AddHLBC(this.register, this.memory));
         this.instructions.put(0x0A, new LdA_BC_(this.register, this.memory));
         this.instructions.put(0x0B, new DecBC(this.register, this.memory));
         this.instructions.put(0x0C, new IncC(this.register, this.memory));
         this.instructions.put(0x0D, new DecC(this.register, this.memory));
         this.instructions.put(0x0E, new LdCd8(this.register, this.memory));
-        this.instructions.put(0x0F, null);
+        this.instructions.put(0x0F, new RrcA(this.register, this.memory));
 
         this.instructions.put(0x10, null);
         this.instructions.put(0x11, new LdDEd16(this.register, this.memory));

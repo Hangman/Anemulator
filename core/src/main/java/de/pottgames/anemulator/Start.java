@@ -37,11 +37,11 @@ public class Start extends ApplicationAdapter {
 
         MemoryBankController memoryController = null;
         try {
-            memoryController = RomLoader.load("Tetris (World) (Rev A).gb");
+            // memoryController = RomLoader.load("Tetris (World) (Rev A).gb");
             // memoryController = RomLoader.load("Alleyway (World).gb");
             // memoryController = RomLoader.load("Bionic Battler (USA).gb");
             // memoryController = RomLoader.load("Boxxle II (USA, Europe).gb");
-            // memoryController = RomLoader.load("cpu_instrs.gb");
+            memoryController = RomLoader.load("cpu_instrs.gb");
             this.cpu = new CPU(memoryController);
             this.gpu = new GPU(memoryController, this.backbuffer);
             this.input = new KeyboardInput();
