@@ -114,7 +114,12 @@ public interface MemoryBankController extends JoypadStateChangeListener {
 
     /**
      * Interrupt Enable register<br>
-     * TODO: document
+     * <br>
+     * Bit 4 = Joypad : 0=disabled, 1=enabled<br>
+     * Bit 3 = Serial : 0=disabled, 1=enabled<br>
+     * Bit 2 = Timer : 0=disabled, 1=enabled<br>
+     * Bit 1 = LCD STAT : 0=disabled, 1=enabled<br>
+     * Bit 0 = VBlank : 0=disabled, 1=enabled<br>
      */
     int IE = 0xFFFF;
 

@@ -180,6 +180,7 @@ public class GPU {
                 if (this.memory.isBitSet(MemoryBankController.LCD_STAT, 4)) {
                     this.memory.setBit(MemoryBankController.IF, 1, true);
                 }
+                this.memory.setBit(MemoryBankController.IF, 0, true);
                 break;
         }
     }
