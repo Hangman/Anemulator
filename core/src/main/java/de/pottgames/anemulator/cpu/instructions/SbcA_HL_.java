@@ -6,26 +6,28 @@ import de.pottgames.anemulator.cpu.Register.FlagId;
 import de.pottgames.anemulator.cpu.Register.RegisterId;
 import de.pottgames.anemulator.memory.MemoryBankController;
 
-public class SubA extends Instruction {
+public class SbcA_HL_ extends Instruction {
 
-    public SubA(Register register, MemoryBankController memory) {
+    public SbcA_HL_(Register register, MemoryBankController memory) {
         super(register, memory);
     }
 
 
     @Override
     public int run() {
-        final int value = this.register.get(RegisterId.A);
         final int a = this.register.get(RegisterId.A);
-        final int result = a - value;
+        final int value = this.memory.read8Bit(this.register.get(RegisterId.HL));
+        final int carry = this.register.isFlagSet(FlagId.C) ? 1 : 0;
+        final int result = a - value - carry;
         this.register.set(RegisterId.A, result);
 
+        // SET FLAGS
         this.register.setFlag(FlagId.Z, result == 0);
         this.register.setFlag(FlagId.N, true);
-        this.register.setFlag(FlagId.H, (a & 0xF) < (value & 0xF));
-        this.register.setFlag(FlagId.C, a < value);
+        this.register.setFlag(FlagId.H, (a & 0xF) < (value & 0xF) + carry);
+        this.register.setFlag(FlagId.C, a < value + carry);
 
-        return 4;
+        return 8;
     }
 
 }

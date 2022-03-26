@@ -176,14 +176,14 @@ public class CPU implements JoypadStateChangeListener {
         this.instructions.put(0x85, new AddAL(this.register, this.memory));
         this.instructions.put(0x86, new AddA_HL_(this.register, this.memory));
         this.instructions.put(0x87, new AddAA(this.register, this.memory));
-        this.instructions.put(0x88, null);
-        this.instructions.put(0x89, null);
-        this.instructions.put(0x8A, null);
-        this.instructions.put(0x8B, null);
-        this.instructions.put(0x8C, null);
-        this.instructions.put(0x8D, null);
-        this.instructions.put(0x8E, null);
-        this.instructions.put(0x8F, null);
+        this.instructions.put(0x88, new AdcAB(this.register, this.memory));
+        this.instructions.put(0x89, new AdcAC(this.register, this.memory));
+        this.instructions.put(0x8A, new AdcAD(this.register, this.memory));
+        this.instructions.put(0x8B, new AdcAE(this.register, this.memory));
+        this.instructions.put(0x8C, new AdcAH(this.register, this.memory));
+        this.instructions.put(0x8D, new AdcAL(this.register, this.memory));
+        this.instructions.put(0x8E, new AdcA_HL_(this.register, this.memory));
+        this.instructions.put(0x8F, new AdcAA(this.register, this.memory));
 
         this.instructions.put(0x90, new SubB(this.register, this.memory));
         this.instructions.put(0x91, new SubC(this.register, this.memory));
@@ -193,14 +193,14 @@ public class CPU implements JoypadStateChangeListener {
         this.instructions.put(0x95, new SubL(this.register, this.memory));
         this.instructions.put(0x96, new Sub_HL_(this.register, this.memory));
         this.instructions.put(0x97, new SubA(this.register, this.memory));
-        this.instructions.put(0x98, null);
-        this.instructions.put(0x99, null);
-        this.instructions.put(0x9A, null);
-        this.instructions.put(0x9B, null);
-        this.instructions.put(0x9C, null);
-        this.instructions.put(0x9D, null);
-        this.instructions.put(0x9E, null);
-        this.instructions.put(0x9F, null);
+        this.instructions.put(0x98, new SbcAB(this.register, this.memory));
+        this.instructions.put(0x99, new SbcAC(this.register, this.memory));
+        this.instructions.put(0x9A, new SbcAD(this.register, this.memory));
+        this.instructions.put(0x9B, new SbcAE(this.register, this.memory));
+        this.instructions.put(0x9C, new SbcAH(this.register, this.memory));
+        this.instructions.put(0x9D, new SbcAL(this.register, this.memory));
+        this.instructions.put(0x9E, new SbcA_HL_(this.register, this.memory));
+        this.instructions.put(0x9F, new SbcAA(this.register, this.memory));
 
         this.instructions.put(0xA0, new AndB(this.register, this.memory));
         this.instructions.put(0xA1, new AndC(this.register, this.memory));
@@ -250,7 +250,7 @@ public class CPU implements JoypadStateChangeListener {
         this.instructions.put(0xCB, new PrefixCB(this.register, this.memory));
         this.instructions.put(0xCC, new CallZa16(this.register, this.memory));
         this.instructions.put(0xCD, new Calla16(this.register, this.memory));
-        this.instructions.put(0xCE, null);
+        this.instructions.put(0xCE, new AdcAd8(this.register, this.memory));
         this.instructions.put(0xCF, new Rst08H(this.register, this.memory));
 
         this.instructions.put(0xD0, new RetNC(this.register, this.memory));
@@ -258,13 +258,13 @@ public class CPU implements JoypadStateChangeListener {
         this.instructions.put(0xD2, new JpNCa16(this.register, this.memory));
         this.instructions.put(0xD4, new CallNCa16(this.register, this.memory));
         this.instructions.put(0xD5, new PushDE(this.register, this.memory));
-        this.instructions.put(0xD6, null);
+        this.instructions.put(0xD6, new Subd8(this.register, this.memory));
         this.instructions.put(0xD7, new Rst10H(this.register, this.memory));
         this.instructions.put(0xD8, new RetC(this.register, this.memory));
         this.instructions.put(0xD9, new RetI(this.register, this.memory));
         this.instructions.put(0xDA, new JpCa16(this.register, this.memory));
         this.instructions.put(0xDC, new CallCa16(this.register, this.memory));
-        this.instructions.put(0xDE, null);
+        this.instructions.put(0xDE, new SbcAd8(this.register, this.memory));
         this.instructions.put(0xDF, new Rst18H(this.register, this.memory));
 
         this.instructions.put(0xE0, new Ldh_a8_A(this.register, this.memory));

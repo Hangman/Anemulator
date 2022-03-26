@@ -17,7 +17,7 @@ public class Sub_HL_ extends Instruction {
     public int run() {
         final int value = this.memory.read8Bit(this.register.get(RegisterId.HL));
         final int a = this.register.get(RegisterId.A);
-        final int result = a - value & 0xFF;
+        final int result = a - value;
         this.register.set(RegisterId.A, result);
 
         this.register.setFlag(FlagId.Z, result == 0);
