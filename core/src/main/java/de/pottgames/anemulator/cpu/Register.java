@@ -104,7 +104,7 @@ public class Register {
                     break;
                 case HL:
                     this.setInternal(RegisterId.H, value >>> 8, false);
-                    this.setInternal(RegisterId.L, value & 0x00FF, false);
+                    this.setInternal(RegisterId.L, value & 0xFF, false);
                     break;
                 case L:
                     this.setInternal(RegisterId.HL, this.get(RegisterId.HL) & 0xFF00 | value, false);

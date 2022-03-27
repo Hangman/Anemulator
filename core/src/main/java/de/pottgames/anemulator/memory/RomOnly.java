@@ -3,7 +3,7 @@ package de.pottgames.anemulator.memory;
 import de.pottgames.anemulator.input.JoypadKey;
 import de.pottgames.anemulator.input.JoypadKey.JoypadKeyType;
 
-public class RomOnlyMBC implements MemoryBankController {
+public class RomOnly implements MemoryBankController {
     /**
      * 0x0000 - 0x7FFF => ROM<br>
      * 0x8000 - 0x9FFF => VRAM<br>
@@ -16,13 +16,13 @@ public class RomOnlyMBC implements MemoryBankController {
      * 0xFF4C - 0xFF7F => UNUSED<br>
      * 0xFF80 - 0xFFFF => INTERNAL RAM<br>
      */
-    private int[] memory = new int[0xFFFF + 1];
+    private final int[] memory = new int[0xFFFF + 1];
 
-    private String    gameName;
-    private boolean[] buttonsPressed = new boolean[JoypadKey.values().length];
+    private final String gameName;
+    private boolean[]    buttonsPressed = new boolean[JoypadKey.values().length];
 
 
-    public RomOnlyMBC(int[] romData) {
+    public RomOnly(int[] romData) {
         System.arraycopy(romData, 0, this.memory, 0, Math.min(0x8000, romData.length));
         final char[] gameNameChars = new char[0x143 - 0x134];
         for (int i = 0; i < gameNameChars.length; i++) {
@@ -31,6 +31,7 @@ public class RomOnlyMBC implements MemoryBankController {
         this.gameName = new String(gameNameChars).trim();
 
         this.memory[MemoryBankController.JOYPAD] = 0b00111111;
+        this.updateInput();
     }
 
 

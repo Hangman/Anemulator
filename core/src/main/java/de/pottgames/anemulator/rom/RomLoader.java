@@ -5,8 +5,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import de.pottgames.anemulator.error.UnsupportedFeatureException;
+import de.pottgames.anemulator.memory.MBC1;
 import de.pottgames.anemulator.memory.MemoryBankController;
-import de.pottgames.anemulator.memory.RomOnlyMBC;
+import de.pottgames.anemulator.memory.RomOnly;
 
 public class RomLoader {
 
@@ -21,12 +22,12 @@ public class RomLoader {
         switch (intData[0x147]) {
             case 0x0:
                 // ROM ONLY
-                controller = new RomOnlyMBC(intData);
+                controller = new RomOnly(intData);
                 break;
-            // case 0x1:
-            // // ROM + MBC1
-            // // TODO
-            // break;
+            case 0x1:
+                // ROM + MBC1
+                controller = new MBC1(intData);
+                break;
             // case 0x2:
             // // ROM + MBC1 + RAM
             // // TODO
