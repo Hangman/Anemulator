@@ -1,16 +1,21 @@
 package de.pottgames.anemulator.memory;
 
+import java.util.Arrays;
+
+import de.pottgames.anemulator.cpu.CallStack;
 import de.pottgames.anemulator.input.JoypadKey;
 import de.pottgames.anemulator.input.JoypadKey.JoypadKeyType;
 
 public class MBC1 implements MemoryBankController {
-    private final String  gameName;
-    private final int[][] romBanks;
-    private final int[][] ramBanks;
-    private Mode          mode           = Mode.ROM;
-    private int           bankSelectRegister;
-    private boolean       ramEnabled     = false;
-    private boolean[]     buttonsPressed = new boolean[JoypadKey.values().length];
+    private final String    gameName;
+    private final int[][]   romBanks;
+    private final int[][]   ramBanks;
+    private Mode            mode           = Mode.ROM;
+    private int             bankSelectRegister;
+    private boolean         ramEnabled     = false;
+    private boolean         booted         = false;
+    private boolean[]       buttonsPressed = new boolean[JoypadKey.values().length];
+    private final CallStack callStack;
 
     /**
      * 0x0000 - 0x3FFF => ROM BANK 0<br>
@@ -28,9 +33,18 @@ public class MBC1 implements MemoryBankController {
     private final int[] memory = new int[0xFFFF + 1];
 
 
-    public MBC1(int[] cartridgeData) {
+    public MBC1(int[] cartridgeData, CallStack callStack) {
+        this.callStack = callStack;
         this.romBanks = new int[128][0x4000];
         this.ramBanks = new int[4][0x2000];
+
+        Arrays.fill(this.memory, 0xFF);
+        for (final int[] romBank : this.romBanks) {
+            Arrays.fill(romBank, 0xFF);
+        }
+        for (final int[] ramBank : this.ramBanks) {
+            Arrays.fill(ramBank, 0xFF);
+        }
 
         // COPY ROM BANK 0
         System.arraycopy(cartridgeData, 0, this.memory, 0, 0x4000);
@@ -59,6 +73,15 @@ public class MBC1 implements MemoryBankController {
 
     @Override
     public int read8Bit(int address) {
+        if (address < 0 || address > 0xFFFF) {
+            this.callStack.print();
+            throw new RuntimeException("Invalid memory address: " + address);
+        }
+
+        if (!this.booted && address >= 0x0000 && address <= 0x00FF) {
+            return MemoryBankController.BOOT_ROM[address];
+        }
+
         if (address >= 0x4000 && address < 0x8000) {
             if (this.mode == Mode.ROM) {
                 return this.romBanks[this.bankSelectRegister][address - 0x4000];
@@ -78,12 +101,26 @@ public class MBC1 implements MemoryBankController {
 
     @Override
     public int read16Bit(int address) {
+        if (address < 0 || address > 0xFFFF) {
+            this.callStack.print();
+            throw new RuntimeException("Invalid memory address: " + address);
+        }
+
+        if (!this.booted && address >= 0x0000 && address <= 0x00FF) {
+            return MemoryBankController.BOOT_ROM[address] | MemoryBankController.BOOT_ROM[address + 1] << 8;
+        }
+
         return this.read8Bit(address) | this.read8Bit(address + 1) << 8;
     }
 
 
     @Override
     public void write(int address, int value) {
+        if (address < 0 || address > 0xFFFF) {
+            this.callStack.print();
+            throw new RuntimeException("Invalid memory address: " + address);
+        }
+
         if (address >= 0x0000 && address < 0x2000) {
             // ENABLE/DISABLE RAM
             value &= 0xF;
@@ -115,6 +152,20 @@ public class MBC1 implements MemoryBankController {
                 this.ramBanks[(this.bankSelectRegister & 0b1111111) >>> 5][address - 0xA000] = value;
             } else {
                 this.ramBanks[0][address - 0xA000] = value;
+            }
+
+        } else if (address == MemoryBankController.DMA) {
+            // DMA TRANSFER
+            final int dmaAddress = value << 8;
+            for (int i = 0; i < 0xA0; i++) {
+                this.write(0xFE00 + i, this.read8Bit(dmaAddress + i));
+            }
+
+        } else if (address == MemoryBankController.DISABLE_BOOT_ROM) {
+            // DISABLE BOOT ROM
+            this.memory[address] = value;
+            if (value > 0) {
+                this.booted = true;
             }
 
         } else {
@@ -177,6 +228,18 @@ public class MBC1 implements MemoryBankController {
     @Override
     public String getGameName() {
         return this.gameName;
+    }
+
+
+    @Override
+    public void setBooted() {
+        this.booted = true;
+    }
+
+
+    @Override
+    public boolean isBooted() {
+        return this.booted;
     }
 
 

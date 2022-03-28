@@ -15,7 +15,7 @@ public class PopDE extends Instruction {
     @Override
     public int run() {
         int data = this.memory.read8Bit(this.register.sp);
-        data = this.memory.read8Bit(this.register.sp + 1) << 8 | data;
+        data |= this.memory.read8Bit(this.register.sp + 1) << 8;
         this.register.sp += 2;
         this.register.set(RegisterId.DE, data);
 

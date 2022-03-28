@@ -1,5 +1,8 @@
 package de.pottgames.anemulator.memory;
 
+import java.util.Arrays;
+
+import de.pottgames.anemulator.cpu.CallStack;
 import de.pottgames.anemulator.input.JoypadKey;
 import de.pottgames.anemulator.input.JoypadKey.JoypadKeyType;
 
@@ -18,11 +21,15 @@ public class RomOnly implements MemoryBankController {
      */
     private final int[] memory = new int[0xFFFF + 1];
 
-    private final String gameName;
-    private boolean[]    buttonsPressed = new boolean[JoypadKey.values().length];
+    private boolean         booted         = false;
+    private final String    gameName;
+    private boolean[]       buttonsPressed = new boolean[JoypadKey.values().length];
+    private final CallStack callStack;
 
 
-    public RomOnly(int[] romData) {
+    public RomOnly(int[] romData, CallStack callStack) {
+        this.callStack = callStack;
+        Arrays.fill(this.memory, 0xFF);
         System.arraycopy(romData, 0, this.memory, 0, Math.min(0x8000, romData.length));
         final char[] gameNameChars = new char[0x143 - 0x134];
         for (int i = 0; i < gameNameChars.length; i++) {
@@ -37,19 +44,50 @@ public class RomOnly implements MemoryBankController {
 
     @Override
     public int read8Bit(int address) {
+        if (address < 0 || address > 0xFFFF) {
+            this.callStack.print();
+            throw new RuntimeException("Invalid memory address: " + address);
+        }
+
+        if (!this.booted && address >= 0x0000 && address <= 0x00FF) {
+            return MemoryBankController.BOOT_ROM[address];
+        }
+
         return this.memory[address];
     }
 
 
     @Override
     public int read16Bit(int address) {
+        if (address < 0 || address > 0xFFFF) {
+            this.callStack.print();
+            throw new RuntimeException("Invalid memory address: " + address);
+        }
+
+        if (!this.booted && address >= 0x0000 && address <= 0x00FF) {
+            return MemoryBankController.BOOT_ROM[address] | MemoryBankController.BOOT_ROM[address + 1] << 8;
+        }
+
         return this.memory[address] | this.memory[address + 1] << 8;
     }
 
 
     @Override
     public void write(int address, int value) {
+        if (address < 0 || address > 0xFFFF) {
+            this.callStack.print();
+            throw new RuntimeException("Invalid memory address: " + address);
+        }
+
         this.memory[address] = value;
+
+        // DMA TRANSFER
+        if (address == MemoryBankController.DMA) {
+            final int dmaAddress = value << 8;
+            for (int i = 0; i < 0xA0; i++) {
+                this.memory[0xFE00 + i] = this.memory[dmaAddress + i];
+            }
+        }
 
         // ECHO RAM
         if (address >= 0xC000 && address <= 0xDDFF) {
@@ -66,6 +104,13 @@ public class RomOnly implements MemoryBankController {
         // RESET DIVIDER REGISTER
         if (address == MemoryBankController.DIV) {
             this.memory[address] = 0;
+        }
+
+        // DISABLE BOOT ROM
+        if (address == MemoryBankController.DISABLE_BOOT_ROM) {
+            if (value > 0) {
+                this.booted = true;
+            }
         }
     }
 
@@ -107,6 +152,18 @@ public class RomOnly implements MemoryBankController {
     public void onJoypadStateChange(JoypadKey key, boolean pressed) {
         this.buttonsPressed[key.getIndex()] = pressed;
         this.updateInput();
+    }
+
+
+    @Override
+    public void setBooted() {
+        this.booted = true;
+    }
+
+
+    @Override
+    public boolean isBooted() {
+        return this.booted;
     }
 
 }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import de.pottgames.anemulator.cpu.CallStack;
 import de.pottgames.anemulator.error.UnsupportedFeatureException;
 import de.pottgames.anemulator.memory.MBC1;
 import de.pottgames.anemulator.memory.MemoryBankController;
@@ -11,7 +12,7 @@ import de.pottgames.anemulator.memory.RomOnly;
 
 public class RomLoader {
 
-    public static MemoryBankController load(String path) throws IOException {
+    public static MemoryBankController load(String path, CallStack callStack) throws IOException {
         final byte[] data = Files.readAllBytes(Paths.get(path));
         final int[] intData = new int[data.length];
         for (int i = 0; i < data.length; i++) {
@@ -22,11 +23,11 @@ public class RomLoader {
         switch (intData[0x147]) {
             case 0x0:
                 // ROM ONLY
-                controller = new RomOnly(intData);
+                controller = new RomOnly(intData, callStack);
                 break;
             case 0x1:
                 // ROM + MBC1
-                controller = new MBC1(intData);
+                controller = new MBC1(intData, callStack);
                 break;
             // case 0x2:
             // // ROM + MBC1 + RAM

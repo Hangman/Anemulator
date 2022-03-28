@@ -3,7 +3,7 @@ package de.pottgames.anemulator.cpu;
 import de.pottgames.anemulator.memory.MemoryBankController;
 
 public abstract class Instruction {
-    protected final Register         register;
+    protected final Register             register;
     protected final MemoryBankController memory;
 
 

@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -11,46 +12,58 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import de.pottgames.anemulator.cpu.CPU;
+import de.pottgames.anemulator.cpu.CallStack;
 import de.pottgames.anemulator.gpu.GPU;
+import de.pottgames.anemulator.input.DebugInput;
 import de.pottgames.anemulator.input.KeyboardInput;
 import de.pottgames.anemulator.memory.MemoryBankController;
 import de.pottgames.anemulator.rom.RomLoader;
 
 public class Start extends ApplicationAdapter {
-    private SpriteBatch   batch;
-    private CPU           cpu;
-    private GPU           gpu;
-    private KeyboardInput input;
-    private Pixmap        backbuffer;
-    private Pixmap        bgMap;
-    private Texture       texture;
-    private Texture       bgMapTexture;
+    private final InputMultiplexer inputMultiplexer = new InputMultiplexer();
+    private SpriteBatch            batch;
+    private CPU                    cpu;
+    private GPU                    gpu;
+    private KeyboardInput          input;
+    private Pixmap                 backbuffer;
+    private Pixmap                 tileMap;
+    private Texture                texture;
+    private Texture                tileMapTexture;
 
 
     @Override
     public void create() {
         this.batch = new SpriteBatch();
         this.backbuffer = new Pixmap(160, 144, Format.RGBA8888);
-        this.bgMap = new Pixmap(256, 256, Format.RGBA8888);
+        this.tileMap = new Pixmap(128, 192, Format.RGBA8888);
         this.texture = new Texture(this.backbuffer);
-        this.bgMapTexture = new Texture(this.bgMap);
+        this.tileMapTexture = new Texture(this.tileMap);
 
         MemoryBankController memoryController = null;
         try {
-            // memoryController = RomLoader.load("Dr. Mario (World).gb");
-            // memoryController = RomLoader.load("Tetris (World) (Rev A).gb");
-            // memoryController = RomLoader.load("Alleyway (World).gb");
-            // memoryController = RomLoader.load("Bionic Battler (USA).gb");
+            final CallStack callStack = new CallStack();
+            // memoryController = RomLoader.load("Dr. Mario (World).gb", callStack);
+            // memoryController = RomLoader.load("Tetris (World) (Rev A).gb", callStack);
+            // memoryController = RomLoader.load("Super Mario Land (World) (Rev A).gb", callStack);
+            // memoryController = RomLoader.load("Alleyway (World).gb", callStack);
+            // memoryController = RomLoader.load("Bionic Battler (USA).gb", callStack);
+            // memoryController = RomLoader.load("Aladdin (Europe) (En,Fr,De,Es,It,Nl).gbc", callStack);
+            // memoryController = RomLoader.load("Batman - The Video Game (World).gb", callStack);
             // memoryController = RomLoader.load("Boxxle II (USA, Europe).gb");
-            // memoryController = RomLoader.load("cpu_instrs.gb");
-            memoryController = RomLoader.load("instr_timing.gb");
+            // memoryController = RomLoader.load("cpu_instrs.gb", callStack);
+            // memoryController = RomLoader.load("instr_timing.gb");
             // memoryController = RomLoader.load("cpu_instrs/02-interrupts.gb");
-            this.cpu = new CPU(memoryController);
+            // memoryController = RomLoader.load("cpu_instrs/09-op r,r.gb", callStack);
+            // memoryController = RomLoader.load("cpu_instrs/03-op sp,hl.gb", callStack);
+            memoryController = RomLoader.load("cpu_instrs/01-special.gb", callStack);
+            this.cpu = new CPU(memoryController, callStack);
             this.gpu = new GPU(memoryController, this.backbuffer);
             this.input = new KeyboardInput();
             this.input.addListener(memoryController);
             this.input.addListener(this.cpu);
-            Gdx.input.setInputProcessor(this.input);
+            Gdx.input.setInputProcessor(this.inputMultiplexer);
+            this.inputMultiplexer.addProcessor(new DebugInput(this.cpu.getRegister(), memoryController));
+            this.inputMultiplexer.addProcessor(this.input);
         } catch (final IOException e) {
             e.printStackTrace();
         }
@@ -64,17 +77,23 @@ public class Start extends ApplicationAdapter {
         Gdx.gl.glClearColor(0.15f, 0.15f, 0.2f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        for (int i = 0; i < 69905; i++) {
+        boolean vBlank = false;
+        while (!vBlank) {
             this.cpu.step();
-            this.gpu.step();
+            vBlank = this.gpu.step();
         }
-        this.gpu.renderFullBgMap(this.bgMap);
+        this.gpu.renderTileMap(this.tileMap);
 
         this.batch.begin();
+
+        // RENDER GAMEBOY SCREEN
         this.texture.draw(this.backbuffer, 0, 0);
-        this.batch.draw(this.texture, 0f, 0f, 160f * 2f, 144f * 2f);
-        this.bgMapTexture.draw(this.bgMap, 0, 0);
-        this.batch.draw(this.bgMapTexture, 160, 144);
+        this.batch.draw(this.texture, 0f, 0f, 160f, 144f);
+
+        // RENDER VRAM TILE MAP
+        this.tileMapTexture.draw(this.tileMap, 0, 0);
+        this.batch.draw(this.tileMapTexture, 360f, 144f);
+
         this.batch.end();
     }
 
@@ -83,8 +102,8 @@ public class Start extends ApplicationAdapter {
     public void dispose() {
         this.batch.dispose();
         this.texture.dispose();
-        this.bgMapTexture.dispose();
-        this.bgMap.dispose();
+        this.tileMapTexture.dispose();
+        this.tileMap.dispose();
         this.backbuffer.dispose();
     }
 }

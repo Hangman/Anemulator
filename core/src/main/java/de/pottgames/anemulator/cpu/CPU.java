@@ -17,11 +17,13 @@ public class CPU implements JoypadStateChangeListener {
     private int                        cycleAccumulator    = 0;
     private boolean                    halted              = false;
     private boolean                    skipNextInstruction = false;
+    private final CallStack            callStack;
 
 
-    public CPU(MemoryBankController memory) {
+    public CPU(MemoryBankController memory, CallStack callStack) {
         System.out.println("CPU INIT");
         this.memory = memory;
+        this.callStack = callStack;
         this.register = new Register();
         this.dividerTimer = new DividerTimer(memory);
         this.timer = new Timer(memory);
@@ -247,7 +249,7 @@ public class CPU implements JoypadStateChangeListener {
         this.instructions.put(0xC8, new RetZ(this.register, this.memory));
         this.instructions.put(0xC9, new Ret(this.register, this.memory));
         this.instructions.put(0xCA, new JpZa16(this.register, this.memory));
-        this.instructions.put(0xCB, new PrefixCB(this.register, this.memory));
+        this.instructions.put(0xCB, new PrefixCB(this.register, this.memory, this.callStack));
         this.instructions.put(0xCC, new CallZa16(this.register, this.memory));
         this.instructions.put(0xCD, new Calla16(this.register, this.memory));
         this.instructions.put(0xCE, new AdcAd8(this.register, this.memory));
@@ -368,6 +370,7 @@ public class CPU implements JoypadStateChangeListener {
             throw new UnsupportedFeatureException("Unsupported opCode: " + Integer.toHexString(opCode));
         }
 
+        this.callStack.add(instruction.toString(), opCode, this.register.pc - 1);
         return instruction.run();
     }
 
@@ -378,6 +381,11 @@ public class CPU implements JoypadStateChangeListener {
         } else {
             this.skipNextInstruction = true;
         }
+    }
+
+
+    public Register getRegister() {
+        return this.register;
     }
 
 

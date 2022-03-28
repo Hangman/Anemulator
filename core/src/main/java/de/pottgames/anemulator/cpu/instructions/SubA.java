@@ -18,7 +18,7 @@ public class SubA extends Instruction {
         final int value = this.register.get(RegisterId.A);
         final int a = this.register.get(RegisterId.A);
         final int result = a - value;
-        this.register.set(RegisterId.A, result);
+        this.register.set(RegisterId.A, result & 0xFF);
 
         this.register.setFlag(FlagId.Z, result == 0);
         this.register.setFlag(FlagId.N, true);

@@ -2,6 +2,7 @@ package de.pottgames.anemulator.cpu.instructions;
 
 import com.badlogic.gdx.utils.IntMap;
 
+import de.pottgames.anemulator.cpu.CallStack;
 import de.pottgames.anemulator.cpu.Instruction;
 import de.pottgames.anemulator.cpu.Register;
 import de.pottgames.anemulator.cpu.extendedinstructions.*;
@@ -10,10 +11,12 @@ import de.pottgames.anemulator.memory.MemoryBankController;
 
 public class PrefixCB extends Instruction {
     private IntMap<Instruction> extendedInstructions = new IntMap<>();
+    private final CallStack     callStack;
 
 
-    public PrefixCB(Register register, MemoryBankController memory) {
+    public PrefixCB(Register register, MemoryBankController memory, CallStack callStack) {
         super(register, memory);
+        this.callStack = callStack;
         this.initExtendedInstructions();
     }
 
@@ -303,6 +306,7 @@ public class PrefixCB extends Instruction {
             throw new UnsupportedFeatureException("Unsupported extended opCode: " + Integer.toHexString(opCode));
         }
 
+        this.callStack.add(instruction.toString(), opCode, this.register.pc - 1);
         final int cycles = instruction.run();
 
         return cycles;

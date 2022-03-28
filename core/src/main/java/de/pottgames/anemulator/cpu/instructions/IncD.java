@@ -16,7 +16,7 @@ public class IncD extends Instruction {
     @Override
     public int run() {
         final int oldValue = this.register.get(RegisterId.D);
-        final int newValue = oldValue + 1;
+        final int newValue = oldValue + 1 & 0xFF;
         this.register.set(RegisterId.D, newValue);
 
         // SET FLAGS

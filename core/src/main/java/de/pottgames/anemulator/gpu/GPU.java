@@ -20,12 +20,12 @@ public class GPU {
     }
 
 
-    public void step() {
+    public boolean step() {
         this.cycleAccumulator += 4;
 
         if (this.cycleAccumulator > 0) {
             final boolean gpuOn = this.memory.isBitSet(MemoryBankController.LCDC, 7);
-
+            final GpuMode oldMode = this.state;
             if (gpuOn) {
                 switch (this.state) {
                     case OAM_SEARCH:
@@ -42,7 +42,12 @@ public class GPU {
                         break;
                 }
             }
+            if (this.state == GpuMode.V_BLANK && oldMode != GpuMode.V_BLANK) {
+                return true;
+            }
         }
+
+        return false;
     }
 
 
@@ -53,35 +58,50 @@ public class GPU {
 
 
     public void renderTileMap(Pixmap pixmap) {
+        for (int x = 0; x < 128; x++) {
+            for (int y = 0; y < 192; y++) {
+                final int tileIndexX = x / 8;
+                final int tileIndexY = y / 8;
+                final int tileStartAddress = 0x8000 + (tileIndexY * 16 + tileIndexX) * 16;
+                final int tilePixelX = x % 8;
+                final int tilePixelY = y % 8;
 
-    }
+                for (int i = 0; i < 16; i++) {
+                    this.tileCache[i] = this.memory.read8Bit(tileStartAddress + i);
+                }
 
+                final int colorPaletteIndex = this.getColorPaletteIndexOfTilePixel(this.tileCache, tilePixelX, tilePixelY);
+                final Color color = this.getBGColor(colorPaletteIndex);
 
-    public void renderFullBgMap(Pixmap pixmap) {
-
+                pixmap.setColor(color);
+                pixmap.drawPixel(x, y);
+            }
+        }
     }
 
 
     private void pixelTransfer() {
         final boolean renderBG = this.memory.isBitSet(MemoryBankController.LCDC, 0);
+        final boolean renderWindow = this.memory.isBitSet(MemoryBankController.LCDC, 5);
+        final boolean renderObjects = this.memory.isBitSet(MemoryBankController.LCDC, 1);
         final int scrollX = this.memory.read8Bit(MemoryBankController.SCROLL_X);
         final int currentLine = this.memory.read8Bit(MemoryBankController.LCD_LY);
-        int bgMapY = currentLine + this.memory.read8Bit(MemoryBankController.SCROLL_Y);
         final boolean atlasAddressMode = this.memory.isBitSet(MemoryBankController.LCDC, 4);
-        if (bgMapY > 143) {
-            bgMapY -= 143;
+        int bgMapY = currentLine + this.memory.read8Bit(MemoryBankController.SCROLL_Y);
+        if (bgMapY > 255) {
+            bgMapY -= 255;
         }
         final int bgMapBlockY = bgMapY / 8;
         final int tilePixelY = bgMapY % 8;
 
-        // RENDER BACKGROUND
         if (renderBG) {
-            final int bgMapStartAddress = this.memory.isBitSet(MemoryBankController.LCDC, 3) ? 0x9C00 : 0x9800;
 
+            // RENDER BACKGROUND
+            final int bgMapStartAddress = this.memory.isBitSet(MemoryBankController.LCDC, 3) ? 0x9C00 : 0x9800;
             for (int pixelX = 0; pixelX < 159; pixelX++) {
                 int bgMapX = pixelX + scrollX;
-                if (bgMapX > 159) {
-                    bgMapX -= 159;
+                if (bgMapX > 255) {
+                    bgMapX -= 255;
                 }
                 final int bgMapBlockX = bgMapX / 8;
                 final int tilePixelX = bgMapX % 8;
@@ -104,13 +124,24 @@ public class GPU {
                 this.backbuffer.setColor(color);
                 this.backbuffer.drawPixel(pixelX, currentLine);
             }
+
+            // RENDER WINDOW
+            if (renderWindow) {
+                final int windowMapStartAddress = this.memory.isBitSet(MemoryBankController.LCDC, 6) ? 0x9C00 : 0x9800;
+                final int wx = this.memory.read8Bit(MemoryBankController.WX);
+                final int wy = this.memory.read8Bit(MemoryBankController.WY);
+
+                for (int pixelX = 0; pixelX < 159; pixelX++) {
+                    // TODO
+                }
+            }
         }
 
-        // RENDER WINDOW
-        // TODO
-
         // RENDER OBJECTS
-        // TODO
+        if (renderObjects) {
+            final int objHeight = this.memory.isBitSet(MemoryBankController.LCDC, 2) ? 16 : 8;
+            // TODO
+        }
 
         this.cycleAccumulator -= 172;
         this.setState(GpuMode.H_BLANK);
@@ -130,7 +161,7 @@ public class GPU {
 
 
     private void vBlank() {
-        final int currentLine = this.memory.read8Bit(0xFF44);
+        final int currentLine = this.memory.read8Bit(MemoryBankController.LCD_LY);
         if (currentLine + 1 > 153) {
             this.setLine(0);
             this.setState(GpuMode.OAM_SEARCH);

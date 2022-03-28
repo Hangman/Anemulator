@@ -15,7 +15,7 @@ public class IncBC extends Instruction {
     @Override
     public int run() {
         final int value = this.register.get(RegisterId.BC);
-        this.register.set(RegisterId.BC, value + 1 & 0xffff);
+        this.register.set(RegisterId.BC, value + 1 & 0xFFFF);
 
         return 8;
     }

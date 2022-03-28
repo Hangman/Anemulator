@@ -16,12 +16,12 @@ public class DecL extends Instruction {
     @Override
     public int run() {
         final int newValue = this.register.get(RegisterId.L) - 1;
-        this.register.set(RegisterId.L, newValue & 0xff);
+        this.register.set(RegisterId.L, newValue & 0xFF);
 
         // SET FLAGS
         this.register.setFlag(FlagId.Z, newValue == 0);
         this.register.setFlag(FlagId.N, true);
-        this.register.setFlag(FlagId.H, (newValue + 1 & 0xf0) != (newValue & 0xf0));
+        this.register.setFlag(FlagId.H, (newValue + 1 & 0xF0) != (newValue & 0xF0));
 
         return 4;
     }

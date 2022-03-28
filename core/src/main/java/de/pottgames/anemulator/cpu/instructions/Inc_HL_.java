@@ -17,7 +17,7 @@ public class Inc_HL_ extends Instruction {
     public int run() {
         final int address = this.register.get(RegisterId.HL);
         final int oldValue = this.memory.read8Bit(address);
-        final int newValue = oldValue + 1;
+        final int newValue = oldValue + 1 & 0xFF;
         this.memory.write(address, newValue);
 
         // SET FLAGS

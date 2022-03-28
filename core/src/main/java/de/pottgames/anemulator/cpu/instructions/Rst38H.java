@@ -14,9 +14,9 @@ public class Rst38H extends Instruction {
     @Override
     public int run() {
         this.register.sp--;
-        this.memory.write(this.register.sp, this.register.pc >>> 8);
+        this.memory.write(this.register.sp, this.register.pc >> 8 & 0xFF);
         this.register.sp--;
-        this.memory.write(this.register.sp, this.register.pc & 0xff);
+        this.memory.write(this.register.sp, this.register.pc & 0xFF);
 
         this.register.pc = 0x38;
 

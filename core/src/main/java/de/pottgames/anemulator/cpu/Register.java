@@ -70,11 +70,21 @@ public class Register {
 
 
     public void set(RegisterId id, int value) {
+        if (id.is16Bit()) {
+            value &= 0xFFFF;
+        } else {
+            value &= 0xFF;
+        }
         this.setInternal(id, value, true);
     }
 
 
     private void setInternal(RegisterId id, int value, boolean firstAccess) {
+        if (id == RegisterId.F) {
+            value &= 0xF0;
+        } else if (id == RegisterId.AF) {
+            value &= 0xFFF0;
+        }
         this.register[id.index] = value;
 
         if (firstAccess) {

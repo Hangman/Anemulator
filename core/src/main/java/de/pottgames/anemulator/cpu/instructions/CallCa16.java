@@ -18,7 +18,7 @@ public class CallCa16 extends Instruction {
         this.register.pc += 2;
         if (this.register.isFlagSet(FlagId.C)) {
             this.register.sp--;
-            this.memory.write(this.register.sp, (this.register.pc & 0xFF00) >> 8);
+            this.memory.write(this.register.sp, (this.register.pc & 0xFF00) >>> 8);
             this.register.sp--;
             this.memory.write(this.register.sp, this.register.pc & 0xFF);
             this.register.pc = address;

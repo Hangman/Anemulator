@@ -16,7 +16,7 @@ public class IncA extends Instruction {
     @Override
     public int run() {
         final int oldValue = this.register.get(RegisterId.A);
-        final int newValue = oldValue + 1;
+        final int newValue = oldValue + 1 & 0xFF;
         this.register.set(RegisterId.A, newValue);
 
         // SET FLAGS

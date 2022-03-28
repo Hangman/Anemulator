@@ -14,6 +14,7 @@ public class DecSP extends Instruction {
     @Override
     public int run() {
         this.register.sp--;
+        this.register.sp &= 0xFFFF;
 
         return 8;
     }
