@@ -1,7 +1,7 @@
 package de.pottgames.anemulator.cpu;
 
 public class Register {
-    private int[]   register                     = new int[RegisterId.values().length];
+    private int[]   register                     = new int[8];
     public int      pc                           = 0;
     public int      sp                           = 0xfffe;
     private boolean interruptsEnabled            = false;
@@ -65,71 +65,59 @@ public class Register {
 
 
     public int get(RegisterId id) {
-        return this.register[id.index];
+        switch (id) {
+            case A:
+            case B:
+            case C:
+            case D:
+            case E:
+            case H:
+            case L:
+            case F:
+                return this.register[id.index];
+            case AF:
+                return this.register[RegisterId.A.index] << 8 | this.register[RegisterId.F.index];
+            case BC:
+                return this.register[RegisterId.B.index] << 8 | this.register[RegisterId.C.index];
+            case DE:
+                return this.register[RegisterId.D.index] << 8 | this.register[RegisterId.E.index];
+            case HL:
+                return this.register[RegisterId.H.index] << 8 | this.register[RegisterId.L.index];
+        }
+        throw new RuntimeException("RegisterId must not be null.");
     }
 
 
     public void set(RegisterId id, int value) {
-        if (id.is16Bit()) {
-            value &= 0xFFFF;
-        } else {
-            value &= 0xFF;
-        }
-        this.setInternal(id, value, true);
-    }
-
-
-    private void setInternal(RegisterId id, int value, boolean firstAccess) {
-        if (id == RegisterId.F) {
-            value &= 0xF0;
-        } else if (id == RegisterId.AF) {
-            value &= 0xFFF0;
-        }
-        this.register[id.index] = value;
-
-        if (firstAccess) {
-            switch (id) {
-                case B:
-                    this.setInternal(RegisterId.BC, value << 8 | this.get(RegisterId.BC) & 0x00FF, false);
-                    break;
-                case BC:
-                    this.setInternal(RegisterId.B, value >>> 8, false);
-                    this.setInternal(RegisterId.C, value & 0x00FF, false);
-                    break;
-                case C:
-                    this.setInternal(RegisterId.BC, this.get(RegisterId.BC) & 0xFF00 | value, false);
-                    break;
-                case D:
-                    this.setInternal(RegisterId.DE, value << 8 | this.get(RegisterId.DE) & 0x00FF, false);
-                    break;
-                case DE:
-                    this.setInternal(RegisterId.D, value >>> 8, false);
-                    this.setInternal(RegisterId.E, value & 0x00FF, false);
-                    break;
-                case E:
-                    this.setInternal(RegisterId.DE, this.get(RegisterId.DE) & 0xFF00 | value, false);
-                    break;
-                case H:
-                    this.setInternal(RegisterId.HL, value << 8 | this.get(RegisterId.HL) & 0x00FF, false);
-                    break;
-                case HL:
-                    this.setInternal(RegisterId.H, value >>> 8, false);
-                    this.setInternal(RegisterId.L, value & 0xFF, false);
-                    break;
-                case L:
-                    this.setInternal(RegisterId.HL, this.get(RegisterId.HL) & 0xFF00 | value, false);
-                    break;
-                case A:
-                    this.setInternal(RegisterId.AF, value << 8 | this.get(RegisterId.AF) & 0x00FF, false);
-                    break;
-                case F:
-                    this.setInternal(RegisterId.AF, this.get(RegisterId.AF) & 0xFF00 | value, false);
-                    break;
-                case AF:
-                    this.setInternal(RegisterId.A, value >>> 8, false);
-                    this.setInternal(RegisterId.F, value & 0x00FF, false);
-                    break;
-            }
+        switch (id) {
+            case A:
+            case B:
+            case C:
+            case D:
+            case E:
+            case H:
+            case L:
+                this.register[id.index] = value & 0xFF;
+                break;
+            case AF:
+                this.register[RegisterId.A.index] = (value & 0xFF00) >>> 8;
+                this.register[RegisterId.F.index] = value & 0xF0;
+                break;
+            case BC:
+                this.register[RegisterId.B.index] = (value & 0xFF00) >>> 8;
+                this.register[RegisterId.C.index] = value & 0xFF;
+                break;
+            case DE:
+                this.register[RegisterId.D.index] = (value & 0xFF00) >>> 8;
+                this.register[RegisterId.E.index] = value & 0xFF;
+                break;
+            case F:
+                this.register[id.index] = value & 0xF0;
+                break;
+            case HL:
+                this.register[RegisterId.H.index] = (value & 0xFF00) >>> 8;
+                this.register[RegisterId.L.index] = value & 0xFF;
+                break;
         }
     }
 
@@ -146,7 +134,9 @@ public class Register {
 
 
     public boolean isFlagSet(FlagId id) {
-        return (this.get(RegisterId.F) & 1 << id.bitnum) > 0;
+        int f = this.get(RegisterId.F);
+        f &= 1 << id.bitnum;
+        return f > 0;
     }
 
 

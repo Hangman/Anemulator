@@ -55,7 +55,8 @@ public class Start extends ApplicationAdapter {
             // memoryController = RomLoader.load("cpu_instrs/02-interrupts.gb");
             // memoryController = RomLoader.load("cpu_instrs/09-op r,r.gb", callStack);
             // memoryController = RomLoader.load("cpu_instrs/03-op sp,hl.gb", callStack);
-            memoryController = RomLoader.load("cpu_instrs/01-special.gb", callStack);
+            // memoryController = RomLoader.load("cpu_instrs/01-special.gb", callStack);
+            memoryController = RomLoader.load("cpu_instrs/02-interrupts.gb", callStack);
             this.cpu = new CPU(memoryController, callStack);
             this.gpu = new GPU(memoryController, this.backbuffer);
             this.input = new KeyboardInput();
