@@ -26,4 +26,10 @@ public class CpL extends Instruction {
         return 4;
     }
 
+
+    @Override
+    public String toString() {
+        return "CpL";
+    }
+
 }

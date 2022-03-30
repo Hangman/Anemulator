@@ -30,6 +30,23 @@ public interface MemoryBankController extends JoypadStateChangeListener {
     int JOYPAD = 0xFF00;
 
     /**
+     * Serial transfer data register<br>
+     * Before a transfer, it holds the next byte that will go out.
+     *
+     * During a transfer, it has a blend of the outgoing and incoming bytes. Each cycle, the leftmost bit is shifted out (and over the wire) and the incoming
+     * bit is shifted in from the other side.
+     */
+    int SB = 0xFF01;
+
+    /**
+     * Serial transfer control register<br>
+     * Bit 7 = Transfer Start Flag (0=No transfer is in progress or requested, 1=Transfer in progress, or request<br>
+     * Bit 1 = Clock Speed (0=Normal, 1=Fast) ** CGB Mode Only **<br>
+     * Bit 0 = Shift Clock (0=External Clock, 1=Internal Clock)<br>
+     */
+    int SC = 0xFF02;
+
+    /**
      * This register is incremented at a rate of 16384Hz (~16779Hz on SGB).<br>
      * Writing any value to this register resets it to $00.<br>
      * Additionally, this register is reset when executing the stop instruction, and only begins ticking again once stop mode ends.
@@ -69,9 +86,55 @@ public interface MemoryBankController extends JoypadStateChangeListener {
 
     /**
      * Interrupt Flag register<br>
-     * TODO: document
+     * Bit 4 = Joypad : 0=off, 1=request<br>
+     * Bit 3 = Serial : 0=off, 1=request<br>
+     * Bit 2 = Timer : 0=off, 1=request<br>
+     * Bit 1 = LCD_STAT : 0=off, 1=request<br>
+     * Bit 0 = VBlank : 0=off, 1=request<br>
      */
     int IF = 0xFF0F;
+
+    int NR10 = 0xFF10;
+
+    int NR11 = 0xFF11;
+
+    int NR12 = 0xFF12;
+
+    int NR13 = 0xFF13;
+
+    int NR14 = 0xFF14;
+
+    int NR21 = 0xFF16;
+
+    int NR22 = 0xFF17;
+
+    int NR23 = 0xFF18;
+
+    int NR24 = 0xFF19;
+
+    int NR30 = 0xFF1A;
+
+    int NR31 = 0xFF1B;
+
+    int NR32 = 0xFF1C;
+
+    int NR33 = 0xFF1D;
+
+    int NR34 = 0xFF1E;
+
+    int NR41 = 0xFF20;
+
+    int NR42 = 0xFF21;
+
+    int NR43 = 0xFF22;
+
+    int NR44 = 0xFF23;
+
+    int NR50 = 0xFF24;
+
+    int NR51 = 0xFF25;
+
+    int NR52 = 0xFF26;
 
     /**
      * LCD Control register<br>
@@ -140,6 +203,10 @@ public interface MemoryBankController extends JoypadStateChangeListener {
      */
     int BGP = 0xFF47;
 
+    int OBP0 = 0xFF48;
+
+    int OBP1 = 0xFF49;
+
     /**
      * Window Y Position
      */
@@ -150,10 +217,36 @@ public interface MemoryBankController extends JoypadStateChangeListener {
      */
     int WX = 0xFF4B;
 
+    int KEY1 = 0xFF4D;
+
+    int VBK = 0xFF4F;
+
     /**
      * Set to non-zero to disable Boot Rom
      */
     int DISABLE_BOOT_ROM = 0xFF50;
+
+    int HDMA1 = 0xFF51;
+
+    int HDMA2 = 0xFF52;
+
+    int HDMA3 = 0xFF53;
+
+    int HDMA4 = 0xFF54;
+
+    int HDMA5 = 0xFF55;
+
+    int RP = 0xFF56;
+
+    int BCPS = 0xFF68;
+
+    int BCPD = 0xFF69;
+
+    int OCPS = 0xFF6A;
+
+    int OCPD = 0xFF6B;
+
+    int SVBK = 0xFF70;
 
     /**
      * Interrupt Enable register<br>
@@ -188,6 +281,9 @@ public interface MemoryBankController extends JoypadStateChangeListener {
     String getGameName();
 
 
+    MemoryStepResult step();
+
+
     default boolean isBitSet(int address, int bitnum) {
         return (this.read8Bit(address) & 1 << bitnum) > 0;
     }
@@ -204,6 +300,16 @@ public interface MemoryBankController extends JoypadStateChangeListener {
             data &= ~(1 << bitnum);
         }
         this.write(address, data);
+    }
+
+
+    public static class MemoryStepResult {
+        public boolean timerInterruptRequest;
+
+
+        public void reset() {
+            this.timerInterruptRequest = false;
+        }
     }
 
 }

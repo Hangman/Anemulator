@@ -27,4 +27,10 @@ public class XorE extends Instruction {
         return 4;
     }
 
+
+    @Override
+    public String toString() {
+        return "XorE";
+    }
+
 }

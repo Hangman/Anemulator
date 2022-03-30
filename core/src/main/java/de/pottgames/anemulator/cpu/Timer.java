@@ -9,7 +9,12 @@ public class Timer {
 
     public Timer(MemoryBankController memory) {
         this.memory = memory;
-        this.memory.write(MemoryBankController.TIMA, this.memory.read8Bit(MemoryBankController.TMA));
+        this.reset();
+    }
+
+
+    public void reset() {
+        this.memory.write(MemoryBankController.TIMA, 0);
     }
 
 
@@ -22,7 +27,8 @@ public class Timer {
                 int timer = this.memory.read8Bit(MemoryBankController.TIMA);
                 timer++;
                 if (timer > 0xFF) {
-                    timer = this.memory.read8Bit(MemoryBankController.TMA);
+                    final int timerInitialValue = this.memory.read8Bit(MemoryBankController.TMA);
+                    this.memory.write(MemoryBankController.TIMA, timerInitialValue);
                     return true;
                 }
                 this.memory.write(MemoryBankController.TIMA, timer);

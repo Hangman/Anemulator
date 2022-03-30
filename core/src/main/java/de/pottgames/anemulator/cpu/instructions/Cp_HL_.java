@@ -26,4 +26,10 @@ public class Cp_HL_ extends Instruction {
         return 8;
     }
 
+
+    @Override
+    public String toString() {
+        return "Cp_HL_";
+    }
+
 }

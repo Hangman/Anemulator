@@ -30,4 +30,10 @@ public class And_HL_ extends Instruction {
         return 8;
     }
 
+
+    @Override
+    public String toString() {
+        return "And_HL_";
+    }
+
 }

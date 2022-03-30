@@ -1,8 +1,8 @@
 package de.pottgames.anemulator.memory;
 
-import java.util.Arrays;
-
 import de.pottgames.anemulator.cpu.CallStack;
+import de.pottgames.anemulator.cpu.DividerTimer;
+import de.pottgames.anemulator.cpu.Timer;
 import de.pottgames.anemulator.input.JoypadKey;
 import de.pottgames.anemulator.input.JoypadKey.JoypadKeyType;
 
@@ -21,15 +21,18 @@ public class RomOnly implements MemoryBankController {
      */
     private final int[] memory = new int[0xFFFF + 1];
 
-    private boolean         booted         = false;
-    private final String    gameName;
-    private boolean[]       buttonsPressed = new boolean[JoypadKey.values().length];
-    private final CallStack callStack;
+    private boolean                booted         = false;
+    private final String           gameName;
+    private boolean[]              buttonsPressed = new boolean[JoypadKey.values().length];
+    private final CallStack        callStack;
+    private final Timer            timer;
+    private final DividerTimer     dividerTimer;
+    private final MemoryStepResult stepResult     = new MemoryStepResult();
 
 
     public RomOnly(int[] romData, CallStack callStack) {
         this.callStack = callStack;
-        Arrays.fill(this.memory, 0xFF);
+
         System.arraycopy(romData, 0, this.memory, 0, Math.min(0x8000, romData.length));
         final char[] gameNameChars = new char[0x143 - 0x134];
         for (int i = 0; i < gameNameChars.length; i++) {
@@ -39,6 +42,8 @@ public class RomOnly implements MemoryBankController {
 
         this.memory[MemoryBankController.JOYPAD] = 0b00111111;
         this.updateInput();
+        this.timer = new Timer(this);
+        this.dividerTimer = new DividerTimer(this);
     }
 
 
@@ -74,9 +79,20 @@ public class RomOnly implements MemoryBankController {
 
     @Override
     public void write(int address, int value) {
+        if (value > 0xFF || value < 0) {
+            throw new RuntimeException("value out of byte range: " + value + " at address: " + address);
+        }
+
         if (address < 0 || address > 0xFFFF) {
             this.callStack.print();
             throw new RuntimeException("Invalid memory address: " + address);
+        }
+
+        if (address == MemoryBankController.IF) {
+            System.out.println("setting IF to " + Integer.toHexString(value));
+            this.memory[address] = value | 0xE0;
+            System.out.println("IF is now " + Integer.toHexString(this.memory[address]));
+            return;
         }
 
         this.memory[address] = value;
@@ -104,6 +120,7 @@ public class RomOnly implements MemoryBankController {
         // RESET DIVIDER REGISTER
         if (address == MemoryBankController.DIV) {
             this.memory[address] = 0;
+            this.timer.reset();
         }
 
         // DISABLE BOOT ROM
@@ -112,6 +129,16 @@ public class RomOnly implements MemoryBankController {
                 this.booted = true;
             }
         }
+    }
+
+
+    @Override
+    public MemoryStepResult step() {
+        this.stepResult.reset();
+        this.dividerTimer.step();
+        this.stepResult.timerInterruptRequest = this.timer.step();
+
+        return this.stepResult;
     }
 
 

@@ -27,4 +27,10 @@ public class Xor_HL_ extends Instruction {
         return 8;
     }
 
+
+    @Override
+    public String toString() {
+        return "Xor_HL_";
+    }
+
 }

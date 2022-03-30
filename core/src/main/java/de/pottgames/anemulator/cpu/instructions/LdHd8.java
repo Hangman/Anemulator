@@ -14,10 +14,16 @@ public class LdHd8 extends Instruction {
 
     @Override
     public int run() {
-        this.register.set(RegisterId.H, this.memory.read8Bit(this.register.pc));
-        this.register.pc++;
+        this.register.set(RegisterId.H, this.memory.read8Bit(this.register.getPc()));
+        this.register.setPc(this.register.getPc() + 1);
 
         return 8;
+    }
+
+
+    @Override
+    public String toString() {
+        return "LdHd8";
     }
 
 }

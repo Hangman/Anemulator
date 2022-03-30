@@ -19,7 +19,7 @@ public class SbcAL extends Instruction {
         final int value = this.register.get(RegisterId.L);
         final int carry = this.register.isFlagSet(FlagId.C) ? 1 : 0;
         final int result = a - value - carry;
-        this.register.set(RegisterId.A, result);
+        this.register.set(RegisterId.A, result & 0xFF);
 
         // SET FLAGS
         this.register.setFlag(FlagId.Z, result == 0);
@@ -28,6 +28,12 @@ public class SbcAL extends Instruction {
         this.register.setFlag(FlagId.C, a < value + carry);
 
         return 4;
+    }
+
+
+    @Override
+    public String toString() {
+        return "SbcAL";
     }
 
 }

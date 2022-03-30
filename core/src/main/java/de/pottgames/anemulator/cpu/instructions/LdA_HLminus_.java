@@ -22,4 +22,10 @@ public class LdA_HLminus_ extends Instruction {
         return 8;
     }
 
+
+    @Override
+    public String toString() {
+        return "LdA_HLminus_";
+    }
+
 }

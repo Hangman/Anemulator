@@ -21,4 +21,10 @@ public class Ccf extends Instruction {
         return 4;
     }
 
+
+    @Override
+    public String toString() {
+        return "Ccf";
+    }
+
 }

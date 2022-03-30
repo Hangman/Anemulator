@@ -1,11 +1,12 @@
 package de.pottgames.anemulator.cpu;
 
 public class Register {
-    private int[]   register                     = new int[8];
-    public int      pc                           = 0;
-    public int      sp                           = 0xfffe;
-    private boolean interruptsEnabled            = false;
-    private byte    enableInterruptsDelayCounter = 0;
+    private int[]           register                     = new int[8];
+    private int             pc                           = 0;
+    private int             sp                           = 0xFFFE;
+    private boolean         interruptsEnabled            = false;
+    private byte            enableInterruptsDelayCounter = 0;
+    private final CallStack callStack;
 
 
     public enum RegisterId {
@@ -54,6 +55,11 @@ public class Register {
     }
 
 
+    public Register(CallStack callStack) {
+        this.callStack = callStack;
+    }
+
+
     void step() {
         if (this.enableInterruptsDelayCounter > 0) {
             this.enableInterruptsDelayCounter--;
@@ -89,6 +95,11 @@ public class Register {
 
 
     public void set(RegisterId id, int value) {
+        if (value > 0xFF && !id.is16Bit || value > 0xFFFF && id.is16Bit || value < 0) {
+            this.callStack.print();
+            throw new RuntimeException("value for register " + id + " out of range: " + value);
+        }
+
         switch (id) {
             case A:
             case B:
@@ -152,6 +163,36 @@ public class Register {
             this.interruptsEnabled = false;
             this.enableInterruptsDelayCounter = 0;
         }
+    }
+
+
+    public int getPc() {
+        return this.pc;
+    }
+
+
+    public void setPc(int pc) {
+        if (pc > 0xFFFF || pc < 0) {
+            this.callStack.print();
+            throw new RuntimeException("PC out of range: " + pc);
+        }
+
+        this.pc = pc;
+    }
+
+
+    public int getSp() {
+        return this.sp;
+    }
+
+
+    public void setSp(int sp) {
+        if (sp > 0xFFFF || sp < 0) {
+            this.callStack.print();
+            throw new RuntimeException("SP out of range: " + sp);
+        }
+
+        this.sp = sp;
     }
 
 }

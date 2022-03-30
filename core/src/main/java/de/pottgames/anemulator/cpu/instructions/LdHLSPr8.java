@@ -15,17 +15,23 @@ public class LdHLSPr8 extends Instruction {
 
     @Override
     public int run() {
-        final byte offset = (byte) this.memory.read8Bit(this.register.pc);
-        this.register.pc++;
-        this.register.set(RegisterId.HL, this.register.sp + offset);
+        final byte offset = (byte) this.memory.read8Bit(this.register.getPc());
+        this.register.setPc(this.register.getPc() + 1);
+        this.register.set(RegisterId.HL, this.register.getSp() + offset);
 
         // SET FLAGS
         this.register.setFlag(FlagId.Z, false);
         this.register.setFlag(FlagId.N, false);
-        this.register.setFlag(FlagId.H, (this.register.sp & 0xF) + (offset & 0xF) > 0xF);
-        this.register.setFlag(FlagId.C, (this.register.sp & 0xFF) + (offset & 0xFF) > 0xFF);
+        this.register.setFlag(FlagId.H, (this.register.getSp() & 0xF) + (offset & 0xF) > 0xF);
+        this.register.setFlag(FlagId.C, (this.register.getSp() & 0xFF) + (offset & 0xFF) > 0xFF);
 
         return 12;
+    }
+
+
+    @Override
+    public String toString() {
+        return "LdHLSPr8";
     }
 
 }

@@ -21,4 +21,10 @@ public class Ld_BC_A extends Instruction {
         return 8;
     }
 
+
+    @Override
+    public String toString() {
+        return "Ld_BC_A";
+    }
+
 }

@@ -1,21 +1,24 @@
 package de.pottgames.anemulator.memory;
 
-import java.util.Arrays;
-
 import de.pottgames.anemulator.cpu.CallStack;
+import de.pottgames.anemulator.cpu.DividerTimer;
+import de.pottgames.anemulator.cpu.Timer;
 import de.pottgames.anemulator.input.JoypadKey;
 import de.pottgames.anemulator.input.JoypadKey.JoypadKeyType;
 
 public class MBC1 implements MemoryBankController {
-    private final String    gameName;
-    private final int[][]   romBanks;
-    private final int[][]   ramBanks;
-    private Mode            mode           = Mode.ROM;
-    private int             bankSelectRegister;
-    private boolean         ramEnabled     = false;
-    private boolean         booted         = false;
-    private boolean[]       buttonsPressed = new boolean[JoypadKey.values().length];
-    private final CallStack callStack;
+    private final String           gameName;
+    private final int[][]          romBanks;
+    private final int[][]          ramBanks;
+    private Mode                   mode           = Mode.ROM;
+    private int                    bankSelectRegister;
+    private boolean                ramEnabled     = false;
+    private boolean                booted         = false;
+    private boolean[]              buttonsPressed = new boolean[JoypadKey.values().length];
+    private final CallStack        callStack;
+    private final Timer            timer;
+    private final DividerTimer     dividerTimer;
+    private final MemoryStepResult stepResult     = new MemoryStepResult();
 
     /**
      * 0x0000 - 0x3FFF => ROM BANK 0<br>
@@ -37,14 +40,6 @@ public class MBC1 implements MemoryBankController {
         this.callStack = callStack;
         this.romBanks = new int[128][0x4000];
         this.ramBanks = new int[4][0x2000];
-
-        Arrays.fill(this.memory, 0xFF);
-        for (final int[] romBank : this.romBanks) {
-            Arrays.fill(romBank, 0xFF);
-        }
-        for (final int[] ramBank : this.ramBanks) {
-            Arrays.fill(ramBank, 0xFF);
-        }
 
         // COPY ROM BANK 0
         System.arraycopy(cartridgeData, 0, this.memory, 0, 0x4000);
@@ -68,6 +63,10 @@ public class MBC1 implements MemoryBankController {
 
         // SETUP JOYPAD REGISTER
         this.updateInput();
+
+        // SETUP TIMERS
+        this.timer = new Timer(this);
+        this.dividerTimer = new DividerTimer(this);
     }
 
 
@@ -119,6 +118,10 @@ public class MBC1 implements MemoryBankController {
         if (address < 0 || address > 0xFFFF) {
             this.callStack.print();
             throw new RuntimeException("Invalid memory address: " + address);
+        }
+        if (value > 0xFF || value < 0) {
+            this.callStack.print();
+            throw new RuntimeException("value out of byte range: " + value + " at address: " + address);
         }
 
         if (address >= 0x0000 && address < 0x2000) {
@@ -186,6 +189,7 @@ public class MBC1 implements MemoryBankController {
             // RESET DIVIDER REGISTER
             if (address == MemoryBankController.DIV) {
                 this.memory[address] = 0;
+                this.timer.reset();
             }
         }
     }
@@ -215,6 +219,16 @@ public class MBC1 implements MemoryBankController {
         if (this.memory[MemoryBankController.DIV] > 0xFF) {
             this.memory[MemoryBankController.DIV] = 0;
         }
+    }
+
+
+    @Override
+    public MemoryStepResult step() {
+        this.stepResult.reset();
+        this.dividerTimer.step();
+        this.stepResult.timerInterruptRequest = this.timer.step();
+
+        return this.stepResult;
     }
 
 

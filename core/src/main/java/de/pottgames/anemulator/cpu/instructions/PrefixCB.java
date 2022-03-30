@@ -298,18 +298,24 @@ public class PrefixCB extends Instruction {
 
     @Override
     public int run() {
-        final int opCode = this.memory.read8Bit(this.register.pc);
-        this.register.pc++;
+        final int opCode = this.memory.read8Bit(this.register.getPc());
+        this.register.setPc(this.register.getPc() + 1);
         final Instruction instruction = this.extendedInstructions.get(opCode);
 
         if (instruction == null) {
             throw new UnsupportedFeatureException("Unsupported extended opCode: " + Integer.toHexString(opCode));
         }
 
-        this.callStack.add(instruction.toString(), opCode, this.register.pc - 1);
+        this.callStack.add(instruction.toString(), opCode, this.register.getPc() - 1);
         final int cycles = instruction.run();
 
         return cycles;
+    }
+
+
+    @Override
+    public String toString() {
+        return "PrefixCB";
     }
 
 }

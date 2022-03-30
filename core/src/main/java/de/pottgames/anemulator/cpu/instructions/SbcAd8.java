@@ -16,11 +16,11 @@ public class SbcAd8 extends Instruction {
     @Override
     public int run() {
         final int a = this.register.get(RegisterId.A);
-        final int value = this.memory.read8Bit(this.register.pc);
-        this.register.pc++;
+        final int value = this.memory.read8Bit(this.register.getPc());
+        this.register.setPc(this.register.getPc() + 1);
         final int carry = this.register.isFlagSet(FlagId.C) ? 1 : 0;
         final int result = a - value - carry;
-        this.register.set(RegisterId.A, result);
+        this.register.set(RegisterId.A, result & 0xFF);
 
         // SET FLAGS
         this.register.setFlag(FlagId.Z, result == 0);
@@ -29,6 +29,12 @@ public class SbcAd8 extends Instruction {
         this.register.setFlag(FlagId.C, a < value + carry);
 
         return 8;
+    }
+
+
+    @Override
+    public String toString() {
+        return "SbcAd8";
     }
 
 }

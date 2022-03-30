@@ -29,4 +29,10 @@ public class AndH extends Instruction {
         return 4;
     }
 
+
+    @Override
+    public String toString() {
+        return "AndH";
+    }
+
 }

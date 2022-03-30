@@ -46,4 +46,10 @@ public class DaA extends Instruction {
         return 4;
     }
 
+
+    @Override
+    public String toString() {
+        return "DaA";
+    }
+
 }

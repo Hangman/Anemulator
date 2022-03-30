@@ -14,12 +14,18 @@ public class PopBC extends Instruction {
 
     @Override
     public int run() {
-        int data = this.memory.read8Bit(this.register.sp);
-        data |= this.memory.read8Bit(this.register.sp + 1) << 8;
-        this.register.sp += 2;
+        int data = this.memory.read8Bit(this.register.getSp());
+        data |= this.memory.read8Bit(this.register.getSp() + 1) << 8;
+        this.register.setSp(this.register.getSp() + 2);
         this.register.set(RegisterId.BC, data);
 
         return 12;
+    }
+
+
+    @Override
+    public String toString() {
+        return "PopBC";
     }
 
 }

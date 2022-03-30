@@ -13,8 +13,14 @@ public class Jpa16 extends Instruction {
 
     @Override
     public int run() {
-        this.register.pc = this.memory.read16Bit(this.register.pc);
+        this.register.setPc(this.memory.read16Bit(this.register.getPc()));
         return 16;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Jpa16";
     }
 
 }

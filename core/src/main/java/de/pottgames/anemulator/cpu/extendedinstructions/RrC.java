@@ -19,7 +19,6 @@ public class RrC extends Instruction {
         final int lsb = data & 0x1;
         final int carry = this.register.isFlagSet(FlagId.C) ? 1 : 0;
         data = data >> 1 | carry << 7;
-        data &= 0xff;
         this.register.set(RegisterId.C, data);
 
         // SET FLAGS

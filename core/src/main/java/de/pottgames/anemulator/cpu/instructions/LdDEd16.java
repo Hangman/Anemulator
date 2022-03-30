@@ -14,10 +14,16 @@ public class LdDEd16 extends Instruction {
 
     @Override
     public int run() {
-        this.register.set(RegisterId.DE, this.memory.read16Bit(this.register.pc));
-        this.register.pc += 2;
+        this.register.set(RegisterId.DE, this.memory.read16Bit(this.register.getPc()));
+        this.register.setPc(this.register.getPc() + 2);
 
         return 12;
+    }
+
+
+    @Override
+    public String toString() {
+        return "LdDEd16";
     }
 
 }

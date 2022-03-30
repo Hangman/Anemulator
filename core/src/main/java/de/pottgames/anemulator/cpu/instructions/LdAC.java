@@ -19,4 +19,10 @@ public class LdAC extends Instruction {
         return 4;
     }
 
+
+    @Override
+    public String toString() {
+        return "LdAC";
+    }
+
 }

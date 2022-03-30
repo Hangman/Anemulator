@@ -28,4 +28,10 @@ public class SubA extends Instruction {
         return 4;
     }
 
+
+    @Override
+    public String toString() {
+        return "SubA";
+    }
+
 }

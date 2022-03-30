@@ -21,4 +21,10 @@ public class LdH_HL_ extends Instruction {
         return 8;
     }
 
+
+    @Override
+    public String toString() {
+        return "LdH_HL_";
+    }
+
 }

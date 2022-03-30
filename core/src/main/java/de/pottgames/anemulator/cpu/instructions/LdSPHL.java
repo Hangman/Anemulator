@@ -14,9 +14,15 @@ public class LdSPHL extends Instruction {
 
     @Override
     public int run() {
-        this.register.sp = this.register.get(RegisterId.HL);
+        this.register.setSp(this.register.get(RegisterId.HL));
 
         return 8;
+    }
+
+
+    @Override
+    public String toString() {
+        return "LdSPHL";
     }
 
 }

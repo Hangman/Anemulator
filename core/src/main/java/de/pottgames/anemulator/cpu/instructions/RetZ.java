@@ -15,14 +15,20 @@ public class RetZ extends Instruction {
     @Override
     public int run() {
         if (this.register.isFlagSet(FlagId.Z)) {
-            int returnAddress = this.memory.read8Bit(this.register.sp);
-            returnAddress = this.memory.read8Bit(this.register.sp + 1) << 8 | returnAddress;
-            this.register.sp += 2;
-            this.register.pc = returnAddress;
+            int returnAddress = this.memory.read8Bit(this.register.getSp());
+            returnAddress = this.memory.read8Bit(this.register.getSp() + 1) << 8 | returnAddress;
+            this.register.setSp(this.register.getSp() + 2);
+            this.register.setPc(returnAddress);
             return 20;
         }
 
         return 8;
+    }
+
+
+    @Override
+    public String toString() {
+        return "RetZ";
     }
 
 }

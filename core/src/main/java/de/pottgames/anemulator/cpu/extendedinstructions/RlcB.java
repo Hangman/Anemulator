@@ -19,6 +19,7 @@ public class RlcB extends Instruction {
         final int msb = (data & 0x80) >> 7;
         data = data << 1;
         data |= msb;
+        data &= 0xFF;
         this.register.set(RegisterId.B, data);
 
         // SET FLAGS

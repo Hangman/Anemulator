@@ -15,7 +15,7 @@ public class AddHLSP extends Instruction {
 
     @Override
     public int run() {
-        final int value = this.register.sp;
+        final int value = this.register.getSp();
         final int hl = this.register.get(RegisterId.HL);
         final int result = value + hl;
         this.register.set(RegisterId.HL, result & 0xFFFF);
@@ -26,6 +26,12 @@ public class AddHLSP extends Instruction {
         this.register.setFlag(FlagId.C, result > 0xFFFF);
 
         return 8;
+    }
+
+
+    @Override
+    public String toString() {
+        return "AddHLSP";
     }
 
 }

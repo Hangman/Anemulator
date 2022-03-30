@@ -20,4 +20,10 @@ public class DecBC extends Instruction {
         return 8;
     }
 
+
+    @Override
+    public String toString() {
+        return "DecBC";
+    }
+
 }

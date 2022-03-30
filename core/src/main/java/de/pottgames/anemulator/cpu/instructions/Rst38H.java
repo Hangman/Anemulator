@@ -13,14 +13,20 @@ public class Rst38H extends Instruction {
 
     @Override
     public int run() {
-        this.register.sp--;
-        this.memory.write(this.register.sp, this.register.pc >> 8 & 0xFF);
-        this.register.sp--;
-        this.memory.write(this.register.sp, this.register.pc & 0xFF);
+        this.register.setSp(this.register.getSp() - 1);
+        this.memory.write(this.register.getSp(), this.register.getPc() >> 8 & 0xFF);
+        this.register.setSp(this.register.getSp() - 1);
+        this.memory.write(this.register.getSp(), this.register.getPc() & 0xFF);
 
-        this.register.pc = 0x38;
+        this.register.setPc(0x38);
 
         return 16;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Rst38H";
     }
 
 }

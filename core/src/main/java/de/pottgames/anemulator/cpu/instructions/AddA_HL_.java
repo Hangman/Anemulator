@@ -29,4 +29,10 @@ public class AddA_HL_ extends Instruction {
         return 8;
     }
 
+
+    @Override
+    public String toString() {
+        return "AddA_HL_";
+    }
+
 }

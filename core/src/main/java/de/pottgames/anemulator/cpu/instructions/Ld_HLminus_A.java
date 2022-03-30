@@ -16,9 +16,15 @@ public class Ld_HLminus_A extends Instruction {
     public int run() {
         final int address = this.register.get(RegisterId.HL);
         this.memory.write(address, this.register.get(RegisterId.A));
-        this.register.set(RegisterId.HL, address - 1);
+        this.register.set(RegisterId.HL, address - 1 & 0xFFFF);
 
         return 8;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Ld_HLminus_A";
     }
 
 }

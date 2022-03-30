@@ -15,12 +15,18 @@ public class JpNCa16 extends Instruction {
     @Override
     public int run() {
         if (!this.register.isFlagSet(FlagId.C)) {
-            this.register.pc = this.memory.read16Bit(this.register.pc);
+            this.register.setPc(this.memory.read16Bit(this.register.getPc()));
             return 16;
         }
 
-        this.register.pc += 2;
+        this.register.setPc(this.register.getPc() + 2);
         return 12;
+    }
+
+
+    @Override
+    public String toString() {
+        return "JpNCa16";
     }
 
 }

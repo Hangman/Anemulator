@@ -13,10 +13,16 @@ public class DecSP extends Instruction {
 
     @Override
     public int run() {
-        this.register.sp--;
-        this.register.sp &= 0xFFFF;
+        this.register.setSp(this.register.getSp() - 1);
+        this.register.setSp(this.register.getSp() & 0xFFFF);
 
         return 8;
+    }
+
+
+    @Override
+    public String toString() {
+        return "DecSP";
     }
 
 }

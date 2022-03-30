@@ -28,4 +28,10 @@ public class AddHLHL extends Instruction {
         return 8;
     }
 
+
+    @Override
+    public String toString() {
+        return "AddHLHL";
+    }
+
 }

@@ -18,11 +18,11 @@ public class Rl_HL_ extends Instruction {
         final int address = this.register.get(RegisterId.HL);
 
         final int value = this.memory.read8Bit(address);
-        final int bit7 = value >>> 7 & 0xff;
-        final int newValue = (value << 1 & 0xff) + (this.register.isFlagSet(FlagId.C) ? 1 : 0);
+        final int bit7 = value >>> 7 & 0xFF;
+        final int newValue = (value << 1) + (this.register.isFlagSet(FlagId.C) ? 1 : 0) & 0xFF;
         this.memory.write(address, newValue);
 
-        this.register.setFlag(FlagId.Z, bit7 == 1);
+        this.register.setFlag(FlagId.C, bit7 == 1);
         this.register.setFlag(FlagId.Z, newValue == 0);
         this.register.setFlag(FlagId.H, false);
         this.register.setFlag(FlagId.N, false);

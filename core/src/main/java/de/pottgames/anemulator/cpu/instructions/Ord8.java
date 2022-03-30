@@ -15,8 +15,8 @@ public class Ord8 extends Instruction {
 
     @Override
     public int run() {
-        final int data = this.memory.read8Bit(this.register.pc);
-        this.register.pc++;
+        final int data = this.memory.read8Bit(this.register.getPc());
+        this.register.setPc(this.register.getPc() + 1);
         final int a = this.register.get(RegisterId.A);
         final int result = (data | a) & 0xFF;
         this.register.set(RegisterId.A, result);
@@ -28,6 +28,12 @@ public class Ord8 extends Instruction {
         this.register.setFlag(FlagId.C, false);
 
         return 8;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Ord8";
     }
 
 }

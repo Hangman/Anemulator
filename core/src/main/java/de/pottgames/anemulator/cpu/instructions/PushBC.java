@@ -15,12 +15,18 @@ public class PushBC extends Instruction {
     @Override
     public int run() {
         final int data = this.register.get(RegisterId.BC);
-        this.register.sp--;
-        this.memory.write(this.register.sp, data >>> 8);
-        this.register.sp--;
-        this.memory.write(this.register.sp, data & 0xFF);
+        this.register.setSp(this.register.getSp() - 1);
+        this.memory.write(this.register.getSp(), data >>> 8);
+        this.register.setSp(this.register.getSp() - 1);
+        this.memory.write(this.register.getSp(), data & 0xFF);
 
         return 16;
+    }
+
+
+    @Override
+    public String toString() {
+        return "PushBC";
     }
 
 }

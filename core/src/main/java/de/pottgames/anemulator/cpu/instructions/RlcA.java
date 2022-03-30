@@ -16,9 +16,10 @@ public class RlcA extends Instruction {
     @Override
     public int run() {
         int a = this.register.get(RegisterId.A);
-        final int msb = (a & 0x80) >> 7;
-        a = a << 1;
+        final int msb = a >>> 7;
+        a <<= 1;
         a |= msb;
+        a &= 0xFF;
         this.register.set(RegisterId.A, a);
 
         // SET FLAGS
@@ -28,6 +29,12 @@ public class RlcA extends Instruction {
         this.register.setFlag(FlagId.C, msb == 0x1);
 
         return 4;
+    }
+
+
+    @Override
+    public String toString() {
+        return "RlcA";
     }
 
 }

@@ -20,4 +20,10 @@ public class LdLH extends Instruction {
         return 4;
     }
 
+
+    @Override
+    public String toString() {
+        return "LdLH";
+    }
+
 }

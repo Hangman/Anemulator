@@ -20,4 +20,10 @@ public class IncDE extends Instruction {
         return 8;
     }
 
+
+    @Override
+    public String toString() {
+        return "IncDE";
+    }
+
 }

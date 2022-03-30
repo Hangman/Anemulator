@@ -1,7 +1,7 @@
 package de.pottgames.anemulator.cpu;
 
 public class CallStack {
-    private static final int       CAPACITY = 1000;
+    private static final int       CAPACITY = 10;
     private final CpuInstruction[] stack    = new CpuInstruction[CallStack.CAPACITY];
     private int                    index    = -1;
 

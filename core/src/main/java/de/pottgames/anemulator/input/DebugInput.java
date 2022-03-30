@@ -3,17 +3,21 @@ package de.pottgames.anemulator.input;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 
+import de.pottgames.anemulator.Start;
 import de.pottgames.anemulator.cpu.Register;
+import de.pottgames.anemulator.cpu.Register.RegisterId;
 import de.pottgames.anemulator.memory.MemoryBankController;
 
 public class DebugInput implements InputProcessor {
     private final Register             register;
     private final MemoryBankController memory;
+    private final Start                start;
 
 
-    public DebugInput(Register register, MemoryBankController memory) {
+    public DebugInput(Register register, MemoryBankController memory, Start start) {
         this.register = register;
         this.memory = memory;
+        this.start = start;
     }
 
 
@@ -21,8 +25,32 @@ public class DebugInput implements InputProcessor {
     public boolean keyDown(int keycode) {
         if (keycode == Input.Keys.F1) {
             System.out.println("F1");
-            this.register.pc = 0x100;
+            this.register.setPc(0x100);
             this.memory.setBooted();
+            return true;
+        }
+        if (keycode == Input.Keys.F2) {
+            this.start.nextStep(1);
+            return true;
+        }
+        if (keycode == Input.Keys.F3) {
+            this.start.nextStep(70000);
+            return true;
+        }
+        if (keycode == Input.Keys.F4) {
+            System.out.println("A: " + this.register.get(RegisterId.A));
+            System.out.println("B: " + this.register.get(RegisterId.B));
+            System.out.println("C: " + this.register.get(RegisterId.C));
+            System.out.println("D: " + this.register.get(RegisterId.D));
+            System.out.println("E: " + this.register.get(RegisterId.E));
+            System.out.println("H: " + this.register.get(RegisterId.H));
+            System.out.println("L: " + this.register.get(RegisterId.L));
+            System.out.println("F: " + this.register.get(RegisterId.F));
+            System.out.println("AF: " + this.register.get(RegisterId.AF));
+            System.out.println("BC: " + this.register.get(RegisterId.BC));
+            System.out.println("DE: " + this.register.get(RegisterId.DE));
+            System.out.println("HL: " + this.register.get(RegisterId.HL));
+            return true;
         }
 
         return false;

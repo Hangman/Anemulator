@@ -16,8 +16,8 @@ public class RLA extends Instruction {
     @Override
     public int run() {
         final int value = this.register.get(RegisterId.A);
-        final int bit7 = value >>> 7 & 0xff;
-        final int newValue = (value << 1 & 0xff) + (this.register.isFlagSet(FlagId.C) ? 1 : 0);
+        final int bit7 = value >>> 7;
+        final int newValue = (value << 1) + (this.register.isFlagSet(FlagId.C) ? 1 : 0) & 0xFF;
         this.register.set(RegisterId.A, newValue);
 
         this.register.setFlag(FlagId.Z, bit7 == 1);
@@ -26,6 +26,12 @@ public class RLA extends Instruction {
         this.register.setFlag(FlagId.N, false);
 
         return 8;
+    }
+
+
+    @Override
+    public String toString() {
+        return "RLA";
     }
 
 }

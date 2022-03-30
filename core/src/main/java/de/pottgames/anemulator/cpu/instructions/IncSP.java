@@ -13,9 +13,15 @@ public class IncSP extends Instruction {
 
     @Override
     public int run() {
-        this.register.sp = this.register.sp + 1 & 0xFFFF;
+        this.register.setSp(this.register.getSp() + 1 & 0xFFFF);
 
         return 8;
+    }
+
+
+    @Override
+    public String toString() {
+        return "IncSP";
     }
 
 }

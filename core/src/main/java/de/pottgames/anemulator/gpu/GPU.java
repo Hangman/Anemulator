@@ -5,10 +5,14 @@ import com.badlogic.gdx.graphics.Pixmap;
 
 import de.pottgames.anemulator.memory.MemoryBankController;
 
+/**
+ * TODO: LY register is always 0 if the lcd is off.
+ *
+ */
 public class GPU {
     private final Color[]              colors           = { new Color(0xFFFFFFFF), new Color(0xA8A8A8FF), new Color(0x545454FF), new Color(0x000000FF) };
     private final MemoryBankController memory;
-    private GpuMode                    state            = GpuMode.OAM_SEARCH;
+    private GpuMode                    state            = GpuMode.V_BLANK;
     private int                        cycleAccumulator = 0;
     private final Pixmap               backbuffer;
     private final int[]                tileCache        = new int[16];
@@ -21,12 +25,13 @@ public class GPU {
 
 
     public boolean step() {
-        this.cycleAccumulator += 4;
+        final boolean gpuOn = this.memory.isBitSet(MemoryBankController.LCDC, 7);
 
-        if (this.cycleAccumulator > 0) {
-            final boolean gpuOn = this.memory.isBitSet(MemoryBankController.LCDC, 7);
-            final GpuMode oldMode = this.state;
-            if (gpuOn) {
+        if (gpuOn) {
+            this.cycleAccumulator += 4;
+
+            if (this.cycleAccumulator > 0) {
+                final GpuMode oldMode = this.state;
                 switch (this.state) {
                     case OAM_SEARCH:
                         this.oamSearch();
@@ -41,9 +46,9 @@ public class GPU {
                         this.vBlank();
                         break;
                 }
-            }
-            if (this.state == GpuMode.V_BLANK && oldMode != GpuMode.V_BLANK) {
-                return true;
+                if (this.state == GpuMode.V_BLANK && oldMode != GpuMode.V_BLANK) {
+                    return true;
+                }
             }
         }
 
@@ -173,6 +178,7 @@ public class GPU {
 
 
     private void setLine(int number) {
+        System.out.println("scanline: " + number);
         this.memory.write(MemoryBankController.LCD_LY, number);
         final int lyc = this.memory.read8Bit(MemoryBankController.LCD_LYC);
         this.memory.setBit(MemoryBankController.LCD_STAT, 2, number == lyc);

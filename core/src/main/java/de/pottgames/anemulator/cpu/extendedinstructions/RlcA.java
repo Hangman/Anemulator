@@ -16,9 +16,10 @@ public class RlcA extends Instruction {
     @Override
     public int run() {
         int data = this.register.get(RegisterId.A);
-        final int msb = (data & 0x80) >> 7;
+        final int msb = data >>> 7;
         data = data << 1;
         data |= msb;
+        data &= 0xFF;
         this.register.set(RegisterId.A, data);
 
         // SET FLAGS

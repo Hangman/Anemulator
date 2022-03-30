@@ -14,12 +14,18 @@ public class LdA_a16_ extends Instruction {
 
     @Override
     public int run() {
-        final int address = this.memory.read16Bit(this.register.pc);
-        this.register.pc += 2;
+        final int address = this.memory.read16Bit(this.register.getPc());
+        this.register.setPc(this.register.getPc() + 2);
         final int value = this.memory.read8Bit(address);
         this.register.set(RegisterId.A, value);
 
         return 16;
+    }
+
+
+    @Override
+    public String toString() {
+        return "LdA_a16_";
     }
 
 }

@@ -20,6 +20,7 @@ public class Rlc_HL_ extends Instruction {
         final int msb = (data & 0x80) >> 7;
         data = data << 1;
         data |= msb;
+        data &= 0xFF;
         this.memory.write(address, data);
 
         // SET FLAGS

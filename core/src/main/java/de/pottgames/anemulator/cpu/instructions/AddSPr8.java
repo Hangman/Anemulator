@@ -14,10 +14,10 @@ public class AddSPr8 extends Instruction {
 
     @Override
     public int run() {
-        final byte offset = (byte) this.memory.read8Bit(this.register.pc);
-        this.register.pc++;
-        final int oldSP = this.register.sp;
-        this.register.sp += offset;
+        final byte offset = (byte) this.memory.read8Bit(this.register.getPc());
+        this.register.setPc(this.register.getPc() + 1);
+        final int oldSP = this.register.getSp();
+        this.register.setSp(this.register.getSp() + offset);
 
         // SET FLAGS
         this.register.setFlag(FlagId.Z, false);
@@ -26,6 +26,12 @@ public class AddSPr8 extends Instruction {
         this.register.setFlag(FlagId.C, (oldSP & 0xFF) + (offset & 0xFF) > 0xFF);
 
         return 16;
+    }
+
+
+    @Override
+    public String toString() {
+        return "AddSPr8";
     }
 
 }

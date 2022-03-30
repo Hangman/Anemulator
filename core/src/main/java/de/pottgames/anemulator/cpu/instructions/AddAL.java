@@ -29,4 +29,10 @@ public class AddAL extends Instruction {
         return 4;
     }
 
+
+    @Override
+    public String toString() {
+        return "AddAL";
+    }
+
 }

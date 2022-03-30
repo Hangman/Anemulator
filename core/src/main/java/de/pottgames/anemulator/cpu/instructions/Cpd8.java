@@ -16,8 +16,8 @@ public class Cpd8 extends Instruction {
     @Override
     public int run() {
         final int a = this.register.get(RegisterId.A);
-        final int compareValue = this.memory.read8Bit(this.register.pc);
-        this.register.pc++;
+        final int compareValue = this.memory.read8Bit(this.register.getPc());
+        this.register.setPc(this.register.getPc() + 1);
 
         this.register.setFlag(FlagId.Z, a == compareValue);
         this.register.setFlag(FlagId.N, true);
@@ -25,6 +25,12 @@ public class Cpd8 extends Instruction {
         this.register.setFlag(FlagId.C, a < compareValue);
 
         return 8;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Cpd8";
     }
 
 }

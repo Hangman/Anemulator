@@ -13,15 +13,21 @@ public class Calla16 extends Instruction {
 
     @Override
     public int run() {
-        final int address = this.memory.read16Bit(this.register.pc);
-        this.register.pc += 2;
-        this.register.sp--;
-        this.memory.write(this.register.sp, this.register.pc >>> 8);
-        this.register.sp--;
-        this.memory.write(this.register.sp, this.register.pc & 0xFF);
-        this.register.pc = address;
+        final int address = this.memory.read16Bit(this.register.getPc());
+        this.register.setPc(this.register.getPc() + 2);
+        this.register.setSp(this.register.getSp() - 1);
+        this.memory.write(this.register.getSp(), this.register.getPc() >>> 8);
+        this.register.setSp(this.register.getSp() - 1);
+        this.memory.write(this.register.getSp(), this.register.getPc() & 0xFF);
+        this.register.setPc(address);
 
         return 24;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Calla16";
     }
 
 }

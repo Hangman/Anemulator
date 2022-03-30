@@ -15,14 +15,20 @@ public class JrZr8 extends Instruction {
     @Override
     public int run() {
         if (this.register.isFlagSet(FlagId.Z) == true) {
-            final byte offset = (byte) this.memory.read8Bit(this.register.pc);
-            this.register.pc++;
-            this.register.pc += offset;
+            final byte offset = (byte) this.memory.read8Bit(this.register.getPc());
+            this.register.setPc(this.register.getPc() + 1);
+            this.register.setPc(this.register.getPc() + offset);
             return 12;
         }
 
-        this.register.pc++;
+        this.register.setPc(this.register.getPc() + 1);
         return 8;
+    }
+
+
+    @Override
+    public String toString() {
+        return "JrZr8";
     }
 
 }

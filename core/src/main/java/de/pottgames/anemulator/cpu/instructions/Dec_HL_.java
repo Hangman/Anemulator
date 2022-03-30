@@ -27,4 +27,10 @@ public class Dec_HL_ extends Instruction {
         return 12;
     }
 
+
+    @Override
+    public String toString() {
+        return "Dec_HL_";
+    }
+
 }

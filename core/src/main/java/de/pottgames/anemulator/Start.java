@@ -29,6 +29,8 @@ public class Start extends ApplicationAdapter {
     private Pixmap                 tileMap;
     private Texture                texture;
     private Texture                tileMapTexture;
+    private int                    steps            = 0;
+    private MemoryBankController   memoryController;
 
 
     @Override
@@ -39,37 +41,53 @@ public class Start extends ApplicationAdapter {
         this.texture = new Texture(this.backbuffer);
         this.tileMapTexture = new Texture(this.tileMap);
 
-        MemoryBankController memoryController = null;
         try {
             final CallStack callStack = new CallStack();
-            // memoryController = RomLoader.load("Dr. Mario (World).gb", callStack);
-            // memoryController = RomLoader.load("Tetris (World) (Rev A).gb", callStack);
-            // memoryController = RomLoader.load("Super Mario Land (World) (Rev A).gb", callStack);
-            // memoryController = RomLoader.load("Alleyway (World).gb", callStack);
-            // memoryController = RomLoader.load("Bionic Battler (USA).gb", callStack);
+            // this.memoryController = RomLoader.load("Dr. Mario (World).gb", callStack);
+            // this.memoryController = RomLoader.load("Tetris (World) (Rev A).gb", callStack);
+            // this.memoryController = RomLoader.load("Super Mario Land (World) (Rev A).gb", callStack);
+            // this.memoryController = RomLoader.load("Alleyway (World).gb", callStack);
+            // this.memoryController = RomLoader.load("Bionic Battler (USA).gb", callStack);
             // memoryController = RomLoader.load("Aladdin (Europe) (En,Fr,De,Es,It,Nl).gbc", callStack);
-            // memoryController = RomLoader.load("Batman - The Video Game (World).gb", callStack);
-            // memoryController = RomLoader.load("Boxxle II (USA, Europe).gb");
-            // memoryController = RomLoader.load("cpu_instrs.gb", callStack);
-            // memoryController = RomLoader.load("instr_timing.gb");
-            // memoryController = RomLoader.load("cpu_instrs/02-interrupts.gb");
-            // memoryController = RomLoader.load("cpu_instrs/09-op r,r.gb", callStack);
-            // memoryController = RomLoader.load("cpu_instrs/03-op sp,hl.gb", callStack);
-            // memoryController = RomLoader.load("cpu_instrs/01-special.gb", callStack);
-            memoryController = RomLoader.load("cpu_instrs/02-interrupts.gb", callStack);
-            this.cpu = new CPU(memoryController, callStack);
-            this.gpu = new GPU(memoryController, this.backbuffer);
+            // this.memoryController = RomLoader.load("Batman - The Video Game (World).gb", callStack);
+            // this.memoryController = RomLoader.load("Boxxle II (USA, Europe).gb", callStack);
+            // this.memoryController = RomLoader.load("cpu_instrs.gb", callStack);
+            // this.memoryController = RomLoader.load("instr_timing.gb", callStack);
+            // this.memoryController = RomLoader.load("cpu_instrs/01-special.gb", callStack);
+            // this.memoryController = RomLoader.load("cpu_instrs/02-interrupts.gb", callStack);
+            // this.memoryController = RomLoader.load("cpu_instrs/03-op sp,hl.gb", callStack);
+            // this.memoryController = RomLoader.load("cpu_instrs/04-op r,imm.gb", callStack);
+            // memoryController = RomLoader.load("cpu_instrs/05-op rp.gb", callStack); // PASSED
+            // memoryController = RomLoader.load("cpu_instrs/06-ld r,r.gb", callStack); // PASSED
+            // this.memoryController = RomLoader.load("cpu_instrs/07-jr,jp,call,ret,rst.gb", callStack);
+            // this.memoryController = RomLoader.load("cpu_instrs/08-misc instrs.gb", callStack); // PASSED
+            // this.memoryController = RomLoader.load("cpu_instrs/09-op r,r.gb", callStack);
+            // this.memoryController = RomLoader.load("cpu_instrs/10-bit ops.gb", callStack); // PASSED
+            // memoryController = RomLoader.load("cpu_instrs/11-op a,(hl).gb", callStack);
+            this.memoryController = RomLoader.load("mooneye/daa.gb", callStack);
+            // this.memoryController = RomLoader.load("mooneye/reg_f.gb", callStack); // PASSED
+            // this.memoryController = RomLoader.load("mooneye/div_write.gb", callStack); // PASSED
+            // this.memoryController = RomLoader.load("mooneye/rapid_di_ei.gb", callStack); // PASSED
+            // this.memoryController = RomLoader.load("mooneye/if_ie_registers.gb", callStack);
+            // this.memoryController = RomLoader.load("mooneye/call_timing.gb", callStack);
+            this.cpu = new CPU(this.memoryController, callStack);
+            this.gpu = new GPU(this.memoryController, this.backbuffer);
             this.input = new KeyboardInput();
-            this.input.addListener(memoryController);
+            this.input.addListener(this.memoryController);
             this.input.addListener(this.cpu);
             Gdx.input.setInputProcessor(this.inputMultiplexer);
-            this.inputMultiplexer.addProcessor(new DebugInput(this.cpu.getRegister(), memoryController));
+            this.inputMultiplexer.addProcessor(new DebugInput(this.cpu.getRegister(), this.memoryController, this));
             this.inputMultiplexer.addProcessor(this.input);
         } catch (final IOException e) {
             e.printStackTrace();
         }
 
-        Gdx.graphics.setTitle(memoryController.getGameName());
+        Gdx.graphics.setTitle(this.memoryController.getGameName());
+    }
+
+
+    public void nextStep(int steps) {
+        this.steps = steps;
     }
 
 
@@ -78,11 +96,36 @@ public class Start extends ApplicationAdapter {
         Gdx.gl.glClearColor(0.15f, 0.15f, 0.2f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        boolean vBlank = false;
-        while (!vBlank) {
+        while (this.steps > 0 || !this.memoryController.isBooted()) {
             this.cpu.step();
-            vBlank = this.gpu.step();
+            this.gpu.step();
+            this.steps--;
         }
+        // boolean vBlank = false;
+        // while (!vBlank) {
+        // this.cpu.step();
+        // vBlank = this.gpu.step();
+        // }
+        // TODO: REMOVE
+        // vBlank = false;
+        // while (!vBlank) {
+        // this.cpu.step();
+        // vBlank = this.gpu.step();
+        // }
+        // this.gpu.renderTileMap(this.tileMap);
+        // vBlank = false;
+        // while (!vBlank) {
+        // this.cpu.step();
+        // vBlank = this.gpu.step();
+        // }
+        // this.gpu.renderTileMap(this.tileMap);
+        // vBlank = false;
+        // while (!vBlank) {
+        // this.cpu.step();
+        // vBlank = this.gpu.step();
+        // }
+        //
+
         this.gpu.renderTileMap(this.tileMap);
 
         this.batch.begin();

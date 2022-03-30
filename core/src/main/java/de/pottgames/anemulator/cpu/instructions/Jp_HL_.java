@@ -14,9 +14,15 @@ public class Jp_HL_ extends Instruction {
 
     @Override
     public int run() {
-        this.register.pc = this.register.get(RegisterId.HL);
+        this.register.setPc(this.register.get(RegisterId.HL));
 
         return 4;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Jp_HL_";
     }
 
 }

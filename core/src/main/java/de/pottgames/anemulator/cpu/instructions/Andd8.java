@@ -15,8 +15,8 @@ public class Andd8 extends Instruction {
 
     @Override
     public int run() {
-        final int value = this.memory.read8Bit(this.register.pc);
-        this.register.pc++;
+        final int value = this.memory.read8Bit(this.register.getPc());
+        this.register.setPc(this.register.getPc() + 1);
         final int a = this.register.get(RegisterId.A);
         final int result = value & a & 0xFF;
         this.register.set(RegisterId.A, result);
@@ -28,6 +28,12 @@ public class Andd8 extends Instruction {
         this.register.setFlag(FlagId.C, false);
 
         return 4;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Andd8";
     }
 
 }

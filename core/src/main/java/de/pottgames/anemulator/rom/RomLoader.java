@@ -23,10 +23,12 @@ public class RomLoader {
         switch (intData[0x147]) {
             case 0x0:
                 // ROM ONLY
+                System.out.println("ROM ONLY MBC");
                 controller = new RomOnly(intData, callStack);
                 break;
             case 0x1:
                 // ROM + MBC1
+                System.out.println("MBC1");
                 controller = new MBC1(intData, callStack);
                 break;
             // case 0x2:

@@ -15,11 +15,17 @@ public class Ld_HL_d8 extends Instruction {
     @Override
     public int run() {
         final int address = this.register.get(RegisterId.HL);
-        final int data = this.memory.read8Bit(this.register.pc);
-        this.register.pc++;
+        final int data = this.memory.read8Bit(this.register.getPc());
+        this.register.setPc(this.register.getPc() + 1);
         this.memory.write(address, data);
 
         return 12;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Ld_HL_d8";
     }
 
 }
