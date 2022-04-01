@@ -22,6 +22,8 @@ public class Booter {
         // TODO: CALC HEADER CHECKSUM
         // set H flag if header checksum is not 0x00
         // set C flag if header checksum is not 0x00
+        this.register.setFlag(FlagId.H, true);
+        this.register.setFlag(FlagId.C, true);
         //
         this.register.set(RegisterId.B, 0x00);
         this.register.set(RegisterId.C, 0x13);

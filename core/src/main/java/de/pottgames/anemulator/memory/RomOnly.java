@@ -79,6 +79,11 @@ public class RomOnly implements MemoryBankController {
 
     @Override
     public void write(int address, int value) {
+        if (address >= 0 && address <= 0x7fff) {
+            // IGNORE ANY WRITE TO THE ROM
+            return;
+        }
+
         if (value > 0xFF || value < 0) {
             throw new RuntimeException("value out of byte range: " + value + " at address: " + address);
         }
@@ -89,9 +94,14 @@ public class RomOnly implements MemoryBankController {
         }
 
         if (address == MemoryBankController.IF) {
-            System.out.println("setting IF to " + Integer.toHexString(value));
             this.memory[address] = value | 0xE0;
-            System.out.println("IF is now " + Integer.toHexString(this.memory[address]));
+            return;
+        }
+
+        // RESET DIVIDER REGISTER
+        if (address == MemoryBankController.DIV) {
+            this.memory[address] = 0;
+            this.timer.reset();
             return;
         }
 
@@ -115,12 +125,6 @@ public class RomOnly implements MemoryBankController {
         // UPDATE JOYPAD REGISTER
         if (address == MemoryBankController.JOYPAD) {
             this.updateInput();
-        }
-
-        // RESET DIVIDER REGISTER
-        if (address == MemoryBankController.DIV) {
-            this.memory[address] = 0;
-            this.timer.reset();
         }
 
         // DISABLE BOOT ROM
@@ -159,6 +163,7 @@ public class RomOnly implements MemoryBankController {
 
     private void updateInput() {
         int ff00 = this.memory[MemoryBankController.JOYPAD];
+        ff00 |= 0b11000000;
         final JoypadKeyType typeSelected = (ff00 & 1 << 5) == 0 ? JoypadKeyType.ACTION : JoypadKeyType.DIRECTION;
 
         for (final JoypadKey key : JoypadKey.values()) {

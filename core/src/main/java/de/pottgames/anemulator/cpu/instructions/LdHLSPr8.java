@@ -17,7 +17,7 @@ public class LdHLSPr8 extends Instruction {
     public int run() {
         final byte offset = (byte) this.memory.read8Bit(this.register.getPc());
         this.register.setPc(this.register.getPc() + 1);
-        this.register.set(RegisterId.HL, this.register.getSp() + offset);
+        this.register.set(RegisterId.HL, this.register.getSp() + offset & 0xFFFF);
 
         // SET FLAGS
         this.register.setFlag(FlagId.Z, false);

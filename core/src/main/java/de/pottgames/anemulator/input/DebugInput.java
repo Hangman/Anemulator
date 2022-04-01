@@ -34,7 +34,7 @@ public class DebugInput implements InputProcessor {
             return true;
         }
         if (keycode == Input.Keys.F3) {
-            this.start.nextStep(70000);
+            this.start.nextStep(700000);
             return true;
         }
         if (keycode == Input.Keys.F4) {

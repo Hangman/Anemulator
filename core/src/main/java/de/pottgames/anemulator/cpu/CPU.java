@@ -2,6 +2,8 @@ package de.pottgames.anemulator.cpu;
 
 import com.badlogic.gdx.utils.IntMap;
 
+import de.pottgames.anemulator.EmulatorState;
+import de.pottgames.anemulator.cpu.Register.RegisterId;
 import de.pottgames.anemulator.cpu.instructions.*;
 import de.pottgames.anemulator.error.UnsupportedFeatureException;
 import de.pottgames.anemulator.input.JoypadKey;
@@ -12,10 +14,9 @@ import de.pottgames.anemulator.memory.MemoryBankController.MemoryStepResult;
 public class CPU implements JoypadStateChangeListener {
     private final MemoryBankController memory;
     private final Register             register;
-    private final IntMap<Instruction>  instructions        = new IntMap<>();
-    private int                        cycleAccumulator    = 0;
-    private boolean                    halted              = false;
-    private boolean                    skipNextInstruction = false;
+    private final IntMap<Instruction>  instructions     = new IntMap<>();
+    private int                        cycleAccumulator = 0;
+    private boolean                    halted           = false;
     private final CallStack            callStack;
 
 
@@ -39,7 +40,7 @@ public class CPU implements JoypadStateChangeListener {
         this.instructions.put(0x04, new IncB(this.register, this.memory));
         this.instructions.put(0x05, new DecB(this.register, this.memory));
         this.instructions.put(0x06, new LdBd8(this.register, this.memory));
-        this.instructions.put(0x07, new RlcA(this.register, this.memory));
+        this.instructions.put(0x07, new Rlca(this.register, this.memory));
         this.instructions.put(0x08, new Ld_a16_SP(this.register, this.memory));
         this.instructions.put(0x09, new AddHLBC(this.register, this.memory));
         this.instructions.put(0x0A, new LdA_BC_(this.register, this.memory));
@@ -47,7 +48,7 @@ public class CPU implements JoypadStateChangeListener {
         this.instructions.put(0x0C, new IncC(this.register, this.memory));
         this.instructions.put(0x0D, new DecC(this.register, this.memory));
         this.instructions.put(0x0E, new LdCd8(this.register, this.memory));
-        this.instructions.put(0x0F, new RrcA(this.register, this.memory));
+        this.instructions.put(0x0F, new Rrca(this.register, this.memory));
 
         this.instructions.put(0x10, new Stop(this.register, this.memory));
         this.instructions.put(0x11, new LdDEd16(this.register, this.memory));
@@ -56,7 +57,7 @@ public class CPU implements JoypadStateChangeListener {
         this.instructions.put(0x14, new IncD(this.register, this.memory));
         this.instructions.put(0x15, new DecD(this.register, this.memory));
         this.instructions.put(0x16, new LdDd8(this.register, this.memory));
-        this.instructions.put(0x17, new RLA(this.register, this.memory));
+        this.instructions.put(0x17, new Rla(this.register, this.memory));
         this.instructions.put(0x18, new Jrr8(this.register, this.memory));
         this.instructions.put(0x19, new AddHLDE(this.register, this.memory));
         this.instructions.put(0x1A, new LdA_DE_(this.register, this.memory));
@@ -64,7 +65,7 @@ public class CPU implements JoypadStateChangeListener {
         this.instructions.put(0x1C, new IncE(this.register, this.memory));
         this.instructions.put(0x1D, new DecE(this.register, this.memory));
         this.instructions.put(0x1E, new LdEd8(this.register, this.memory));
-        this.instructions.put(0x1F, new RrA(this.register, this.memory));
+        this.instructions.put(0x1F, new Rra(this.register, this.memory));
 
         this.instructions.put(0x20, new JrNZr8(this.register, this.memory));
         this.instructions.put(0x21, new LdHLd16(this.register, this.memory));
@@ -295,7 +296,7 @@ public class CPU implements JoypadStateChangeListener {
     }
 
 
-    public void step() {
+    public EmulatorState step() {
         this.cycleAccumulator += 4;
         final MemoryStepResult memoryStepResult = this.memory.step();
 
@@ -304,29 +305,44 @@ public class CPU implements JoypadStateChangeListener {
             this.memory.write(MemoryBankController.IF, ifRegister |= 1 << Interrupt.TIMER.getBitnum());
         }
 
-        if (this.skipNextInstruction) {
-            this.register.setPc(this.register.getPc() + 1);
-            this.skipNextInstruction = false;
-            return;
-        }
-
         if (this.cycleAccumulator > 0) {
             this.register.step();
 
             if (this.handleInterrupts()) {
-                return;
+                return null;
             }
 
             if (this.halted) {
                 this.cycleAccumulator -= 4;
-                return;
+                return null;
             }
 
-            final int opCode = this.memory.read8Bit(this.register.getPc());
+            int opCode = this.memory.read8Bit(this.register.getPc());
             this.register.setPc(this.register.getPc() + 1);
 
             this.cycleAccumulator -= this.runInstruction(opCode);
+
+            final int a = this.register.get(RegisterId.A);
+            final int f = this.register.get(RegisterId.F);
+            final int c = this.register.get(RegisterId.C);
+            final int d = this.register.get(RegisterId.D);
+            final int e = this.register.get(RegisterId.E);
+            final int h = this.register.get(RegisterId.H);
+            final int l = this.register.get(RegisterId.L);
+            final int af = this.register.get(RegisterId.AF);
+            final int bc = this.register.get(RegisterId.BC);
+            final int de = this.register.get(RegisterId.DE);
+            final int hl = this.register.get(RegisterId.HL);
+            final int pc = this.register.getPc();
+            final int sp = this.register.getSp();
+            if (opCode == 0xCB) {
+                opCode = (0xCB << 8) + PrefixCB.lastInstructionOpcode;
+            }
+            final EmulatorState myState = new EmulatorState(a, f, c, d, e, h, l, af, bc, de, hl, opCode, pc, sp);
+            return myState;
         }
+
+        return null;
     }
 
 
@@ -350,12 +366,12 @@ public class CPU implements JoypadStateChangeListener {
                         this.register.setPc(interrupt.getJumpAddress());
 
                         // TODO: REMOVE
-                        System.out.println("Interrupt: " + interrupt);
-                        System.out.println("jumping to: " + Integer.toHexString(interrupt.getJumpAddress()));
+                        // System.out.println("Interrupt: " + interrupt);
+                        // System.out.println("jumping to: " + Integer.toHexString(interrupt.getJumpAddress()));
                         //
 
                         // CLEAR IME AND IF
-                        this.register.setInterruptsEnabled(false);
+                        this.register.setInterruptsEnabled(false, false);
                         this.memory.setBit(MemoryBankController.IF, interrupt.getBitnum(), false);
 
                         this.cycleAccumulator -= 20;
@@ -384,21 +400,13 @@ public class CPU implements JoypadStateChangeListener {
             throw new UnsupportedFeatureException("Unsupported opCode: " + Integer.toHexString(opCode));
         }
 
-        // TODO: REMOVE
-        System.out.println("pc=" + Integer.toHexString(this.register.getPc() - 1) + " : " + instruction.toString());
-        //
-
         this.callStack.add(instruction.toString(), opCode, this.register.getPc() - 1);
         return instruction.run();
     }
 
 
     public void halt() {
-        if (this.register.isInterruptsEnabled()) {
-            this.halted = true;
-        } else {
-            this.skipNextInstruction = true;
-        }
+        this.halted = true;
     }
 
 

@@ -17,7 +17,7 @@ public class RetI extends Instruction {
         address = this.memory.read8Bit(this.register.getSp() + 1) << 8 | address;
         this.register.setSp(this.register.getSp() + 2);
         this.register.setPc(address);
-        this.register.setInterruptsEnabled(true);
+        this.register.setInterruptsEnabled(true, true);
 
         return 16;
     }

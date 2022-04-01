@@ -16,13 +16,14 @@ public class SbcA_HL_ extends Instruction {
     @Override
     public int run() {
         final int a = this.register.get(RegisterId.A);
-        final int value = this.memory.read8Bit(this.register.get(RegisterId.HL));
+        final int address = this.register.get(RegisterId.HL);
+        final int value = this.memory.read8Bit(address);
         final int carry = this.register.isFlagSet(FlagId.C) ? 1 : 0;
         final int result = a - value - carry;
         this.register.set(RegisterId.A, result & 0xFF);
 
         // SET FLAGS
-        this.register.setFlag(FlagId.Z, result == 0);
+        this.register.setFlag(FlagId.Z, (result & 0xFF) == 0);
         this.register.setFlag(FlagId.N, true);
         this.register.setFlag(FlagId.H, (a & 0xF) < (value & 0xF) + carry);
         this.register.setFlag(FlagId.C, a < value + carry);

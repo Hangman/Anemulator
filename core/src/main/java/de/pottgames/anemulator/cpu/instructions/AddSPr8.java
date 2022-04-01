@@ -17,7 +17,7 @@ public class AddSPr8 extends Instruction {
         final byte offset = (byte) this.memory.read8Bit(this.register.getPc());
         this.register.setPc(this.register.getPc() + 1);
         final int oldSP = this.register.getSp();
-        this.register.setSp(this.register.getSp() + offset);
+        this.register.setSp(this.register.getSp() + offset & 0xFFFF);
 
         // SET FLAGS
         this.register.setFlag(FlagId.Z, false);

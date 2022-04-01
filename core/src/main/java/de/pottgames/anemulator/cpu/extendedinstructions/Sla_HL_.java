@@ -17,7 +17,7 @@ public class Sla_HL_ extends Instruction {
     public int run() {
         final int address = this.register.get(RegisterId.HL);
         int data = this.memory.read8Bit(address);
-        final int msb = data & 0x80 & 0xFF;
+        final int msb = data & 0x80;
         data = data << 1 & 0xFF;
         this.memory.write(address, data);
 

@@ -16,7 +16,7 @@ public class SlaA extends Instruction {
     @Override
     public int run() {
         int data = this.register.get(RegisterId.A);
-        final int msb = data & 0x80 & 0xFF;
+        final int msb = data & 0x80;
         data = data << 1 & 0xFF;
         this.register.set(RegisterId.A, data);
 

@@ -4,4 +4,6 @@ eclipse.project.name = appName + '-core'
 dependencies {
 	api "com.badlogicgames.gdx:gdx:$gdxVersion"
 	implementation "com.github.Hangman:TuningFork:$tuningForkVersion"
+	
+	testImplementation 'org.junit.jupiter:junit-jupiter:5.7.2'
 }

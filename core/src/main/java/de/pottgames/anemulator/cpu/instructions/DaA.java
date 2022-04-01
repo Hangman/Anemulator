@@ -38,7 +38,7 @@ public class DaA extends Instruction {
 
         // SET FLAGS
         this.register.setFlag(FlagId.H, false);
-        this.register.setFlag(FlagId.Z, a == 0);
+        this.register.setFlag(FlagId.Z, (a & 0xFF) == 0);
         if ((a & 0x100) == 0x100) {
             this.register.setFlag(FlagId.C, true);
         }

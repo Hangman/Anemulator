@@ -156,9 +156,13 @@ public class Register {
     }
 
 
-    public void setInterruptsEnabled(boolean interruptsEnabled) {
+    public void setInterruptsEnabled(boolean interruptsEnabled, boolean instant) {
         if (interruptsEnabled) {
-            this.enableInterruptsDelayCounter = 2;
+            if (instant) {
+                this.interruptsEnabled = true;
+            } else {
+                this.enableInterruptsDelayCounter = 2;
+            }
         } else {
             this.interruptsEnabled = false;
             this.enableInterruptsDelayCounter = 0;

@@ -10,12 +10,14 @@ import de.pottgames.anemulator.memory.MemoryBankController;
  *
  */
 public class GPU {
-    private final Color[]              colors           = { new Color(0xFFFFFFFF), new Color(0xA8A8A8FF), new Color(0x545454FF), new Color(0x000000FF) };
+    private final Color[]              colors = { new Color(0xFFFFFFFF), new Color(0xA8A8A8FF), new Color(0x545454FF), new Color(0x000000FF) };
     private final MemoryBankController memory;
-    private GpuMode                    state            = GpuMode.V_BLANK;
-    private int                        cycleAccumulator = 0;
-    private final Pixmap               backbuffer;
-    private final int[]                tileCache        = new int[16];
+
+    public GpuMode state = GpuMode.V_BLANK; // TODO: set private
+
+    private int          cycleAccumulator = 0;
+    private final Pixmap backbuffer;
+    private final int[]  tileCache        = new int[16];
 
 
     public GPU(MemoryBankController memory, Pixmap backBuffer) {
@@ -178,7 +180,6 @@ public class GPU {
 
 
     private void setLine(int number) {
-        System.out.println("scanline: " + number);
         this.memory.write(MemoryBankController.LCD_LY, number);
         final int lyc = this.memory.read8Bit(MemoryBankController.LCD_LYC);
         this.memory.setBit(MemoryBankController.LCD_STAT, 2, number == lyc);

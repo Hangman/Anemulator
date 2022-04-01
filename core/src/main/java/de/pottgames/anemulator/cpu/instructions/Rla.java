@@ -6,9 +6,9 @@ import de.pottgames.anemulator.cpu.Register.FlagId;
 import de.pottgames.anemulator.cpu.Register.RegisterId;
 import de.pottgames.anemulator.memory.MemoryBankController;
 
-public class RLA extends Instruction {
+public class Rla extends Instruction {
 
-    public RLA(Register register, MemoryBankController memory) {
+    public Rla(Register register, MemoryBankController memory) {
         super(register, memory);
     }
 
@@ -20,10 +20,10 @@ public class RLA extends Instruction {
         final int newValue = (value << 1) + (this.register.isFlagSet(FlagId.C) ? 1 : 0) & 0xFF;
         this.register.set(RegisterId.A, newValue);
 
-        this.register.setFlag(FlagId.Z, bit7 == 1);
-        this.register.setFlag(FlagId.Z, newValue == 0);
-        this.register.setFlag(FlagId.H, false);
+        this.register.setFlag(FlagId.Z, false);
         this.register.setFlag(FlagId.N, false);
+        this.register.setFlag(FlagId.H, false);
+        this.register.setFlag(FlagId.C, bit7 == 1);
 
         return 8;
     }
@@ -31,7 +31,7 @@ public class RLA extends Instruction {
 
     @Override
     public String toString() {
-        return "RLA";
+        return "Rla";
     }
 
 }

@@ -15,8 +15,8 @@ public class Ldh_a8_A extends Instruction {
     @Override
     public int run() {
         final int address = 0xFF00 + this.memory.read8Bit(this.register.getPc());
-        final int value = this.register.get(RegisterId.A);
         this.register.setPc(this.register.getPc() + 1);
+        final int value = this.register.get(RegisterId.A);
         this.memory.write(address, value);
 
         return 12;

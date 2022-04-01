@@ -10,15 +10,15 @@ public class MBC1 implements MemoryBankController {
     private final String           gameName;
     private final int[][]          romBanks;
     private final int[][]          ramBanks;
-    private Mode                   mode           = Mode.ROM;
-    private int                    bankSelectRegister;
-    private boolean                ramEnabled     = false;
-    private boolean                booted         = false;
-    private boolean[]              buttonsPressed = new boolean[JoypadKey.values().length];
+    private Mode                   mode               = Mode.ROM;
+    private int                    bankSelectRegister = 1;
+    private boolean                ramEnabled         = false;
+    private boolean                booted             = false;
+    private boolean[]              buttonsPressed     = new boolean[JoypadKey.values().length];
     private final CallStack        callStack;
     private final Timer            timer;
     private final DividerTimer     dividerTimer;
-    private final MemoryStepResult stepResult     = new MemoryStepResult();
+    private final MemoryStepResult stepResult         = new MemoryStepResult();
 
     /**
      * 0x0000 - 0x3FFF => ROM BANK 0<br>
@@ -83,9 +83,9 @@ public class MBC1 implements MemoryBankController {
 
         if (address >= 0x4000 && address < 0x8000) {
             if (this.mode == Mode.ROM) {
-                return this.romBanks[this.bankSelectRegister][address - 0x4000];
+                return this.romBanks[this.bankSelectRegister - 1][address - 0x4000];
             }
-            return this.romBanks[this.bankSelectRegister & 0b11111][address - 0x4000];
+            return this.romBanks[(this.bankSelectRegister & 0b11111) - 1][address - 0x4000];
         }
         if (address >= 0xA000 && address < 0xC000) {
             if (this.ramEnabled && this.mode == Mode.RAM) {
@@ -140,6 +140,9 @@ public class MBC1 implements MemoryBankController {
         } else if (address >= 0x4000 && address < 0x6000) {
             // SELECT RAM BANK NUMBER OR UPPER BITS OF ROM BANK NUMBER
             this.bankSelectRegister = this.bankSelectRegister & 0b11111 | (value & 0b11) << 5;
+            if (this.bankSelectRegister == 0) {
+                this.bankSelectRegister = 1;
+            }
 
         } else if (address >= 0x6000 && address < 0x8000) {
             // SET MODE
@@ -171,6 +174,9 @@ public class MBC1 implements MemoryBankController {
                 this.booted = true;
             }
 
+        } else if (address == MemoryBankController.IF) {
+            this.memory[address] = value | 0xE0;
+
         } else {
             this.memory[address] = value;
 
@@ -197,6 +203,7 @@ public class MBC1 implements MemoryBankController {
 
     private void updateInput() {
         int ff00 = this.memory[MemoryBankController.JOYPAD];
+        ff00 |= 0b11000000;
         final JoypadKeyType typeSelected = (ff00 & 1 << 5) == 0 ? JoypadKeyType.ACTION : JoypadKeyType.DIRECTION;
 
         for (final JoypadKey key : JoypadKey.values()) {

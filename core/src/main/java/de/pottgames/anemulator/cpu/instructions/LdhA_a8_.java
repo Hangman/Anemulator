@@ -16,7 +16,8 @@ public class LdhA_a8_ extends Instruction {
     public int run() {
         final int offset = this.memory.read8Bit(this.register.getPc());
         this.register.setPc(this.register.getPc() + 1);
-        this.register.set(RegisterId.A, this.memory.read8Bit(0xff00 + offset));
+        final int value = this.memory.read8Bit(0xff00 + offset);
+        this.register.set(RegisterId.A, value);
 
         return 12;
     }

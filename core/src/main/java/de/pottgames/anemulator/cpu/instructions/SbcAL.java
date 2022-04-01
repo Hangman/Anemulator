@@ -22,7 +22,7 @@ public class SbcAL extends Instruction {
         this.register.set(RegisterId.A, result & 0xFF);
 
         // SET FLAGS
-        this.register.setFlag(FlagId.Z, result == 0);
+        this.register.setFlag(FlagId.Z, (result & 0xFF) == 0);
         this.register.setFlag(FlagId.N, true);
         this.register.setFlag(FlagId.H, (a & 0xF) < (value & 0xF) + carry);
         this.register.setFlag(FlagId.C, a < value + carry);

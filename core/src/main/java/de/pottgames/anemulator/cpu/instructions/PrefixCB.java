@@ -12,6 +12,7 @@ import de.pottgames.anemulator.memory.MemoryBankController;
 public class PrefixCB extends Instruction {
     private IntMap<Instruction> extendedInstructions = new IntMap<>();
     private final CallStack     callStack;
+    public static int           lastInstructionOpcode;
 
 
     public PrefixCB(Register register, MemoryBankController memory, CallStack callStack) {
@@ -29,7 +30,7 @@ public class PrefixCB extends Instruction {
         this.extendedInstructions.put(0x04, new RlcH(this.register, this.memory));
         this.extendedInstructions.put(0x05, new RlcL(this.register, this.memory));
         this.extendedInstructions.put(0x06, new Rlc_HL_(this.register, this.memory));
-        this.extendedInstructions.put(0x07, new RlcA(this.register, this.memory));
+        this.extendedInstructions.put(0x07, new de.pottgames.anemulator.cpu.extendedinstructions.RlcA(this.register, this.memory));
         this.extendedInstructions.put(0x08, new RrcB(this.register, this.memory));
         this.extendedInstructions.put(0x09, new RrcC(this.register, this.memory));
         this.extendedInstructions.put(0x0A, new RrcD(this.register, this.memory));
