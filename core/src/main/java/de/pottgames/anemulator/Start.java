@@ -46,14 +46,14 @@ public class Start extends ApplicationAdapter {
             final CallStack callStack = new CallStack();
             // this.memoryController = RomLoader.load("Dr. Mario (World).gb", callStack);
             // this.memoryController = RomLoader.load("Tetris (World) (Rev A).gb", callStack);
-            // this.memoryController = RomLoader.load("Super Mario Land (World) (Rev A).gb", callStack);
+            this.memoryController = RomLoader.load("Super Mario Land (World) (Rev A).gb", callStack);
             // this.memoryController = RomLoader.load("Alleyway (World).gb", callStack);
             // this.memoryController = RomLoader.load("Bionic Battler (USA).gb", callStack);
             // memoryController = RomLoader.load("Aladdin (Europe) (En,Fr,De,Es,It,Nl).gbc", callStack);
             // this.memoryController = RomLoader.load("Batman - The Video Game (World).gb", callStack);
             // this.memoryController = RomLoader.load("Boxxle II (USA, Europe).gb", callStack);
-            this.memoryController = RomLoader.load("cpu_instrs.gb", callStack); // PASSED
-            // this.memoryController = RomLoader.load("instr_timing.gb", callStack); // FAILED
+            // this.memoryController = RomLoader.load("cpu_instrs.gb", callStack); // PASSED
+            // this.memoryController = RomLoader.load("instr_timing.gb", callStack);
             // this.memoryController = RomLoader.load("cpu_instrs/01-special.gb", callStack); // PASSED
             // this.memoryController = RomLoader.load("cpu_instrs/02-interrupts.gb", callStack); // PASSED
             // this.memoryController = RomLoader.load("cpu_instrs/03-op sp,hl.gb", callStack); // PASSED

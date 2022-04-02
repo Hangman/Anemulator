@@ -10,19 +10,21 @@ import de.pottgames.anemulator.memory.MemoryBankController;
  *
  */
 public class GPU {
-    private final Color[]              colors = { new Color(0xFFFFFFFF), new Color(0xA8A8A8FF), new Color(0x545454FF), new Color(0x000000FF) };
+    private final Color[]              colors       = { new Color(0xFFFFFFFF), new Color(0xA8A8A8FF), new Color(0x545454FF), new Color(0x000000FF) };
+    private final Color[]              objectColors = { new Color(0xFFFFFF00), new Color(0xA55252FF), new Color(0x4C2626FF), new Color(0x3D1E1EFF) };
     private final MemoryBankController memory;
 
-    public GpuMode state = GpuMode.V_BLANK; // TODO: set private
+    private GpuMode state = GpuMode.V_BLANK;
 
-    private int          cycleAccumulator = 0;
-    private final Pixmap backbuffer;
-    private final int[]  tileCache        = new int[16];
+    private int           cycleAccumulator = 0;
+    private final Pixmap  frontBuffer;
+    private final int[][] backBuffer       = new int[160][144];
+    private final int[]   tileCache        = new int[16];
 
 
     public GPU(MemoryBankController memory, Pixmap backBuffer) {
         this.memory = memory;
-        this.backbuffer = backBuffer;
+        this.frontBuffer = backBuffer;
     }
 
 
@@ -105,7 +107,7 @@ public class GPU {
 
             // RENDER BACKGROUND
             final int bgMapStartAddress = this.memory.isBitSet(MemoryBankController.LCDC, 3) ? 0x9C00 : 0x9800;
-            for (int pixelX = 0; pixelX < 159; pixelX++) {
+            for (int pixelX = 0; pixelX < 160; pixelX++) {
                 int bgMapX = pixelX + scrollX;
                 if (bgMapX > 255) {
                     bgMapX -= 255;
@@ -128,8 +130,9 @@ public class GPU {
                 final int colorPaletteIndex = this.getColorPaletteIndexOfTilePixel(this.tileCache, tilePixelX, tilePixelY);
                 final Color color = this.getBGColor(colorPaletteIndex);
 
-                this.backbuffer.setColor(color);
-                this.backbuffer.drawPixel(pixelX, currentLine);
+                this.backBuffer[pixelX][currentLine] = colorPaletteIndex;
+                this.frontBuffer.setColor(color);
+                this.frontBuffer.drawPixel(pixelX, currentLine);
             }
 
             // RENDER WINDOW
@@ -146,12 +149,74 @@ public class GPU {
 
         // RENDER OBJECTS
         if (renderObjects) {
-            final int objHeight = this.memory.isBitSet(MemoryBankController.LCDC, 2) ? 16 : 8;
-            // TODO
+            this.renderObjects(currentLine);
         }
 
         this.cycleAccumulator -= 172;
         this.setState(GpuMode.H_BLANK);
+    }
+
+
+    private void renderObjects(final int currentLine) {
+        final int objHeight = this.memory.isBitSet(MemoryBankController.LCDC, 2) ? 16 : 8;
+        for (int i = 0; i < 40; i++) {
+            final int oamAddress = 0xFE00 + i * 4;
+            int objY = this.memory.read8Bit(oamAddress);
+            int objX = this.memory.read8Bit(oamAddress + 1);
+            if (this.isObjectVisible(objX, objY, objHeight, currentLine)) {
+                final int objTileIndex = this.memory.read8Bit(oamAddress + 2);
+                final int objAttributes = this.memory.read8Bit(oamAddress + 3);
+                final int atlasTileAddress = 0x8000 + objTileIndex * 16;
+                final boolean flipX = (objAttributes & 0b100000) > 0;
+                final boolean flipY = (objAttributes & 0b1000000) > 0;
+                final boolean priority = (objAttributes & 0b10000000) == 0;
+                final int paletteAddress = (objAttributes & 0b10000) > 0 ? 0xFF49 : 0xFF48;
+                objX -= 8;
+                objY -= 16;
+                int tilePixelY = flipY ? objHeight - 1 - (currentLine - objY) : currentLine - objY;
+                int atlasAddressModificator = flipY ? 16 : 0;
+                if (tilePixelY >= 8) {
+                    tilePixelY -= 8;
+                    atlasAddressModificator = flipY ? 0 : 16;
+                }
+
+                // FETCH TILE PIXELS FROM ATLAS
+                for (int j = 0; j < 16; j++) {
+                    this.tileCache[j] = this.memory.read8Bit(atlasTileAddress + atlasAddressModificator + j);
+                }
+
+                this.drawSingleObjectTile(this.tileCache, objX, tilePixelY, flipX, flipY, priority, currentLine, paletteAddress);
+            }
+        }
+    }
+
+
+    private void drawSingleObjectTile(int[] tile, int x, int tilePixelY, boolean flipX, boolean flipY, boolean priority, int scanline, int paletteAddress) {
+        for (int pixelX = 0; pixelX < 8; pixelX++) {
+            final int tilePixelX = flipX ? 7 - pixelX : pixelX;
+            final int colorPaletteIndex = this.getColorPaletteIndexOfTilePixel(this.tileCache, tilePixelX, tilePixelY);
+            final Color color = this.getObjectColor(paletteAddress, colorPaletteIndex);
+
+            final int renderX = x + pixelX;
+            if (renderX >= 160) {
+                return;
+            }
+            if (renderX >= 0 && (priority || this.backBuffer[renderX][scanline] == 0)) {
+                this.frontBuffer.setColor(color);
+                this.frontBuffer.drawPixel(x + pixelX, scanline);
+            }
+        }
+    }
+
+
+    private boolean isObjectVisible(int objX, int objY, int objHeight, int scanline) {
+        objY -= 16;
+        objX -= 8;
+        if (objX >= -8 && objX < 160 + 8 && scanline >= objY && scanline < objY + objHeight) {
+            return true;
+        }
+
+        return false;
     }
 
 
@@ -235,9 +300,26 @@ public class GPU {
     }
 
 
-    private Color getBGColor(final int paletteIndex) {
+    private Color getObjectColor(int paletteAddress, int colorIndex) {
+        final int palette = this.memory.read8Bit(paletteAddress);
+        switch (colorIndex) {
+            case 3:
+                return this.objectColors[palette >>> 6];
+            case 2:
+                return this.objectColors[palette >>> 4 & 0b11];
+            case 1:
+                return this.objectColors[palette >>> 2 & 0b11];
+            case 0:
+                return this.objectColors[palette & 0b11];
+        }
+
+        return null;
+    }
+
+
+    private Color getBGColor(final int colorIndex) {
         final int palette = this.memory.read8Bit(MemoryBankController.BGP);
-        switch (paletteIndex) {
+        switch (colorIndex) {
             case 3:
                 return this.colors[palette >>> 6];
             case 2:
@@ -248,7 +330,7 @@ public class GPU {
                 return this.colors[palette & 0b11];
         }
 
-        throw new RuntimeException("Unknown bg color palette index: " + paletteIndex);
+        throw new RuntimeException("Unknown bg color palette index: " + colorIndex);
     }
 
 }
