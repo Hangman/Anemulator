@@ -59,7 +59,7 @@ public class GPU {
         } else if (!this.wasOff) {
             this.setLine(0);
             this.setState(GpuMode.H_BLANK);
-            this.wasOff = false;
+            this.wasOff = true;
         }
 
         return false;
@@ -236,10 +236,10 @@ public class GPU {
                 objX -= 8;
                 objY -= 16;
                 int tilePixelY = flipY ? objHeight - 1 - (currentLine - objY) : currentLine - objY;
-                int atlasAddressModificator = flipY ? 16 : 0;
+                int atlasAddressModificator = objHeight == 16 ? flipY ? 16 : 0 : 0;
                 if (tilePixelY >= 8) {
                     tilePixelY -= 8;
-                    atlasAddressModificator = flipY ? 0 : 16;
+                    atlasAddressModificator = objHeight == 16 ? flipY ? 0 : 16 : 0;
                 }
 
                 // FETCH TILE PIXELS FROM ATLAS
@@ -247,13 +247,13 @@ public class GPU {
                     this.tileCache[j] = this.memory.read8Bit(atlasTileAddress + atlasAddressModificator + j);
                 }
 
-                this.drawSingleObjectTile(this.tileCache, objX, tilePixelY, flipX, flipY, priority, currentLine, paletteAddress);
+                this.drawObjectLine(this.tileCache, objX, tilePixelY, flipX, priority, currentLine, paletteAddress);
             }
         }
     }
 
 
-    private void drawSingleObjectTile(int[] tile, int x, int tilePixelY, boolean flipX, boolean flipY, boolean priority, int scanline, int paletteAddress) {
+    private void drawObjectLine(int[] tile, int x, int tilePixelY, boolean flipX, boolean priority, int scanline, int paletteAddress) {
         for (int pixelX = 0; pixelX < 8; pixelX++) {
             final int tilePixelX = flipX ? 7 - pixelX : pixelX;
             final int colorPaletteIndex = this.getColorPaletteIndexOfTilePixel(this.tileCache, tilePixelX, tilePixelY);
