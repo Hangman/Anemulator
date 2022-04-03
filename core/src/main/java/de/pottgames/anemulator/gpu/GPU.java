@@ -10,8 +10,8 @@ import de.pottgames.anemulator.memory.MemoryBankController;
  *
  */
 public class GPU {
-    private final Color[]              colors       = { new Color(0xFFFFFFFF), new Color(0xA8A8A8FF), new Color(0x545454FF), new Color(0x000000FF) };
-    private final Color[]              objectColors = { new Color(0xFFFFFF00), new Color(0xA55252FF), new Color(0x4C2626FF), new Color(0x3D1E1EFF) };
+    private static final Color         TRANSPARENT = new Color(0xFFFFFF00);
+    private final Color[]              colors      = { new Color(0xFFFFFFFF), new Color(0xA8A8A8FF), new Color(0x545454FF), new Color(0x000000FF) };
     private final MemoryBankController memory;
 
     private GpuMode state = GpuMode.V_BLANK;
@@ -31,7 +31,7 @@ public class GPU {
     public boolean step() {
         final boolean gpuOn = this.memory.isBitSet(MemoryBankController.LCDC, 7);
 
-        if (gpuOn) {
+        if (gpuOn) { // TODO: gpuOn FREEZES DR. MARIO WHILE PINBULL DELUXE HAS GFX GLITCHES WITHOUT IT
             this.cycleAccumulator += 4;
 
             if (this.cycleAccumulator > 0) {
@@ -54,6 +54,8 @@ public class GPU {
                     return true;
                 }
             }
+        } else {
+            // TODO: WHAT TO DO HERE?
         }
 
         return false;
@@ -93,57 +95,17 @@ public class GPU {
         final boolean renderBG = this.memory.isBitSet(MemoryBankController.LCDC, 0);
         final boolean renderWindow = this.memory.isBitSet(MemoryBankController.LCDC, 5);
         final boolean renderObjects = this.memory.isBitSet(MemoryBankController.LCDC, 1);
-        final int scrollX = this.memory.read8Bit(MemoryBankController.SCROLL_X);
         final int currentLine = this.memory.read8Bit(MemoryBankController.LCD_LY);
         final boolean atlasAddressMode = this.memory.isBitSet(MemoryBankController.LCDC, 4);
-        int bgMapY = currentLine + this.memory.read8Bit(MemoryBankController.SCROLL_Y);
-        if (bgMapY > 255) {
-            bgMapY -= 255;
-        }
-        final int bgMapBlockY = bgMapY / 8;
-        final int tilePixelY = bgMapY % 8;
 
         if (renderBG) {
 
             // RENDER BACKGROUND
-            final int bgMapStartAddress = this.memory.isBitSet(MemoryBankController.LCDC, 3) ? 0x9C00 : 0x9800;
-            for (int pixelX = 0; pixelX < 160; pixelX++) {
-                int bgMapX = pixelX + scrollX;
-                if (bgMapX > 255) {
-                    bgMapX -= 255;
-                }
-                final int bgMapBlockX = bgMapX / 8;
-                final int tilePixelX = bgMapX % 8;
-
-                final int tileAddress = bgMapStartAddress + bgMapBlockY * 32 + bgMapBlockX;
-                int atlasTileAddress;
-                if (atlasAddressMode) {
-                    final int atlasTileIndex = this.memory.read8Bit(tileAddress);
-                    atlasTileAddress = 0x8000 + atlasTileIndex * 16;
-                } else {
-                    final byte atlasTileIndex = (byte) this.memory.read8Bit(tileAddress);
-                    atlasTileAddress = 0x9000 + atlasTileIndex * 16;
-                }
-                for (int i = 0; i < 16; i++) {
-                    this.tileCache[i] = this.memory.read8Bit(atlasTileAddress + i);
-                }
-                final int colorPaletteIndex = this.getColorPaletteIndexOfTilePixel(this.tileCache, tilePixelX, tilePixelY);
-                final Color color = this.getBGColor(colorPaletteIndex);
-
-                this.backBuffer[pixelX][currentLine] = colorPaletteIndex;
-                this.frontBuffer.setColor(color);
-                this.frontBuffer.drawPixel(pixelX, currentLine);
-            }
+            this.renderBg(currentLine, atlasAddressMode);
 
             // RENDER WINDOW
             if (renderWindow) {
-                final int windowMapStartAddress = this.memory.isBitSet(MemoryBankController.LCDC, 6) ? 0x9C00 : 0x9800;
-                final int wx = this.memory.read8Bit(MemoryBankController.WX);
-                final int wy = this.memory.read8Bit(MemoryBankController.WY);
-
-                for (int pixelX = 0; pixelX < 159; pixelX++) {
-                    // TODO
-                }
+                this.renderWindow(currentLine, atlasAddressMode);
             }
         }
 
@@ -154,6 +116,102 @@ public class GPU {
 
         this.cycleAccumulator -= 172;
         this.setState(GpuMode.H_BLANK);
+    }
+
+
+    private void renderWindow(int currentLine, boolean atlasAddressMode) {
+        final int windowMapStartAddress = this.memory.isBitSet(MemoryBankController.LCDC, 6) ? 0x9C00 : 0x9800;
+        final int wx = this.memory.read8Bit(MemoryBankController.WX) - 7;
+        final int wy = this.memory.read8Bit(MemoryBankController.WY);
+        int lastTileAddress = -1;
+
+        if (currentLine >= wy) {
+            for (int x = wx; x < 160; x++) {
+                // FIND TILE ADDRESS
+                final int windowLine = currentLine - wy;
+                final int pixelX = x - wx;
+                final int tilePixelX = pixelX % 8;
+                final int tilePixelY = windowLine % 8;
+                final int tileAddress = windowMapStartAddress + windowLine / 8 * 32 + pixelX / 8;
+
+                // READ TILE DATA
+                if (tileAddress != lastTileAddress) {
+                    int atlasTileAddress;
+                    if (atlasAddressMode) {
+                        final int atlasTileIndex = this.memory.read8Bit(tileAddress);
+                        atlasTileAddress = 0x8000 + atlasTileIndex * 16;
+                    } else {
+                        final byte atlasTileIndex = (byte) this.memory.read8Bit(tileAddress);
+                        atlasTileAddress = 0x9000 + atlasTileIndex * 16;
+                    }
+
+                    for (int i = 0; i < 16; i++) {
+                        this.tileCache[i] = this.memory.read8Bit(atlasTileAddress + i);
+                    }
+                    lastTileAddress = tileAddress;
+                }
+
+                // FETCH COLOR
+                final int colorPaletteIndex = this.getColorPaletteIndexOfTilePixel(this.tileCache, tilePixelX, tilePixelY);
+                final Color color = this.getBGColor(colorPaletteIndex);
+
+                // RENDER
+                this.backBuffer[pixelX][currentLine] = colorPaletteIndex;
+                this.frontBuffer.setColor(color);
+                this.frontBuffer.drawPixel(pixelX, currentLine);
+            }
+        }
+    }
+
+
+    private void renderBg(int currentLine, boolean atlasAddressMode) {
+        final int bgMapStartAddress = this.memory.isBitSet(MemoryBankController.LCDC, 3) ? 0x9C00 : 0x9800;
+        final int scrollX = this.memory.read8Bit(MemoryBankController.SCROLL_X);
+        int bgMapY = currentLine + this.memory.read8Bit(MemoryBankController.SCROLL_Y);
+        if (bgMapY > 255) {
+            bgMapY -= 255;
+        }
+        final int bgMapBlockY = bgMapY / 8;
+        final int tilePixelY = bgMapY % 8;
+
+        int lastTileAddress = -1;
+
+        for (int pixelX = 0; pixelX < 160; pixelX++) {
+            // FIND TILE ADDRESS
+            int bgMapX = pixelX + scrollX;
+            if (bgMapX > 255) {
+                bgMapX -= 255;
+            }
+            final int bgMapBlockX = bgMapX / 8;
+            final int tilePixelX = bgMapX % 8;
+            final int tileAddress = bgMapStartAddress + bgMapBlockY * 32 + bgMapBlockX;
+
+            // READ TILE DATA
+            if (tileAddress != lastTileAddress) {
+                int atlasTileAddress;
+                if (atlasAddressMode) {
+                    final int atlasTileIndex = this.memory.read8Bit(tileAddress);
+                    atlasTileAddress = 0x8000 + atlasTileIndex * 16;
+                } else {
+                    final byte atlasTileIndex = (byte) this.memory.read8Bit(tileAddress);
+                    atlasTileAddress = 0x9000 + atlasTileIndex * 16;
+                }
+
+                for (int i = 0; i < 16; i++) {
+                    this.tileCache[i] = this.memory.read8Bit(atlasTileAddress + i);
+                }
+                lastTileAddress = tileAddress;
+            }
+
+            // FETCH COLOR
+            final int colorPaletteIndex = this.getColorPaletteIndexOfTilePixel(this.tileCache, tilePixelX, tilePixelY);
+            final Color color = this.getBGColor(colorPaletteIndex);
+
+            // RENDER
+            this.backBuffer[pixelX][currentLine] = colorPaletteIndex;
+            this.frontBuffer.setColor(color);
+            this.frontBuffer.drawPixel(pixelX, currentLine);
+        }
     }
 
 
@@ -304,13 +362,13 @@ public class GPU {
         final int palette = this.memory.read8Bit(paletteAddress);
         switch (colorIndex) {
             case 3:
-                return this.objectColors[palette >>> 6];
+                return this.colors[palette >>> 6];
             case 2:
-                return this.objectColors[palette >>> 4 & 0b11];
+                return this.colors[palette >>> 4 & 0b11];
             case 1:
-                return this.objectColors[palette >>> 2 & 0b11];
+                return this.colors[palette >>> 2 & 0b11];
             case 0:
-                return this.objectColors[palette & 0b11];
+                return GPU.TRANSPARENT;
         }
 
         return null;
