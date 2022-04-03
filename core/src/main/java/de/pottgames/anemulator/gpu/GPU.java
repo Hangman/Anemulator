@@ -20,6 +20,7 @@ public class GPU {
     private final Pixmap  frontBuffer;
     private final int[][] backBuffer       = new int[160][144];
     private final int[]   tileCache        = new int[16];
+    private boolean       wasOff           = false;
 
 
     public GPU(MemoryBankController memory, Pixmap backBuffer) {
@@ -31,8 +32,9 @@ public class GPU {
     public boolean step() {
         final boolean gpuOn = this.memory.isBitSet(MemoryBankController.LCDC, 7);
 
-        if (gpuOn) { // TODO: gpuOn FREEZES DR. MARIO WHILE PINBULL DELUXE HAS GFX GLITCHES WITHOUT IT
+        if (gpuOn) {
             this.cycleAccumulator += 4;
+            this.wasOff = false;
 
             if (this.cycleAccumulator > 0) {
                 final GpuMode oldMode = this.state;
@@ -54,8 +56,10 @@ public class GPU {
                     return true;
                 }
             }
-        } else {
-            // TODO: WHAT TO DO HERE?
+        } else if (!this.wasOff) {
+            this.setLine(0);
+            this.setState(GpuMode.H_BLANK);
+            this.wasOff = false;
         }
 
         return false;
