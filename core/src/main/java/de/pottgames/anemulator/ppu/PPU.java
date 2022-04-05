@@ -1,18 +1,18 @@
-package de.pottgames.anemulator.gpu;
+package de.pottgames.anemulator.ppu;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 
-import de.pottgames.anemulator.memory.MemoryBankController;
+import de.pottgames.anemulator.memory.Memory;
 
 /**
  * TODO: LY register is always 0 if the lcd is off.
  *
  */
-public class GPU {
-    private static final Color         TRANSPARENT = new Color(0xFFFFFF00);
-    private final Color[]              colors      = { new Color(0xFFFFFFFF), new Color(0xA8A8A8FF), new Color(0x545454FF), new Color(0x000000FF) };
-    private final MemoryBankController memory;
+public class PPU {
+    private static final Color TRANSPARENT = new Color(0xFFFFFF00);
+    private final Color[]      colors      = { new Color(0xFFFFFFFF), new Color(0xA8A8A8FF), new Color(0x545454FF), new Color(0x000000FF) };
+    private final Memory       mmu;
 
     private GpuMode state = GpuMode.V_BLANK;
 
@@ -23,14 +23,14 @@ public class GPU {
     private boolean       wasOff           = false;
 
 
-    public GPU(MemoryBankController memory, Pixmap backBuffer) {
-        this.memory = memory;
+    public PPU(Memory memory, Pixmap backBuffer) {
+        this.mmu = memory;
         this.frontBuffer = backBuffer;
     }
 
 
     public boolean step() {
-        final boolean gpuOn = this.memory.isBitSet(MemoryBankController.LCDC, 7);
+        final boolean gpuOn = this.mmu.isBitSet(Memory.LCDC, 7);
 
         if (gpuOn) {
             this.cycleAccumulator += 4;
@@ -82,7 +82,7 @@ public class GPU {
                 final int tilePixelY = y % 8;
 
                 for (int i = 0; i < 16; i++) {
-                    this.tileCache[i] = this.memory.read8Bit(tileStartAddress + i);
+                    this.tileCache[i] = this.mmu.readByte(tileStartAddress + i);
                 }
 
                 final int colorPaletteIndex = this.getColorPaletteIndexOfTilePixel(this.tileCache, tilePixelX, tilePixelY);
@@ -96,11 +96,11 @@ public class GPU {
 
 
     private void pixelTransfer() {
-        final boolean renderBG = this.memory.isBitSet(MemoryBankController.LCDC, 0);
-        final boolean renderWindow = this.memory.isBitSet(MemoryBankController.LCDC, 5);
-        final boolean renderObjects = this.memory.isBitSet(MemoryBankController.LCDC, 1);
-        final int currentLine = this.memory.read8Bit(MemoryBankController.LCD_LY);
-        final boolean atlasAddressMode = this.memory.isBitSet(MemoryBankController.LCDC, 4);
+        final boolean renderBG = this.mmu.isBitSet(Memory.LCDC, 0);
+        final boolean renderWindow = this.mmu.isBitSet(Memory.LCDC, 5);
+        final boolean renderObjects = this.mmu.isBitSet(Memory.LCDC, 1);
+        final int currentLine = this.mmu.readByte(Memory.LCD_LY);
+        final boolean atlasAddressMode = this.mmu.isBitSet(Memory.LCDC, 4);
 
         if (renderBG) {
 
@@ -124,9 +124,9 @@ public class GPU {
 
 
     private void renderWindow(int currentLine, boolean atlasAddressMode) {
-        final int windowMapStartAddress = this.memory.isBitSet(MemoryBankController.LCDC, 6) ? 0x9C00 : 0x9800;
-        final int wx = this.memory.read8Bit(MemoryBankController.WX) - 7;
-        final int wy = this.memory.read8Bit(MemoryBankController.WY);
+        final int windowMapStartAddress = this.mmu.isBitSet(Memory.LCDC, 6) ? 0x9C00 : 0x9800;
+        final int wx = this.mmu.readByte(Memory.WX) - 7;
+        final int wy = this.mmu.readByte(Memory.WY);
         int lastTileAddress = -1;
 
         if (currentLine >= wy) {
@@ -142,15 +142,15 @@ public class GPU {
                 if (tileAddress != lastTileAddress) {
                     int atlasTileAddress;
                     if (atlasAddressMode) {
-                        final int atlasTileIndex = this.memory.read8Bit(tileAddress);
+                        final int atlasTileIndex = this.mmu.readByte(tileAddress);
                         atlasTileAddress = 0x8000 + atlasTileIndex * 16;
                     } else {
-                        final byte atlasTileIndex = (byte) this.memory.read8Bit(tileAddress);
+                        final byte atlasTileIndex = (byte) this.mmu.readByte(tileAddress);
                         atlasTileAddress = 0x9000 + atlasTileIndex * 16;
                     }
 
                     for (int i = 0; i < 16; i++) {
-                        this.tileCache[i] = this.memory.read8Bit(atlasTileAddress + i);
+                        this.tileCache[i] = this.mmu.readByte(atlasTileAddress + i);
                     }
                     lastTileAddress = tileAddress;
                 }
@@ -169,9 +169,9 @@ public class GPU {
 
 
     private void renderBg(int currentLine, boolean atlasAddressMode) {
-        final int bgMapStartAddress = this.memory.isBitSet(MemoryBankController.LCDC, 3) ? 0x9C00 : 0x9800;
-        final int scrollX = this.memory.read8Bit(MemoryBankController.SCROLL_X);
-        int bgMapY = currentLine + this.memory.read8Bit(MemoryBankController.SCROLL_Y);
+        final int bgMapStartAddress = this.mmu.isBitSet(Memory.LCDC, 3) ? 0x9C00 : 0x9800;
+        final int scrollX = this.mmu.readByte(Memory.SCROLL_X);
+        int bgMapY = currentLine + this.mmu.readByte(Memory.SCROLL_Y);
         if (bgMapY > 255) {
             bgMapY -= 255;
         }
@@ -194,15 +194,15 @@ public class GPU {
             if (tileAddress != lastTileAddress) {
                 int atlasTileAddress;
                 if (atlasAddressMode) {
-                    final int atlasTileIndex = this.memory.read8Bit(tileAddress);
+                    final int atlasTileIndex = this.mmu.readByte(tileAddress);
                     atlasTileAddress = 0x8000 + atlasTileIndex * 16;
                 } else {
-                    final byte atlasTileIndex = (byte) this.memory.read8Bit(tileAddress);
+                    final byte atlasTileIndex = (byte) this.mmu.readByte(tileAddress);
                     atlasTileAddress = 0x9000 + atlasTileIndex * 16;
                 }
 
                 for (int i = 0; i < 16; i++) {
-                    this.tileCache[i] = this.memory.read8Bit(atlasTileAddress + i);
+                    this.tileCache[i] = this.mmu.readByte(atlasTileAddress + i);
                 }
                 lastTileAddress = tileAddress;
             }
@@ -220,14 +220,14 @@ public class GPU {
 
 
     private void renderObjects(final int currentLine) {
-        final int objHeight = this.memory.isBitSet(MemoryBankController.LCDC, 2) ? 16 : 8;
+        final int objHeight = this.mmu.isBitSet(Memory.LCDC, 2) ? 16 : 8;
         for (int i = 0; i < 40; i++) {
             final int oamAddress = 0xFE00 + i * 4;
-            int objY = this.memory.read8Bit(oamAddress);
-            int objX = this.memory.read8Bit(oamAddress + 1);
+            int objY = this.mmu.readByte(oamAddress);
+            int objX = this.mmu.readByte(oamAddress + 1);
             if (this.isObjectVisible(objX, objY, objHeight, currentLine)) {
-                final int objTileIndex = this.memory.read8Bit(oamAddress + 2);
-                final int objAttributes = this.memory.read8Bit(oamAddress + 3);
+                final int objTileIndex = this.mmu.readByte(oamAddress + 2);
+                final int objAttributes = this.mmu.readByte(oamAddress + 3);
                 final int atlasTileAddress = 0x8000 + objTileIndex * 16;
                 final boolean flipX = (objAttributes & 0b100000) > 0;
                 final boolean flipY = (objAttributes & 0b1000000) > 0;
@@ -244,7 +244,7 @@ public class GPU {
 
                 // FETCH TILE PIXELS FROM ATLAS
                 for (int j = 0; j < 16; j++) {
-                    this.tileCache[j] = this.memory.read8Bit(atlasTileAddress + atlasAddressModificator + j);
+                    this.tileCache[j] = this.mmu.readByte(atlasTileAddress + atlasAddressModificator + j);
                 }
 
                 this.drawObjectLine(this.tileCache, objX, tilePixelY, flipX, priority, currentLine, paletteAddress);
@@ -283,7 +283,7 @@ public class GPU {
 
 
     private void hBlank() {
-        final int currentLine = this.memory.read8Bit(MemoryBankController.LCD_LY);
+        final int currentLine = this.mmu.readByte(Memory.LCD_LY);
         this.setLine(currentLine + 1);
         if (currentLine + 1 > 143) {
             this.setState(GpuMode.V_BLANK);
@@ -295,7 +295,7 @@ public class GPU {
 
 
     private void vBlank() {
-        final int currentLine = this.memory.read8Bit(MemoryBankController.LCD_LY);
+        final int currentLine = this.mmu.readByte(Memory.LCD_LY);
         if (currentLine + 1 > 153) {
             this.setLine(0);
             this.setState(GpuMode.OAM_SEARCH);
@@ -307,13 +307,13 @@ public class GPU {
 
 
     private void setLine(int number) {
-        this.memory.write(MemoryBankController.LCD_LY, number);
-        final int lyc = this.memory.read8Bit(MemoryBankController.LCD_LYC);
-        this.memory.setBit(MemoryBankController.LCD_STAT, 2, number == lyc);
+        this.mmu.writeByte(Memory.LCD_LY, number);
+        final int lyc = this.mmu.readByte(Memory.LCD_LYC);
+        this.mmu.setBit(Memory.LCD_STAT, 2, number == lyc);
 
         // REQUEST INTERRUPT IF LYC = LY
-        if (this.memory.isBitSet(MemoryBankController.LCD_STAT, 6) && lyc == number) {
-            this.memory.setBit(MemoryBankController.IF, 1, true);
+        if (this.mmu.isBitSet(Memory.LCD_STAT, 6) && lyc == number) {
+            this.mmu.setBit(Memory.IF, 1, true);
         }
     }
 
@@ -322,32 +322,32 @@ public class GPU {
         this.state = state;
 
         // SET MODE BITS IN LCD_STAT REGISTER
-        int lcdStat = this.memory.read8Bit(MemoryBankController.LCD_STAT);
+        int lcdStat = this.mmu.readByte(Memory.LCD_STAT);
         lcdStat &= ~0b11;
         lcdStat |= state.getFlagBits();
-        this.memory.write(MemoryBankController.LCD_STAT, lcdStat);
+        this.mmu.writeByte(Memory.LCD_STAT, lcdStat);
 
         switch (state) {
             case H_BLANK:
                 // REQUEST INTERRUPT IF HBLANK IS ENABLED AS SOURCE OF INTERRUPTS
-                if (this.memory.isBitSet(MemoryBankController.LCD_STAT, 3)) {
-                    this.memory.setBit(MemoryBankController.IF, 1, true);
+                if (this.mmu.isBitSet(Memory.LCD_STAT, 3)) {
+                    this.mmu.setBit(Memory.IF, 1, true);
                 }
                 break;
             case OAM_SEARCH:
                 // REQUEST INTERRUPT IF OAM SEARCH IS ENABLED AS SOURCE OF INTERRUPTS
-                if (this.memory.isBitSet(MemoryBankController.LCD_STAT, 5)) {
-                    this.memory.setBit(MemoryBankController.IF, 1, true);
+                if (this.mmu.isBitSet(Memory.LCD_STAT, 5)) {
+                    this.mmu.setBit(Memory.IF, 1, true);
                 }
                 break;
             case PIXEL_TRANSFER:
                 break;
             case V_BLANK:
                 // REQUEST INTERRUPT IF VBLANK IS ENABLED AS SOURCE OF INTERRUPTS
-                if (this.memory.isBitSet(MemoryBankController.LCD_STAT, 4)) {
-                    this.memory.setBit(MemoryBankController.IF, 1, true);
+                if (this.mmu.isBitSet(Memory.LCD_STAT, 4)) {
+                    this.mmu.setBit(Memory.IF, 1, true);
                 }
-                this.memory.setBit(MemoryBankController.IF, 0, true);
+                this.mmu.setBit(Memory.IF, 0, true);
                 break;
         }
     }
@@ -363,7 +363,7 @@ public class GPU {
 
 
     private Color getObjectColor(int paletteAddress, int colorIndex) {
-        final int palette = this.memory.read8Bit(paletteAddress);
+        final int palette = this.mmu.readByte(paletteAddress);
         switch (colorIndex) {
             case 3:
                 return this.colors[palette >>> 6];
@@ -372,7 +372,7 @@ public class GPU {
             case 1:
                 return this.colors[palette >>> 2 & 0b11];
             case 0:
-                return GPU.TRANSPARENT;
+                return PPU.TRANSPARENT;
         }
 
         return null;
@@ -380,7 +380,7 @@ public class GPU {
 
 
     private Color getBGColor(final int colorIndex) {
-        final int palette = this.memory.read8Bit(MemoryBankController.BGP);
+        final int palette = this.mmu.readByte(Memory.BGP);
         switch (colorIndex) {
             case 3:
                 return this.colors[palette >>> 6];

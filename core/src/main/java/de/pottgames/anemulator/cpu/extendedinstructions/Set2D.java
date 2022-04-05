@@ -3,11 +3,11 @@ package de.pottgames.anemulator.cpu.extendedinstructions;
 import de.pottgames.anemulator.cpu.Instruction;
 import de.pottgames.anemulator.cpu.Register;
 import de.pottgames.anemulator.cpu.Register.RegisterId;
-import de.pottgames.anemulator.memory.MemoryBankController;
+import de.pottgames.anemulator.memory.Memory;
 
 public class Set2D extends Instruction {
 
-    public Set2D(Register register, MemoryBankController memory) {
+    public Set2D(Register register, Memory memory) {
         super(register, memory);
     }
 

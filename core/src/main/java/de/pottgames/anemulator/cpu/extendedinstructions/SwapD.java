@@ -4,11 +4,11 @@ import de.pottgames.anemulator.cpu.Instruction;
 import de.pottgames.anemulator.cpu.Register;
 import de.pottgames.anemulator.cpu.Register.FlagId;
 import de.pottgames.anemulator.cpu.Register.RegisterId;
-import de.pottgames.anemulator.memory.MemoryBankController;
+import de.pottgames.anemulator.memory.Memory;
 
 public class SwapD extends Instruction {
 
-    public SwapD(Register register, MemoryBankController memory) {
+    public SwapD(Register register, Memory memory) {
         super(register, memory);
     }
 

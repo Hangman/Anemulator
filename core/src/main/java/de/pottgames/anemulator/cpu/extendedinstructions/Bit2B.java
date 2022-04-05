@@ -4,11 +4,11 @@ import de.pottgames.anemulator.cpu.Instruction;
 import de.pottgames.anemulator.cpu.Register;
 import de.pottgames.anemulator.cpu.Register.FlagId;
 import de.pottgames.anemulator.cpu.Register.RegisterId;
-import de.pottgames.anemulator.memory.MemoryBankController;
+import de.pottgames.anemulator.memory.Memory;
 
 public class Bit2B extends Instruction {
 
-    public Bit2B(Register register, MemoryBankController memory) {
+    public Bit2B(Register register, Memory memory) {
         super(register, memory);
     }
 

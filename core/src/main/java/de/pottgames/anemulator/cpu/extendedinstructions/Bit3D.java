@@ -4,11 +4,11 @@ import de.pottgames.anemulator.cpu.Instruction;
 import de.pottgames.anemulator.cpu.Register;
 import de.pottgames.anemulator.cpu.Register.FlagId;
 import de.pottgames.anemulator.cpu.Register.RegisterId;
-import de.pottgames.anemulator.memory.MemoryBankController;
+import de.pottgames.anemulator.memory.Memory;
 
 public class Bit3D extends Instruction {
 
-    public Bit3D(Register register, MemoryBankController memory) {
+    public Bit3D(Register register, Memory memory) {
         super(register, memory);
     }
 

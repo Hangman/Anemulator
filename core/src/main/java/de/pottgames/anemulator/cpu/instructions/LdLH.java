@@ -3,11 +3,11 @@ package de.pottgames.anemulator.cpu.instructions;
 import de.pottgames.anemulator.cpu.Instruction;
 import de.pottgames.anemulator.cpu.Register;
 import de.pottgames.anemulator.cpu.Register.RegisterId;
-import de.pottgames.anemulator.memory.MemoryBankController;
+import de.pottgames.anemulator.memory.Memory;
 
 public class LdLH extends Instruction {
 
-    public LdLH(Register register, MemoryBankController memory) {
+    public LdLH(Register register, Memory memory) {
         super(register, memory);
     }
 

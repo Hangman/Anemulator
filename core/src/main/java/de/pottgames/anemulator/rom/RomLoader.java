@@ -4,49 +4,57 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import de.pottgames.anemulator.cpu.CallStack;
 import de.pottgames.anemulator.error.UnsupportedFeatureException;
-import de.pottgames.anemulator.memory.MBC1;
-import de.pottgames.anemulator.memory.MemoryBankController;
+import de.pottgames.anemulator.memory.Mbc;
+import de.pottgames.anemulator.memory.Mbc1;
 import de.pottgames.anemulator.memory.RomOnly;
 
 public class RomLoader {
 
-    public static MemoryBankController load(String path, CallStack callStack) throws IOException {
-        final byte[] data = Files.readAllBytes(Paths.get(path));
+    public static Mbc load(String path) {
+        byte[] data = null;
+        try {
+            data = Files.readAllBytes(Paths.get(path));
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
         final int[] intData = new int[data.length];
         for (int i = 0; i < data.length; i++) {
             intData[i] = Byte.toUnsignedInt(data[i]);
         }
 
-        MemoryBankController controller = null;
+        Mbc controller = null;
         switch (intData[0x147]) {
             case 0x0:
                 // ROM ONLY
-                System.out.println("ROM ONLY MBC");
-                controller = new RomOnly(intData, callStack);
+                System.out.println("ROM ONLY");
+                controller = new RomOnly(intData);
                 break;
             case 0x1:
                 // ROM + MBC1
                 System.out.println("MBC1");
-                controller = new MBC1(intData, callStack);
+                controller = new Mbc1(intData);
                 break;
             // case 0x2:
             // // ROM + MBC1 + RAM
             // // TODO
             // break;
-            // case 0x3:
-            // // ROM + MBC1 + RAM + BATTERY
-            // // TODO
-            // break;
+            case 0x3:
+                // // ROM + MBC1 + RAM + BATTERY
+                // // TODO
+                System.out.println("MBC1 + RAM + BATTERY");
+                controller = new Mbc1(intData);
+                break;
             // case 0x5:
             // // ROM + MBC2
             // // TODO
             // break;
-            // case 0x6:
-            // // ROM + MBC2 + BATTERY
-            // // TODO
-            // break;
+            case 0x6:
+                // // ROM + MBC2 + BATTERY
+                // // TODO
+                System.out.println("MBC2 + BATTERY");
+                controller = new Mbc1(intData);
+                break;
             // case 0x8:
             // // ROM + RAM
             // // TODO

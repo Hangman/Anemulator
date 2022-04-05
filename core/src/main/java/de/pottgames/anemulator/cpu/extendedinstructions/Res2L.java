@@ -3,11 +3,11 @@ package de.pottgames.anemulator.cpu.extendedinstructions;
 import de.pottgames.anemulator.cpu.Instruction;
 import de.pottgames.anemulator.cpu.Register;
 import de.pottgames.anemulator.cpu.Register.RegisterId;
-import de.pottgames.anemulator.memory.MemoryBankController;
+import de.pottgames.anemulator.memory.Memory;
 
 public class Res2L extends Instruction {
 
-    public Res2L(Register register, MemoryBankController memory) {
+    public Res2L(Register register, Memory memory) {
         super(register, memory);
     }
 

@@ -4,11 +4,11 @@ import de.pottgames.anemulator.cpu.Instruction;
 import de.pottgames.anemulator.cpu.Register;
 import de.pottgames.anemulator.cpu.Register.FlagId;
 import de.pottgames.anemulator.cpu.Register.RegisterId;
-import de.pottgames.anemulator.memory.MemoryBankController;
+import de.pottgames.anemulator.memory.Memory;
 
 public class Cp_HL_ extends Instruction {
 
-    public Cp_HL_(Register register, MemoryBankController memory) {
+    public Cp_HL_(Register register, Memory memory) {
         super(register, memory);
     }
 
@@ -16,7 +16,7 @@ public class Cp_HL_ extends Instruction {
     @Override
     public int run() {
         final int a = this.register.get(RegisterId.A);
-        final int compareValue = this.memory.read8Bit(this.register.get(RegisterId.HL));
+        final int compareValue = this.memory.readByte(this.register.get(RegisterId.HL));
 
         this.register.setFlag(FlagId.Z, a == compareValue);
         this.register.setFlag(FlagId.N, true);

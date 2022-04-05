@@ -6,29 +6,20 @@ import com.badlogic.gdx.InputProcessor;
 import de.pottgames.anemulator.Start;
 import de.pottgames.anemulator.cpu.Register;
 import de.pottgames.anemulator.cpu.Register.RegisterId;
-import de.pottgames.anemulator.memory.MemoryBankController;
 
 public class DebugInput implements InputProcessor {
-    private final Register             register;
-    private final MemoryBankController memory;
-    private final Start                start;
+    private final Register register;
+    private final Start    start;
 
 
-    public DebugInput(Register register, MemoryBankController memory, Start start) {
+    public DebugInput(Register register, Start start) {
         this.register = register;
-        this.memory = memory;
         this.start = start;
     }
 
 
     @Override
     public boolean keyDown(int keycode) {
-        if (keycode == Input.Keys.F1) {
-            System.out.println("F1");
-            this.register.setPc(0x100);
-            this.memory.setBooted();
-            return true;
-        }
         if (keycode == Input.Keys.F2) {
             this.start.nextStep(1);
             return true;

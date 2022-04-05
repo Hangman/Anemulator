@@ -4,11 +4,11 @@ import de.pottgames.anemulator.cpu.Instruction;
 import de.pottgames.anemulator.cpu.Register;
 import de.pottgames.anemulator.cpu.Register.FlagId;
 import de.pottgames.anemulator.cpu.Register.RegisterId;
-import de.pottgames.anemulator.memory.MemoryBankController;
+import de.pottgames.anemulator.memory.Memory;
 
 public class Bit5D extends Instruction {
 
-    public Bit5D(Register register, MemoryBankController memory) {
+    public Bit5D(Register register, Memory memory) {
         super(register, memory);
     }
 

@@ -3,11 +3,11 @@ package de.pottgames.anemulator.cpu.instructions;
 import de.pottgames.anemulator.cpu.Instruction;
 import de.pottgames.anemulator.cpu.Register;
 import de.pottgames.anemulator.cpu.Register.FlagId;
-import de.pottgames.anemulator.memory.MemoryBankController;
+import de.pottgames.anemulator.memory.Memory;
 
 public class JpNZa16 extends Instruction {
 
-    public JpNZa16(Register register, MemoryBankController memory) {
+    public JpNZa16(Register register, Memory memory) {
         super(register, memory);
     }
 
@@ -15,7 +15,7 @@ public class JpNZa16 extends Instruction {
     @Override
     public int run() {
         if (!this.register.isFlagSet(FlagId.Z)) {
-            this.register.setPc(this.memory.read16Bit(this.register.getPc()));
+            this.register.setPc(this.memory.readWord(this.register.getPc()));
             return 16;
         }
 

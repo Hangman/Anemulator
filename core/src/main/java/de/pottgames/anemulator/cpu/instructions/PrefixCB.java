@@ -2,22 +2,19 @@ package de.pottgames.anemulator.cpu.instructions;
 
 import com.badlogic.gdx.utils.IntMap;
 
-import de.pottgames.anemulator.cpu.CallStack;
 import de.pottgames.anemulator.cpu.Instruction;
 import de.pottgames.anemulator.cpu.Register;
 import de.pottgames.anemulator.cpu.extendedinstructions.*;
 import de.pottgames.anemulator.error.UnsupportedFeatureException;
-import de.pottgames.anemulator.memory.MemoryBankController;
+import de.pottgames.anemulator.memory.Memory;
 
 public class PrefixCB extends Instruction {
     private IntMap<Instruction> extendedInstructions = new IntMap<>();
-    private final CallStack     callStack;
     public static int           lastInstructionOpcode;
 
 
-    public PrefixCB(Register register, MemoryBankController memory, CallStack callStack) {
+    public PrefixCB(Register register, Memory memory) {
         super(register, memory);
-        this.callStack = callStack;
         this.initExtendedInstructions();
     }
 
@@ -299,7 +296,7 @@ public class PrefixCB extends Instruction {
 
     @Override
     public int run() {
-        final int opCode = this.memory.read8Bit(this.register.getPc());
+        final int opCode = this.memory.readByte(this.register.getPc());
         this.register.setPc(this.register.getPc() + 1);
         final Instruction instruction = this.extendedInstructions.get(opCode);
 
@@ -307,7 +304,6 @@ public class PrefixCB extends Instruction {
             throw new UnsupportedFeatureException("Unsupported extended opCode: " + Integer.toHexString(opCode));
         }
 
-        this.callStack.add(instruction.toString(), opCode, this.register.getPc() - 1);
         final int cycles = instruction.run();
 
         return cycles;

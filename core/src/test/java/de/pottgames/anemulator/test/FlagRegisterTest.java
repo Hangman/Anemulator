@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import de.pottgames.anemulator.cpu.CallStack;
 import de.pottgames.anemulator.cpu.Register;
 import de.pottgames.anemulator.cpu.Register.FlagId;
 import de.pottgames.anemulator.cpu.Register.RegisterId;
@@ -14,7 +13,7 @@ class FlagRegisterTest {
     @ParameterizedTest
     @ValueSource(ints = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 })
     void test(int number) {
-        final Register register = new Register(new CallStack());
+        final Register register = new Register();
 
         // Z N H C
         switch (number) {

@@ -4,11 +4,11 @@ import de.pottgames.anemulator.cpu.Instruction;
 import de.pottgames.anemulator.cpu.Register;
 import de.pottgames.anemulator.cpu.Register.FlagId;
 import de.pottgames.anemulator.cpu.Register.RegisterId;
-import de.pottgames.anemulator.memory.MemoryBankController;
+import de.pottgames.anemulator.memory.Memory;
 
 public class SbcAd8 extends Instruction {
 
-    public SbcAd8(Register register, MemoryBankController memory) {
+    public SbcAd8(Register register, Memory memory) {
         super(register, memory);
     }
 
@@ -16,7 +16,7 @@ public class SbcAd8 extends Instruction {
     @Override
     public int run() {
         final int a = this.register.get(RegisterId.A);
-        final int value = this.memory.read8Bit(this.register.getPc());
+        final int value = this.memory.readByte(this.register.getPc());
         this.register.setPc(this.register.getPc() + 1);
         final int carry = this.register.isFlagSet(FlagId.C) ? 1 : 0;
         final int result = a - value - carry;

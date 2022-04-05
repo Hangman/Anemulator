@@ -3,11 +3,11 @@ package de.pottgames.anemulator.cpu.instructions;
 import de.pottgames.anemulator.cpu.Instruction;
 import de.pottgames.anemulator.cpu.Register;
 import de.pottgames.anemulator.cpu.Register.RegisterId;
-import de.pottgames.anemulator.memory.MemoryBankController;
+import de.pottgames.anemulator.memory.Memory;
 
 public class DecBC extends Instruction {
 
-    public DecBC(Register register, MemoryBankController memory) {
+    public DecBC(Register register, Memory memory) {
         super(register, memory);
     }
 

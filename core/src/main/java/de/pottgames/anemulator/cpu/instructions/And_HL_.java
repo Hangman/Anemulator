@@ -4,11 +4,11 @@ import de.pottgames.anemulator.cpu.Instruction;
 import de.pottgames.anemulator.cpu.Register;
 import de.pottgames.anemulator.cpu.Register.FlagId;
 import de.pottgames.anemulator.cpu.Register.RegisterId;
-import de.pottgames.anemulator.memory.MemoryBankController;
+import de.pottgames.anemulator.memory.Memory;
 
 public class And_HL_ extends Instruction {
 
-    public And_HL_(Register register, MemoryBankController memory) {
+    public And_HL_(Register register, Memory memory) {
         super(register, memory);
     }
 
@@ -16,7 +16,7 @@ public class And_HL_ extends Instruction {
     @Override
     public int run() {
         final int address = this.register.get(RegisterId.HL);
-        final int value = this.memory.read8Bit(address);
+        final int value = this.memory.readByte(address);
         final int a = this.register.get(RegisterId.A);
         final int result = value & a & 0xFF;
         this.register.set(RegisterId.A, result);

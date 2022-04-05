@@ -3,11 +3,11 @@ package de.pottgames.anemulator.cpu.instructions;
 import de.pottgames.anemulator.cpu.Instruction;
 import de.pottgames.anemulator.cpu.Register;
 import de.pottgames.anemulator.cpu.Register.FlagId;
-import de.pottgames.anemulator.memory.MemoryBankController;
+import de.pottgames.anemulator.memory.Memory;
 
 public class JrCr8 extends Instruction {
 
-    public JrCr8(Register register, MemoryBankController memory) {
+    public JrCr8(Register register, Memory memory) {
         super(register, memory);
     }
 
@@ -15,7 +15,7 @@ public class JrCr8 extends Instruction {
     @Override
     public int run() {
         if (this.register.isFlagSet(FlagId.C) == true) {
-            final byte offset = (byte) this.memory.read8Bit(this.register.getPc());
+            final byte offset = (byte) this.memory.readByte(this.register.getPc());
             this.register.setPc(this.register.getPc() + 1);
             this.register.setPc(this.register.getPc() + offset);
             return 12;

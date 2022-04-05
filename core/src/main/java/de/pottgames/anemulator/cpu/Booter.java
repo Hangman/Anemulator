@@ -2,16 +2,19 @@ package de.pottgames.anemulator.cpu;
 
 import de.pottgames.anemulator.cpu.Register.FlagId;
 import de.pottgames.anemulator.cpu.Register.RegisterId;
-import de.pottgames.anemulator.memory.MemoryBankController;
+import de.pottgames.anemulator.memory.Mbc;
+import de.pottgames.anemulator.memory.Memory;
 
 public class Booter {
-    private final MemoryBankController memory;
-    private final Register             register;
+    private final Memory   memory;
+    private final Mbc      mbc;
+    private final Register register;
 
 
-    public Booter(Register register, MemoryBankController memory) {
+    public Booter(Register register, Memory memory, Mbc mbc) {
         this.register = register;
         this.memory = memory;
+        this.mbc = mbc;
     }
 
 
@@ -34,63 +37,63 @@ public class Booter {
         this.register.setPc(0x100);
         this.register.setSp(0xFFFE);
 
-        this.memory.write(MemoryBankController.JOYPAD, 0xCF);
-        this.memory.write(MemoryBankController.SB, 0x00);
-        this.memory.write(MemoryBankController.SC, 0x7E);
-        this.memory.write(MemoryBankController.DIV, 0x18);
-        this.memory.write(MemoryBankController.TIMA, 0x00);
-        this.memory.write(MemoryBankController.TMA, 0x00);
-        this.memory.write(MemoryBankController.TAC, 0xF8);
-        this.memory.write(MemoryBankController.IF, 0xE1);
-        this.memory.write(MemoryBankController.NR10, 0x80);
-        this.memory.write(MemoryBankController.NR11, 0xBF);
-        this.memory.write(MemoryBankController.NR12, 0xF3);
-        this.memory.write(MemoryBankController.NR13, 0xFF);
-        this.memory.write(MemoryBankController.NR14, 0xBF);
-        this.memory.write(MemoryBankController.NR21, 0x3F);
-        this.memory.write(MemoryBankController.NR22, 0x00);
-        this.memory.write(MemoryBankController.NR23, 0xFF);
-        this.memory.write(MemoryBankController.NR24, 0xBF);
-        this.memory.write(MemoryBankController.NR30, 0x7F);
-        this.memory.write(MemoryBankController.NR31, 0xFF);
-        this.memory.write(MemoryBankController.NR32, 0x9F);
-        this.memory.write(MemoryBankController.NR33, 0xFF);
-        this.memory.write(MemoryBankController.NR34, 0xBF);
-        this.memory.write(MemoryBankController.NR41, 0xFF);
-        this.memory.write(MemoryBankController.NR42, 0x00);
-        this.memory.write(MemoryBankController.NR43, 0x00);
-        this.memory.write(MemoryBankController.NR44, 0xBF);
-        this.memory.write(MemoryBankController.NR50, 0x77);
-        this.memory.write(MemoryBankController.NR51, 0xF3);
-        this.memory.write(MemoryBankController.NR52, 0xF1);
-        this.memory.write(MemoryBankController.LCDC, 0x91);
-        this.memory.write(MemoryBankController.LCD_STAT, 0x81);
-        this.memory.write(MemoryBankController.SCROLL_Y, 0x00);
-        this.memory.write(MemoryBankController.SCROLL_X, 0x00);
-        this.memory.write(MemoryBankController.LCD_LY, 0x91);
-        this.memory.write(MemoryBankController.LCD_LYC, 0x00);
-        this.memory.write(MemoryBankController.DMA, 0xFF);
-        this.memory.write(MemoryBankController.BGP, 0xFC);
-        this.memory.write(MemoryBankController.OBP0, 0x00);
-        this.memory.write(MemoryBankController.OBP1, 0x00);
-        this.memory.write(MemoryBankController.WY, 0x00);
-        this.memory.write(MemoryBankController.WX, 0x00);
-        this.memory.write(MemoryBankController.KEY1, 0xFF);
-        this.memory.write(MemoryBankController.VBK, 0xFF);
-        this.memory.write(MemoryBankController.HDMA1, 0xFF);
-        this.memory.write(MemoryBankController.HDMA2, 0xFF);
-        this.memory.write(MemoryBankController.HDMA3, 0xFF);
-        this.memory.write(MemoryBankController.HDMA4, 0xFF);
-        this.memory.write(MemoryBankController.HDMA5, 0xFF);
-        this.memory.write(MemoryBankController.RP, 0xFF);
-        this.memory.write(MemoryBankController.BCPS, 0xFF);
-        this.memory.write(MemoryBankController.BCPD, 0xFF);
-        this.memory.write(MemoryBankController.OCPS, 0xFF);
-        this.memory.write(MemoryBankController.OCPD, 0xFF);
-        this.memory.write(MemoryBankController.SVBK, 0xFF);
-        this.memory.write(MemoryBankController.IE, 0x00);
+        this.memory.writeByte(Memory.JOYPAD, 0xCF);
+        this.memory.writeByte(Memory.SB, 0x00);
+        this.memory.writeByte(Memory.SC, 0x7E);
+        this.memory.writeByte(Memory.DIV, 0x18);
+        this.memory.writeByte(Memory.TIMA, 0x00);
+        this.memory.writeByte(Memory.TMA, 0x00);
+        this.memory.writeByte(Memory.TAC, 0xF8);
+        this.memory.writeByte(Memory.IF, 0xE1);
+        this.memory.writeByte(Memory.NR10, 0x80);
+        this.memory.writeByte(Memory.NR11, 0xBF);
+        this.memory.writeByte(Memory.NR12, 0xF3);
+        this.memory.writeByte(Memory.NR13, 0xFF);
+        this.memory.writeByte(Memory.NR14, 0xBF);
+        this.memory.writeByte(Memory.NR21, 0x3F);
+        this.memory.writeByte(Memory.NR22, 0x00);
+        this.memory.writeByte(Memory.NR23, 0xFF);
+        this.memory.writeByte(Memory.NR24, 0xBF);
+        this.memory.writeByte(Memory.NR30, 0x7F);
+        this.memory.writeByte(Memory.NR31, 0xFF);
+        this.memory.writeByte(Memory.NR32, 0x9F);
+        this.memory.writeByte(Memory.NR33, 0xFF);
+        this.memory.writeByte(Memory.NR34, 0xBF);
+        this.memory.writeByte(Memory.NR41, 0xFF);
+        this.memory.writeByte(Memory.NR42, 0x00);
+        this.memory.writeByte(Memory.NR43, 0x00);
+        this.memory.writeByte(Memory.NR44, 0xBF);
+        this.memory.writeByte(Memory.NR50, 0x77);
+        this.memory.writeByte(Memory.NR51, 0xF3);
+        this.memory.writeByte(Memory.NR52, 0xF1);
+        this.memory.writeByte(Memory.LCDC, 0x91);
+        this.memory.writeByte(Memory.LCD_STAT, 0x81);
+        this.memory.writeByte(Memory.SCROLL_Y, 0x00);
+        this.memory.writeByte(Memory.SCROLL_X, 0x00);
+        this.memory.writeByte(Memory.LCD_LY, 0x91);
+        this.memory.writeByte(Memory.LCD_LYC, 0x00);
+        // DMA IS INITIALIZED IN Dma
+        this.memory.writeByte(Memory.BGP, 0xFC);
+        this.memory.writeByte(Memory.OBP0, 0x00);
+        this.memory.writeByte(Memory.OBP1, 0x00);
+        this.memory.writeByte(Memory.WY, 0x00);
+        this.memory.writeByte(Memory.WX, 0x00);
+        this.memory.writeByte(Memory.KEY1, 0xFF);
+        this.memory.writeByte(Memory.VBK, 0xFF);
+        this.memory.writeByte(Memory.HDMA1, 0xFF);
+        this.memory.writeByte(Memory.HDMA2, 0xFF);
+        this.memory.writeByte(Memory.HDMA3, 0xFF);
+        this.memory.writeByte(Memory.HDMA4, 0xFF);
+        this.memory.writeByte(Memory.HDMA5, 0xFF);
+        this.memory.writeByte(Memory.RP, 0xFF);
+        this.memory.writeByte(Memory.BCPS, 0xFF);
+        this.memory.writeByte(Memory.BCPD, 0xFF);
+        this.memory.writeByte(Memory.OCPS, 0xFF);
+        this.memory.writeByte(Memory.OCPD, 0xFF);
+        this.memory.writeByte(Memory.SVBK, 0xFF);
+        this.memory.writeByte(Memory.IE, 0x00);
 
-        this.memory.setBooted();
+        this.mbc.setBooted();
     }
 
 }

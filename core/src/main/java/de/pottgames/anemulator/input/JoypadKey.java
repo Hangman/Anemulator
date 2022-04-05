@@ -1,6 +1,6 @@
 package de.pottgames.anemulator.input;
 
-import de.pottgames.anemulator.memory.MemoryBankController;
+import de.pottgames.anemulator.memory.Mbc;
 
 public enum JoypadKey {
     UP(0, JoypadKeyType.DIRECTION, 2),
@@ -17,7 +17,7 @@ public enum JoypadKey {
     private final JoypadKeyType type;
 
     /**
-     * The corresponding bitnum in the {@link MemoryBankController#JOYPAD FF00} register.
+     * The corresponding bitnum in the {@link Mbc#JOYPAD FF00} register.
      */
     private final int bitnum;
 

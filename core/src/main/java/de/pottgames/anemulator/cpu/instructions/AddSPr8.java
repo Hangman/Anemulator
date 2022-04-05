@@ -3,18 +3,18 @@ package de.pottgames.anemulator.cpu.instructions;
 import de.pottgames.anemulator.cpu.Instruction;
 import de.pottgames.anemulator.cpu.Register;
 import de.pottgames.anemulator.cpu.Register.FlagId;
-import de.pottgames.anemulator.memory.MemoryBankController;
+import de.pottgames.anemulator.memory.Memory;
 
 public class AddSPr8 extends Instruction {
 
-    public AddSPr8(Register register, MemoryBankController memory) {
+    public AddSPr8(Register register, Memory memory) {
         super(register, memory);
     }
 
 
     @Override
     public int run() {
-        final byte offset = (byte) this.memory.read8Bit(this.register.getPc());
+        final byte offset = (byte) this.memory.readByte(this.register.getPc());
         this.register.setPc(this.register.getPc() + 1);
         final int oldSP = this.register.getSp();
         this.register.setSp(this.register.getSp() + offset & 0xFFFF);

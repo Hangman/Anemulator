@@ -4,18 +4,18 @@ import de.pottgames.anemulator.cpu.Instruction;
 import de.pottgames.anemulator.cpu.Register;
 import de.pottgames.anemulator.cpu.Register.FlagId;
 import de.pottgames.anemulator.cpu.Register.RegisterId;
-import de.pottgames.anemulator.memory.MemoryBankController;
+import de.pottgames.anemulator.memory.Memory;
 
 public class Bit6_HL_ extends Instruction {
 
-    public Bit6_HL_(Register register, MemoryBankController memory) {
+    public Bit6_HL_(Register register, Memory memory) {
         super(register, memory);
     }
 
 
     @Override
     public int run() {
-        final int targetValue = this.memory.read8Bit(this.register.get(RegisterId.HL));
+        final int targetValue = this.memory.readByte(this.register.get(RegisterId.HL));
 
         // SET FLAGS
         this.register.setFlag(FlagId.Z, (targetValue & 1 << 6) == 0);

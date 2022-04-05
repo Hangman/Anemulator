@@ -4,11 +4,11 @@ import de.pottgames.anemulator.cpu.Instruction;
 import de.pottgames.anemulator.cpu.Register;
 import de.pottgames.anemulator.cpu.Register.FlagId;
 import de.pottgames.anemulator.cpu.Register.RegisterId;
-import de.pottgames.anemulator.memory.MemoryBankController;
+import de.pottgames.anemulator.memory.Memory;
 
 public class AddHLBC extends Instruction {
 
-    public AddHLBC(Register register, MemoryBankController memory) {
+    public AddHLBC(Register register, Memory memory) {
         super(register, memory);
     }
 

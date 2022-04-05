@@ -3,11 +3,11 @@ package de.pottgames.anemulator.cpu.instructions;
 import de.pottgames.anemulator.cpu.Instruction;
 import de.pottgames.anemulator.cpu.Register;
 import de.pottgames.anemulator.cpu.Register.FlagId;
-import de.pottgames.anemulator.memory.MemoryBankController;
+import de.pottgames.anemulator.memory.Memory;
 
 public class RetNZ extends Instruction {
 
-    public RetNZ(Register register, MemoryBankController memory) {
+    public RetNZ(Register register, Memory memory) {
         super(register, memory);
     }
 
@@ -15,8 +15,8 @@ public class RetNZ extends Instruction {
     @Override
     public int run() {
         if (!this.register.isFlagSet(FlagId.Z)) {
-            int returnAddress = this.memory.read8Bit(this.register.getSp());
-            returnAddress = this.memory.read8Bit(this.register.getSp() + 1) << 8 | returnAddress;
+            int returnAddress = this.memory.readByte(this.register.getSp());
+            returnAddress = this.memory.readByte(this.register.getSp() + 1) << 8 | returnAddress;
             this.register.setSp(this.register.getSp() + 2);
             this.register.setPc(returnAddress);
             return 20;

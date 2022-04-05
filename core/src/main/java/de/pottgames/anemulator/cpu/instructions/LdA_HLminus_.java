@@ -3,11 +3,11 @@ package de.pottgames.anemulator.cpu.instructions;
 import de.pottgames.anemulator.cpu.Instruction;
 import de.pottgames.anemulator.cpu.Register;
 import de.pottgames.anemulator.cpu.Register.RegisterId;
-import de.pottgames.anemulator.memory.MemoryBankController;
+import de.pottgames.anemulator.memory.Memory;
 
 public class LdA_HLminus_ extends Instruction {
 
-    public LdA_HLminus_(Register register, MemoryBankController memory) {
+    public LdA_HLminus_(Register register, Memory memory) {
         super(register, memory);
     }
 
@@ -15,7 +15,7 @@ public class LdA_HLminus_ extends Instruction {
     @Override
     public int run() {
         final int address = this.register.get(RegisterId.HL);
-        final int value = this.memory.read8Bit(address);
+        final int value = this.memory.readByte(address);
         this.register.set(RegisterId.A, value);
         this.register.set(RegisterId.HL, address - 1 & 0xFFFF);
 
