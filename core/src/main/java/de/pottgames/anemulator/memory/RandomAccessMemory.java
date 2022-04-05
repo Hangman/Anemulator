@@ -1,11 +1,13 @@
 package de.pottgames.anemulator.memory;
 
 public class RandomAccessMemory implements Memory {
-    private final int[] memory;
-    private final int   startAddress;
+    private final String name;
+    private final int[]  memory;
+    private final int    startAddress;
 
 
-    public RandomAccessMemory(int startAddress, int length) {
+    public RandomAccessMemory(String name, int startAddress, int length) {
+        this.name = name;
         this.memory = new int[length];
         this.startAddress = startAddress;
     }
@@ -32,6 +34,12 @@ public class RandomAccessMemory implements Memory {
     @Override
     public void writeByte(int address, int value) {
         this.memory[address - this.startAddress] = value;
+    }
+
+
+    @Override
+    public String toString() {
+        return this.name;
     }
 
 }

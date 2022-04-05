@@ -1,17 +1,18 @@
 package de.pottgames.anemulator.memory;
 
 public class RomOnly implements Mbc {
-    private final int[]  memory = new int[0x8001];
-    private boolean      booted = false;
+    private final int[]  rom         = new int[0x8001];
+    private final int[]  externalRam = new int[0xC000 - 0xA000];
+    private boolean      booted      = false;
     private final String gameName;
 
 
     public RomOnly(int[] romData) {
         if (romData.length > 0x8000) {
-            throw new RuntimeException("ROM size too large for the RomOnly controller.");
+            throw new RuntimeException("ROM size too large for a RomOnly cartridge.");
         }
 
-        System.arraycopy(romData, 0, this.memory, 0, Math.min(0x8000, romData.length));
+        System.arraycopy(romData, 0, this.rom, 0, Math.min(0x8000, romData.length));
         final char[] gameNameChars = new char[0x143 - 0x134];
         for (int i = 0; i < gameNameChars.length; i++) {
             gameNameChars[i] = (char) this.readByte(0x134 + i);
@@ -22,7 +23,7 @@ public class RomOnly implements Mbc {
 
     @Override
     public boolean acceptsAddress(int address) {
-        return address >= 0 && address < 0x8000 || address == Memory.DISABLE_BOOT_ROM;
+        return address >= 0 && address < 0x8000 || address == Memory.DISABLE_BOOT_ROM || address >= 0xA000 && address < 0xC000;
     }
 
 
@@ -32,7 +33,11 @@ public class RomOnly implements Mbc {
             return Mbc.BOOT_ROM[address];
         }
 
-        return this.memory[address];
+        if (address >= 0xA000 && address < 0xC000) {
+            return this.externalRam[address - 0xA000];
+        }
+
+        return this.rom[address];
     }
 
 
@@ -43,10 +48,10 @@ public class RomOnly implements Mbc {
         }
 
         if (address == Memory.DISABLE_BOOT_ROM) {
-            return this.memory[0x8000];
+            return this.rom[0x8000];
         }
 
-        return this.memory[address] | this.memory[address + 1] << 8;
+        return this.readByte(address) | this.readByte(address + 1) << 8;
     }
 
 
@@ -56,7 +61,11 @@ public class RomOnly implements Mbc {
             if (value > 0) {
                 this.booted = true;
             }
-            this.memory[0x8000] = value;
+            this.rom[0x8000] = value;
+        }
+
+        if (address >= 0xA000 && address < 0xC000) {
+            this.externalRam[address - 0xA000] = value;
         }
 
         // ignore writes to the ROM

@@ -1,59 +1,47 @@
 package de.pottgames.anemulator.memory;
 
+import java.util.List;
+
 public class Mmu implements Memory {
-    // private final Array<Memory> units = new Array<>();+
-    private Memory[] units = new Memory[0];
-    // private final List<Memory> units = new ArrayList<>();
+    private Memory[] unitLut = new Memory[0xFFFF + 1];
 
 
-    public void addMemoryUnit(Memory memoryUnit) {
-        // this.units.add(memoryUnit);
-        final Memory[] temp = new Memory[this.units.length + 1];
-        System.arraycopy(this.units, 0, temp, 0, this.units.length);
-        temp[this.units.length] = memoryUnit;
-        this.units = temp;
+    public void addMemoryUnits(List<Memory> unitList) {
+        for (int i = 0; i < this.unitLut.length; i++) {
+            for (final Memory unit : unitList) {
+                final boolean found = false;
+                if (unit.acceptsAddress(i)) {
+                    this.unitLut[i] = unit;
+                    break;
+                }
+            }
+        }
     }
 
 
     @Override
     public boolean acceptsAddress(int address) {
-        final Memory unit = this.getMemoryUnit(address);
-        if (unit != null) {
-            return true;
-        }
-
-        return false;
-    }
-
-
-    private Memory getMemoryUnit(int address) {
-        for (final Memory memory : this.units) {
-            if (memory.acceptsAddress(address)) {
-                return memory;
-            }
-        }
-
-        return null;
+        return this.unitLut[address] != null;
     }
 
 
     @Override
     public int readByte(int address) {
-        final Memory memory = this.getMemoryUnit(address);
+        final Memory memory = this.unitLut[address];
         return memory.readByte(address);
     }
 
 
     @Override
     public int readWord(int address) {
-        final Memory memory = this.getMemoryUnit(address);
+        final Memory memory = this.unitLut[address];
         return memory.readWord(address);
     }
 
 
     @Override
     public void writeByte(int address, int value) {
-        final Memory memory = this.getMemoryUnit(address);
+        final Memory memory = this.unitLut[address];
         memory.writeByte(address, value);
     }
 

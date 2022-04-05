@@ -6,4 +6,8 @@ dependencies {
 	implementation "com.github.Hangman:TuningFork:$tuningForkVersion"
 	
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.7.2'
+	testImplementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+	testImplementation "com.github.Hangman:TuningFork:$tuningForkVersion"
+	testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+	testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
 }

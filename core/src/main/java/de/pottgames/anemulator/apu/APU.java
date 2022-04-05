@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.Disposable;
 import de.pottgames.anemulator.memory.Memory;
 import de.pottgames.tuningfork.Audio;
 import de.pottgames.tuningfork.AudioConfig;
+import de.pottgames.tuningfork.logger.ConsoleLogger;
 
 public class APU implements Memory, Disposable {
     private static final int[][] WAVE_DUTY = { { 0, 0, 0, 0, 0, 0, 0, 1 }, { 1, 0, 0, 0, 0, 0, 0, 1 }, { 1, 0, 0, 0, 0, 1, 1, 1 }, { 0, 1, 1, 1, 1, 1, 1, 0 } };
@@ -17,6 +18,7 @@ public class APU implements Memory, Disposable {
     public APU() {
         final AudioConfig config = new AudioConfig();
         config.setSimultaneousSources(0);
+        config.setLogger(new ConsoleLogger());
         this.audio = Audio.init(config);
 
         this.channel1 = new SquareChannel(Memory.NR14, Memory.NR13, Memory.NR12, Memory.NR11, Memory.NR10);
