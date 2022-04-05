@@ -46,12 +46,6 @@ public class LcdRegisters implements Memory {
 
 
     @Override
-    public int readWord(int address) {
-        throw new RuntimeException("Reading a word from the lcd registers is not allowed.");
-    }
-
-
-    @Override
     public void writeByte(int address, int value) {
         switch (address) {
             case Memory.LCDC:

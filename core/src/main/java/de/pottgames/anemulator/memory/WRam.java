@@ -17,12 +17,6 @@ public class WRam implements Memory {
 
 
     @Override
-    public int readWord(int address) {
-        return this.readByte(address) | this.readByte(address + 1) << 8;
-    }
-
-
-    @Override
     public void writeByte(int address, int value) {
         this.writeInternal(address, value);
 

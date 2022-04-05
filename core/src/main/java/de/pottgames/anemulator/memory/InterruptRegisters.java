@@ -24,12 +24,6 @@ public class InterruptRegisters implements Memory {
 
 
     @Override
-    public int readWord(int address) {
-        throw new RuntimeException("Reading a word from the IE/IF register is not allowed.");
-    }
-
-
-    @Override
     public void writeByte(int address, int value) {
         switch (address) {
             case Memory.IF:

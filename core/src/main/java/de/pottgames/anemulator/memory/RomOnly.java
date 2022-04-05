@@ -42,20 +42,6 @@ public class RomOnly implements Mbc {
 
 
     @Override
-    public int readWord(int address) {
-        if (!this.booted && address >= 0x0000 && address <= 0x00FF) {
-            return Mbc.BOOT_ROM[address] | Mbc.BOOT_ROM[address + 1] << 8;
-        }
-
-        if (address == Memory.DISABLE_BOOT_ROM) {
-            return this.rom[0x8000];
-        }
-
-        return this.readByte(address) | this.readByte(address + 1) << 8;
-    }
-
-
-    @Override
     public void writeByte(int address, int value) {
         if (address == Memory.DISABLE_BOOT_ROM) {
             if (value > 0) {

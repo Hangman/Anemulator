@@ -2,8 +2,8 @@ package de.pottgames.anemulator.input;
 
 import de.pottgames.anemulator.cpu.Interrupt;
 import de.pottgames.anemulator.input.JoypadKey.JoypadKeyType;
-import de.pottgames.anemulator.memory.Mmu;
 import de.pottgames.anemulator.memory.Memory;
+import de.pottgames.anemulator.memory.Mmu;
 
 public class Joypad implements Memory, JoypadStateChangeListener {
     private final int[]     memory         = new int[1];
@@ -26,12 +26,6 @@ public class Joypad implements Memory, JoypadStateChangeListener {
     @Override
     public int readByte(int address) {
         return this.memory[address - Memory.JOYPAD];
-    }
-
-
-    @Override
-    public int readWord(int address) {
-        throw new RuntimeException("Reading a word from the joypad register is not allowed.");
     }
 
 

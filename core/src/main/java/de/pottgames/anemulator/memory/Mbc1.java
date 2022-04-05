@@ -67,20 +67,6 @@ public class Mbc1 implements Mbc {
 
 
     @Override
-    public int readWord(int address) {
-        if (address < 0 || address > 0xFFFF) {
-            throw new RuntimeException("Invalid memory address: " + address);
-        }
-
-        if (!this.booted && address >= 0x0000 && address <= 0x00FF) {
-            return Mbc.BOOT_ROM[address] | Mbc.BOOT_ROM[address + 1] << 8;
-        }
-
-        return this.readByte(address) | this.readByte(address + 1) << 8;
-    }
-
-
-    @Override
     public void writeByte(int address, int value) {
         if (address >= 0x0000 && address < 0x2000) {
             // ENABLE/DISABLE RAM

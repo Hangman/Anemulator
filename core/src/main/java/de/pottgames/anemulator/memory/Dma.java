@@ -24,12 +24,6 @@ public class Dma implements Memory {
 
 
     @Override
-    public int readWord(int address) {
-        throw new RuntimeException("Reading a word from the dma register is not allowed.");
-    }
-
-
-    @Override
     public void writeByte(int address, int value) {
         this.register[address - Memory.DMA] = value;
         final int dmaAddress = value << 8;

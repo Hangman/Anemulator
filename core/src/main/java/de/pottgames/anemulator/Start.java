@@ -30,13 +30,13 @@ public class Start extends ApplicationAdapter {
         this.texture = new Texture(this.backbuffer);
         this.tileMapTexture = new Texture(this.tileMap);
 
-        this.gameboy = new Gameboy("Dr. Mario (World).gb", this.backbuffer);
+        // this.gameboy = new Gameboy("Dr. Mario (World).gb", this.backbuffer);
         // this.gameboy = new Gameboy("Tetris (World) (Rev A).gb", this.backbuffer);
         // this.gameboy = new Gameboy("Super Mario Land (World) (Rev A).gb", this.backbuffer);
         // this.gameboy = new Gameboy("Donkey Kong Land (USA, Europe) (SGB Enhanced).gb", this.backbuffer);
         // this.gameboy = new Gameboy("Pinball Deluxe (Europe).gb", this.backbuffer);
         // this.gameboy = new Gameboy("F-1 Race (World).gb", this.backbuffer);
-        // this.gameboy = new Gameboy("Alleyway (World).gb", this.backbuffer);
+        // this.gameboy = new Gameboy("Alleyway (World).gb", this.backbuffer); // ISSUES
         // this.gameboy = new Gameboy("Bionic Battler (USA).gb", this.backbuffer);
         // this.gameboy = new Gameboy("Aladdin (Europe) (En,Fr,De,Es,It,Nl).gbc", this.backbuffer);
         // this.gameboy = new Gameboy("Batman - The Video Game (World).gb", this.backbuffer);
@@ -59,7 +59,7 @@ public class Start extends ApplicationAdapter {
         // this.gameboy = new Gameboy("mooneye/div_write.gb", this.backbuffer); // PASSED
         // this.gameboy = new Gameboy("mooneye/rapid_di_ei.gb", this.backbuffer); // PASSED
         // this.gameboy = new Gameboy("mooneye/if_ie_registers.gb", this.backbuffer); // PASSED
-        // this.gameboy = new Gameboy("mooneye/call_timing.gb", this.backbuffer);
+        this.gameboy = new Gameboy("mooneye/call_timing.gb", this.backbuffer);
         // this.gameboy = new Gameboy("mooneye/pop_timing.gb", this.backbuffer);
         // this.gameboy = new Gameboy("mooneye/ei_sequence.gb", this.backbuffer);
         // this.gameboy = new Gameboy("mooneye/tma_write_reloading.gb", this.backbuffer);

@@ -1,7 +1,7 @@
 package de.pottgames.anemulator.cpu;
 
-import de.pottgames.anemulator.memory.Mmu;
 import de.pottgames.anemulator.memory.Memory;
+import de.pottgames.anemulator.memory.Mmu;
 
 public class Timer implements Memory {
     private static final int CLOCKS_PER_DIVIDER_INC = 256;
@@ -89,12 +89,6 @@ public class Timer implements Memory {
     @Override
     public int readByte(int address) {
         return this.memory[address - 0xFF04];
-    }
-
-
-    @Override
-    public int readWord(int address) {
-        throw new RuntimeException("Reading a word from any of the Timer registers is not allowed.");
     }
 
 

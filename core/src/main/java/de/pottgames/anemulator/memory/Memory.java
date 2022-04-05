@@ -253,7 +253,9 @@ public interface Memory {
     int readByte(int address);
 
 
-    int readWord(int address);
+    default int readWord(int address) {
+        return this.readByte(address) | this.readByte(address + 1) << 8;
+    }
 
 
     void writeByte(int address, int value);

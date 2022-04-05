@@ -81,13 +81,6 @@ public class APU implements Memory, Disposable {
 
 
     @Override
-    public int readWord(int address) {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-
-    @Override
     public void writeByte(int address, int value) {
         // TODO: IMPLEMENT PROPERLY
         this.memory[address] = value;

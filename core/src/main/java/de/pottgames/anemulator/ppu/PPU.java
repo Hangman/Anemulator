@@ -138,31 +138,34 @@ public class PPU {
                 final int tilePixelY = windowLine % 8;
                 final int tileAddress = windowMapStartAddress + windowLine / 8 * 32 + pixelX / 8;
 
-                // READ TILE DATA
-                if (tileAddress != lastTileAddress) {
-                    int atlasTileAddress;
-                    if (atlasAddressMode) {
-                        final int atlasTileIndex = this.mmu.readByte(tileAddress);
-                        atlasTileAddress = 0x8000 + atlasTileIndex * 16;
-                    } else {
-                        final byte atlasTileIndex = (byte) this.mmu.readByte(tileAddress);
-                        atlasTileAddress = 0x9000 + atlasTileIndex * 16;
+                if (pixelX >= 0 && pixelX < 160) {
+
+                    // READ TILE DATA
+                    if (tileAddress != lastTileAddress) {
+                        int atlasTileAddress;
+                        if (atlasAddressMode) {
+                            final int atlasTileIndex = this.mmu.readByte(tileAddress);
+                            atlasTileAddress = 0x8000 + atlasTileIndex * 16;
+                        } else {
+                            final byte atlasTileIndex = (byte) this.mmu.readByte(tileAddress);
+                            atlasTileAddress = 0x9000 + atlasTileIndex * 16;
+                        }
+
+                        for (int i = 0; i < 16; i++) {
+                            this.tileCache[i] = this.mmu.readByte(atlasTileAddress + i);
+                        }
+                        lastTileAddress = tileAddress;
                     }
 
-                    for (int i = 0; i < 16; i++) {
-                        this.tileCache[i] = this.mmu.readByte(atlasTileAddress + i);
-                    }
-                    lastTileAddress = tileAddress;
+                    // FETCH COLOR
+                    final int colorPaletteIndex = this.getColorPaletteIndexOfTilePixel(this.tileCache, tilePixelX, tilePixelY);
+                    final Color color = this.getBGColor(colorPaletteIndex);
+
+                    // RENDER
+                    this.backBuffer[pixelX][currentLine] = colorPaletteIndex;
+                    this.frontBuffer.setColor(color);
+                    this.frontBuffer.drawPixel(pixelX, currentLine);
                 }
-
-                // FETCH COLOR
-                final int colorPaletteIndex = this.getColorPaletteIndexOfTilePixel(this.tileCache, tilePixelX, tilePixelY);
-                final Color color = this.getBGColor(colorPaletteIndex);
-
-                // RENDER
-                this.backBuffer[pixelX][currentLine] = colorPaletteIndex;
-                this.frontBuffer.setColor(color);
-                this.frontBuffer.drawPixel(pixelX, currentLine);
             }
         }
     }
