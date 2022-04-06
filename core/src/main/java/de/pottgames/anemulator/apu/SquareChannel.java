@@ -1,66 +1,132 @@
 package de.pottgames.anemulator.apu;
 
-import com.badlogic.gdx.utils.Disposable;
-
 import de.pottgames.anemulator.memory.Memory;
-import de.pottgames.tuningfork.PcmFormat;
-import de.pottgames.tuningfork.PcmSoundSource;
 
-public class SquareChannel implements Memory, Disposable {
-    private final PcmSoundSource      soundSource;
-    private final int                 controlRegisterAddress;
-    private final FrequencyController frequencyController;
-    private final VolumeController    volumeController;
-    private final LengthController    lengthController;
-    private final SweepController     sweepController;
+public class SquareChannel implements Memory {
+    private final VolumeEnvelope volumeEnvelope;
+    private SweepController      sweepController;
+    private int                  frequencyTimer;
+    private int                  dutyPosition;
+    private final int            lengthDutyRegisterAddress;
+    private int                  lengthDutyRegister;
+    private final int            freqLowRegisterAddress;
+    private final int            freqHighRegisterAddress;
+    private int                  freqLowRegister;
+    private int                  freqHighRegister;
+    private float[]              samples = new float[2];
 
 
-    public SquareChannel(int controlRegisterAddress, int frequencyRegisterAddress, int volumeRegisterAddress, int lengthRegisterAddress,
-            int sweepRegisterAddress) {
-        this.controlRegisterAddress = controlRegisterAddress;
-        this.frequencyController = new FrequencyController(frequencyRegisterAddress);
-        this.volumeController = new VolumeController(volumeRegisterAddress);
-        this.lengthController = new LengthController(lengthRegisterAddress);
+    public SquareChannel(int lengthRegisterAddress, int volumeRegisterAddress, int sweepRegisterAddress, int frequencyLowDataRegisterAddress,
+            int frequencyHighDataRegisterAddress) {
+        this.lengthDutyRegisterAddress = lengthRegisterAddress;
+        this.freqLowRegisterAddress = frequencyLowDataRegisterAddress;
+        this.freqHighRegisterAddress = frequencyHighDataRegisterAddress;
+        this.volumeEnvelope = new VolumeEnvelope(volumeRegisterAddress);
         if (sweepRegisterAddress > 0) {
             this.sweepController = new SweepController(sweepRegisterAddress);
-        } else {
-            this.sweepController = null;
         }
-        this.soundSource = new PcmSoundSource(48000, PcmFormat.STEREO_16_BIT);
+    }
+
+
+    public float[] step(boolean stepLength, boolean stepEnvelope, boolean stepSweep) {
+        final float[] duty = APU.WAVE_DUTY[this.lengthDutyRegister >>> 6];
+        final int frequency = this.freqLowRegister | (this.freqHighRegister & 0b111) << 8;
+
+        this.frequencyTimer--;
+        if (this.frequencyTimer <= 0) {
+            this.frequencyTimer = (2048 - frequency) * 4;
+            this.dutyPosition++;
+            if (this.dutyPosition > 7) {
+                this.dutyPosition = 0;
+            }
+        }
+
+        if (stepLength) {
+            this.stepLength();
+        }
+        if (stepEnvelope) {
+            this.volumeEnvelope.step();
+        }
+        if (stepSweep && this.sweepController != null) {
+            this.sweepController.step();
+        }
+
+        this.samples[0] = duty[this.dutyPosition];
+        this.samples[1] = duty[this.dutyPosition];
+        this.volumeEnvelope.modifySamples(this.samples);
+
+        return this.samples;
+    }
+
+
+    private void stepLength() {
+
     }
 
 
     @Override
     public boolean acceptsAddress(int address) {
-        return address == this.controlRegisterAddress || this.frequencyController.acceptsAddress(address) || this.volumeController.acceptsAddress(address)
-                || this.lengthController.acceptsAddress(address) || this.sweepController != null && this.sweepController.acceptsAddress(address);
+        return address == this.lengthDutyRegisterAddress || address == this.freqLowRegisterAddress || address == this.freqHighRegisterAddress
+                || this.volumeEnvelope.acceptsAddress(address) || this.sweepController != null && this.sweepController.acceptsAddress(address);
     }
 
 
     @Override
     public int readByte(int address) {
-        // TODO Auto-generated method stub
-        return 0;
+        if (address == this.lengthDutyRegisterAddress) {
+            return this.lengthDutyRegister;
+        }
+        if (address == this.freqLowRegisterAddress) {
+            return this.freqLowRegister;
+        }
+        if (address == this.freqHighRegisterAddress) {
+            return this.freqHighRegister;
+        }
+        if (this.volumeEnvelope.acceptsAddress(address)) {
+            return this.volumeEnvelope.readByte(address);
+        }
+        if (this.sweepController != null && this.sweepController.acceptsAddress(address)) {
+            return this.sweepController.readByte(address);
+        }
+
+        System.out.println(Integer.toHexString(address));
+
+        throw new RuntimeException("Invalid address");
     }
 
 
-    @Override
-    public int readWord(int address) {
-        // TODO Auto-generated method stub
-        return 0;
+    private void triggerEvent() {
+        this.volumeEnvelope.triggerEvent();
     }
 
 
     @Override
     public void writeByte(int address, int value) {
-        // TODO Auto-generated method stub
+        if (address == this.lengthDutyRegisterAddress) {
+            this.lengthDutyRegister = value;
+            return;
+        }
+        if (address == this.freqLowRegisterAddress) {
+            this.freqLowRegister = value;
+            return;
+        }
+        if (address == this.freqHighRegisterAddress) {
+            this.freqHighRegister = value;
+            if ((value & 0b10000000) > 0) {
+                this.triggerEvent();
+            }
+            return;
+        }
+        if (this.volumeEnvelope.acceptsAddress(address)) {
+            this.volumeEnvelope.writeByte(address, value);
+            return;
+        }
+        if (this.sweepController != null && this.sweepController.acceptsAddress(address)) {
+            this.sweepController.writeByte(address, value);
+            return;
+        }
 
-    }
-
-
-    @Override
-    public void dispose() {
-        this.soundSource.dispose();
+        throw new RuntimeException("Invalid address");
     }
 
 }

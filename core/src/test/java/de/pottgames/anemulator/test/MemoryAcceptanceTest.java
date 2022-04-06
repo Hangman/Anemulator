@@ -32,8 +32,6 @@ public class MemoryAcceptanceTest {
                 Assertions.fail("Address is missing an acceptor: " + Integer.toHexString(i));
             }
         }
-
-        gameboy.dispose();
     }
 
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.utils.Disposable;
 
 import de.pottgames.anemulator.apu.APU;
 import de.pottgames.anemulator.cpu.Booter;
@@ -23,7 +22,7 @@ import de.pottgames.anemulator.ppu.LcdRegisters;
 import de.pottgames.anemulator.ppu.PPU;
 import de.pottgames.anemulator.rom.RomLoader;
 
-public class Gameboy implements Disposable {
+public class Gameboy {
     private final CPU          cpu;
     private final PPU          ppu;
     private final APU          apu;
@@ -90,6 +89,15 @@ public class Gameboy implements Disposable {
     }
 
 
+    public boolean step() {
+        this.timer.step();
+        this.cpu.step();
+        final boolean vBlank = this.ppu.step();
+        this.apu.step();
+        return vBlank;
+    }
+
+
     public void renderFrame() {
         boolean vBlank = false;
         while (!vBlank) {
@@ -98,6 +106,16 @@ public class Gameboy implements Disposable {
             vBlank = this.ppu.step();
             this.apu.step();
         }
+    }
+
+
+    public boolean isAudioBufferFull() {
+        return this.apu.isBufferFull();
+    }
+
+
+    public byte[] fetchAudioSamples() {
+        return this.apu.fetchSamples();
     }
 
 
@@ -118,12 +136,6 @@ public class Gameboy implements Disposable {
 
     public String getGameTitle() {
         return this.mbc.getGameName();
-    }
-
-
-    @Override
-    public void dispose() {
-        this.apu.dispose();
     }
 
 }

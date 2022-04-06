@@ -3,39 +3,36 @@ package de.pottgames.anemulator.apu;
 import de.pottgames.anemulator.memory.Memory;
 
 public class SweepController implements Memory {
-    private final int sweepRegisterAddress;
+    private final int   registerAddress;
+    private final int[] register = new int[1];
 
 
-    public SweepController(int sweepRegisterAddress) {
-        this.sweepRegisterAddress = sweepRegisterAddress;
+    public SweepController(int registerAddress) {
+        this.registerAddress = registerAddress;
+    }
+
+
+    public void step() {
+
     }
 
 
     @Override
     public boolean acceptsAddress(int address) {
-        // TODO Auto-generated method stub
-        return false;
+        return address == this.registerAddress;
     }
 
 
     @Override
     public int readByte(int address) {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-
-    @Override
-    public int readWord(int address) {
-        // TODO Auto-generated method stub
-        return 0;
+        return this.register[address - this.registerAddress];
     }
 
 
     @Override
     public void writeByte(int address, int value) {
-        // TODO Auto-generated method stub
-
+        this.register[address - this.registerAddress] = value;
+        // TODO: INTERPRETE
     }
 
 }

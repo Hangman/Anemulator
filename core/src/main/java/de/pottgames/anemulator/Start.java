@@ -10,6 +10,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import de.pottgames.anemulator.input.KeyboardInput;
+import de.pottgames.tuningfork.Audio;
+import de.pottgames.tuningfork.PcmFormat;
+import de.pottgames.tuningfork.PcmSoundSource;
 
 public class Start extends ApplicationAdapter {
     private final InputMultiplexer inputMultiplexer = new InputMultiplexer();
@@ -20,10 +23,15 @@ public class Start extends ApplicationAdapter {
     private Texture                texture;
     private Texture                tileMapTexture;
     private Gameboy                gameboy;
+    private Audio                  audio;
+    private PcmSoundSource         soundSource;
 
 
     @Override
     public void create() {
+        this.audio = Audio.init();
+        this.soundSource = new PcmSoundSource(48000, PcmFormat.STEREO_8_BIT);
+
         this.batch = new SpriteBatch();
         this.backbuffer = new Pixmap(160, 144, Format.RGBA8888);
         this.tileMap = new Pixmap(128, 192, Format.RGBA8888);
@@ -32,7 +40,8 @@ public class Start extends ApplicationAdapter {
 
         // this.gameboy = new Gameboy("Dr. Mario (World).gb", this.backbuffer);
         // this.gameboy = new Gameboy("Tetris (World) (Rev A).gb", this.backbuffer);
-        // this.gameboy = new Gameboy("Super Mario Land (World) (Rev A).gb", this.backbuffer);
+        // this.gameboy = new Gameboy("Kirby's Dream Land (USA, Europe).gb", this.backbuffer);
+        this.gameboy = new Gameboy("Super Mario Land (World) (Rev A).gb", this.backbuffer);
         // this.gameboy = new Gameboy("Donkey Kong Land (USA, Europe) (SGB Enhanced).gb", this.backbuffer);
         // this.gameboy = new Gameboy("Pinball Deluxe (Europe).gb", this.backbuffer);
         // this.gameboy = new Gameboy("F-1 Race (World).gb", this.backbuffer);
@@ -59,7 +68,7 @@ public class Start extends ApplicationAdapter {
         // this.gameboy = new Gameboy("mooneye/div_write.gb", this.backbuffer); // PASSED
         // this.gameboy = new Gameboy("mooneye/rapid_di_ei.gb", this.backbuffer); // PASSED
         // this.gameboy = new Gameboy("mooneye/if_ie_registers.gb", this.backbuffer); // PASSED
-        this.gameboy = new Gameboy("mooneye/call_timing.gb", this.backbuffer);
+        // this.gameboy = new Gameboy("mooneye/call_timing.gb", this.backbuffer);
         // this.gameboy = new Gameboy("mooneye/pop_timing.gb", this.backbuffer);
         // this.gameboy = new Gameboy("mooneye/ei_sequence.gb", this.backbuffer);
         // this.gameboy = new Gameboy("mooneye/tma_write_reloading.gb", this.backbuffer);
@@ -78,7 +87,22 @@ public class Start extends ApplicationAdapter {
         Gdx.gl.glClearColor(0.15f, 0.15f, 0.2f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        this.gameboy.renderFrame();
+        while (!this.gameboy.step()) {
+            if (this.gameboy.isAudioBufferFull()) {
+                final byte[] samples = this.gameboy.fetchAudioSamples();
+                this.soundSource.queueSamples(samples, 0, samples.length);
+                this.soundSource.play();
+                while (this.soundSource.queuedBuffers() > 8) {
+                    try {
+                        Thread.sleep(1);
+                    } catch (final InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    this.soundSource.unqueueProcessedBuffers();
+                }
+            }
+        }
+
         this.gameboy.renderVRam(this.tileMap);
 
         this.batch.begin();
@@ -97,7 +121,8 @@ public class Start extends ApplicationAdapter {
 
     @Override
     public void dispose() {
-        this.gameboy.dispose();
+        this.soundSource.dispose();
+        this.audio.dispose();
         this.batch.dispose();
         this.texture.dispose();
         this.tileMapTexture.dispose();

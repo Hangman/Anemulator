@@ -1,55 +1,114 @@
 package de.pottgames.anemulator.apu;
 
-import com.badlogic.gdx.utils.Disposable;
-
 import de.pottgames.anemulator.memory.Memory;
-import de.pottgames.tuningfork.Audio;
-import de.pottgames.tuningfork.AudioConfig;
-import de.pottgames.tuningfork.logger.ConsoleLogger;
 
-public class APU implements Memory, Disposable {
-    private static final int[][] WAVE_DUTY = { { 0, 0, 0, 0, 0, 0, 0, 1 }, { 1, 0, 0, 0, 0, 0, 0, 1 }, { 1, 0, 0, 0, 0, 1, 1, 1 }, { 0, 1, 1, 1, 1, 1, 1, 0 } };
-    private final Audio          audio;
-    private SquareChannel        channel1, channel2;
+public class APU implements Memory {
+    static final float[][] WAVE_DUTY      = { { 0f, 0f, 0f, 0f, 0f, 0f, 0f, 1f }, { 1f, 0f, 0f, 0f, 0f, 0f, 0f, 1f }, { 1f, 0f, 0f, 0f, 0f, 1f, 1f, 1f },
+            { 0f, 1f, 1f, 1f, 1f, 1f, 1f, 0f } };
+    private SquareChannel  channel1;
+    private SquareChannel  channel2;
+    private final byte[]   internalBuffer = new byte[1024];
+    private final byte[]   outputBuffer   = new byte[1024];
+    private int            bufferPosition;
+    private int            cycleCounter;
+    private boolean        bufferFull;
+    private int            frameSequencer;
+    private int            frameSequencerCycleCounter;
 
     private final int[] memory = new int[0xFFFF]; // TODO: SET CORRECT SIZE
 
 
     public APU() {
-        final AudioConfig config = new AudioConfig();
-        config.setSimultaneousSources(0);
-        config.setLogger(new ConsoleLogger());
-        this.audio = Audio.init(config);
-
-        this.channel1 = new SquareChannel(Memory.NR14, Memory.NR13, Memory.NR12, Memory.NR11, Memory.NR10);
-        this.channel2 = new SquareChannel(Memory.NR24, Memory.NR23, Memory.NR22, Memory.NR21, -1);
+        this.channel1 = new SquareChannel(Memory.NR11, Memory.NR12, Memory.NR10, Memory.NR13, Memory.NR14);
+        this.channel2 = new SquareChannel(Memory.NR21, Memory.NR22, -1, Memory.NR23, Memory.NR24);
     }
 
 
     public void step() {
-        for (int i = 0; i < 4; i++) {
-            this.stepInternal();
+        if (this.isBitSet(Memory.NR52, 7)) {
+            for (int i = 0; i < 4; i++) {
+                this.stepInternal();
+            }
         }
     }
 
 
     private void stepInternal() {
+        this.cycleCounter++;
+        this.frameSequencerCycleCounter++;
 
+        boolean stepLength = false;
+        boolean stepEnvelope = false;
+        boolean stepSweep = false;
+        if (this.frameSequencerCycleCounter >= 8192) {
+            this.frameSequencerCycleCounter = 0;
+            this.frameSequencer++;
+            if (this.frameSequencer > 7) {
+                this.frameSequencer = 0;
+            }
+
+            switch (this.frameSequencer) {
+                case 0:
+                case 4:
+                    stepLength = true;
+                    break;
+                case 2:
+                case 6:
+                    stepLength = true;
+                    stepSweep = true;
+                    break;
+                case 7:
+                    stepEnvelope = true;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        final float[] channel1Samples = this.channel1.step(stepLength, stepEnvelope, stepSweep);
+        final float[] channel2Samples = this.channel2.step(stepLength, stepEnvelope, stepSweep);
+
+        if (this.cycleCounter == 87) {
+            this.cycleCounter = 0;
+
+            final float leftChannelSample = (channel1Samples[0] + channel2Samples[0]) / 2f;
+            final float rightChannelSample = (channel1Samples[1] + channel2Samples[1]) / 2f;
+
+            this.internalBuffer[this.bufferPosition] = (byte) (int) (128f + leftChannelSample * 127f);
+            this.bufferPosition++;
+            this.internalBuffer[this.bufferPosition] = (byte) (int) (128f + rightChannelSample * 127f);
+            this.bufferPosition++;
+            if (this.bufferPosition == 1024) {
+                this.bufferPosition = 0;
+                this.bufferFull = true;
+                System.arraycopy(this.internalBuffer, 0, this.outputBuffer, 0, this.internalBuffer.length);
+            }
+        }
+    }
+
+
+    public boolean isBufferFull() {
+        return this.bufferFull;
+    }
+
+
+    public byte[] fetchSamples() {
+        this.bufferFull = false;
+        return this.outputBuffer;
     }
 
 
     @Override
     public boolean acceptsAddress(int address) {
+        if (this.channel1.acceptsAddress(address)) {
+            return true;
+        }
+
+        if (this.channel2.acceptsAddress(address)) {
+            return true;
+        }
+
         switch (address) {
-            case Memory.NR10:
-            case Memory.NR11:
-            case Memory.NR12:
-            case Memory.NR13:
-            case Memory.NR14:
-            case Memory.NR21:
-            case Memory.NR22:
-            case Memory.NR23:
-            case Memory.NR24:
             case Memory.NR30:
             case Memory.NR31:
             case Memory.NR32:
@@ -75,6 +134,14 @@ public class APU implements Memory, Disposable {
 
     @Override
     public int readByte(int address) {
+        if (this.channel1.acceptsAddress(address)) {
+            return this.channel1.readByte(address);
+        }
+
+        if (this.channel2.acceptsAddress(address)) {
+            return this.channel2.readByte(address);
+        }
+
         // TODO: IMPLEMENT PROPERLY
         return this.memory[address];
     }
@@ -82,16 +149,18 @@ public class APU implements Memory, Disposable {
 
     @Override
     public void writeByte(int address, int value) {
+        if (this.channel1.acceptsAddress(address)) {
+            this.channel1.writeByte(address, value);
+            return;
+        }
+
+        if (this.channel2.acceptsAddress(address)) {
+            this.channel2.writeByte(address, value);
+            return;
+        }
+
         // TODO: IMPLEMENT PROPERLY
         this.memory[address] = value;
-    }
-
-
-    @Override
-    public void dispose() {
-        this.channel1.dispose();
-        this.channel2.dispose();
-        this.audio.dispose();
     }
 
 }
