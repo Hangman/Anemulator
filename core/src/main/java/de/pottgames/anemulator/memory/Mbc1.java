@@ -9,6 +9,7 @@ public class Mbc1 implements Mbc {
     private boolean       ramEnabled         = false;
     private boolean       booted             = false;
     private final int[]   romBank0           = new int[0x4000];
+    private int           ff50Register       = 0xFF;
 
 
     public Mbc1(int[] cartridgeData) {
@@ -61,6 +62,9 @@ public class Mbc1 implements Mbc {
             }
             return this.ramBanks[0][address - 0xA000];
         }
+        if (address == Memory.DISABLE_BOOT_ROM) {
+            return this.ff50Register;
+        }
 
         return this.romBank0[address];
     }
@@ -106,7 +110,7 @@ public class Mbc1 implements Mbc {
 
         } else if (address == Memory.DISABLE_BOOT_ROM) {
             // DISABLE BOOT ROM
-            this.romBank0[address] = value;
+            this.ff50Register = value;
             if (value > 0) {
                 this.booted = true;
             }

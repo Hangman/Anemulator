@@ -106,6 +106,11 @@ public class SquareChannel implements Memory {
     }
 
 
+    public void setDutyPosition(int value) {
+        this.dutyPosition = value;
+    }
+
+
     private boolean isDacOn() {
         return (this.volumeEnvelope.readByte(this.volumeRegisterAddress) & 0b1111_1000) > 0;
     }
@@ -113,6 +118,11 @@ public class SquareChannel implements Memory {
 
     private boolean isLengthTimerEnabled() {
         return (this.freqHighRegister & 0b100_0000) > 0;
+    }
+
+
+    public boolean isEnabled() {
+        return this.enabled;
     }
 
 
@@ -141,7 +151,7 @@ public class SquareChannel implements Memory {
             return this.sweep.readByte(address);
         }
 
-        throw new RuntimeException("Invalid address");
+        throw new RuntimeException("Invalid address: " + Integer.toHexString(address));
     }
 
 
@@ -172,7 +182,7 @@ public class SquareChannel implements Memory {
             return;
         }
 
-        throw new RuntimeException("Invalid address");
+        throw new RuntimeException("Invalid address: " + Integer.toHexString(address));
     }
 
 }

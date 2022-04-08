@@ -9,6 +9,8 @@ public class APU implements Memory {
     private final SquareChannel channel2;
     private final WaveChannel   channel3;
     private final NoiseChannel  channel4;
+    private int                 channelControlRegister;
+    private int                 channelSelectionRegister;
     private final byte[]        internalBuffer = new byte[1024];
     private final byte[]        outputBuffer   = new byte[1024];
     private int                 bufferPosition;
@@ -16,8 +18,7 @@ public class APU implements Memory {
     private boolean             bufferFull;
     private int                 frameSequencer;
     private int                 frameSequencerCycleCounter;
-
-    private final int[] memory = new int[0xFFFF]; // TODO: SET CORRECT SIZE
+    private boolean             enabled;
 
 
     public APU() {
@@ -77,8 +78,49 @@ public class APU implements Memory {
         if (this.cycleCounter == 87) {
             this.cycleCounter = 0;
 
-            final float leftChannelSample = (channel1Samples[0] + channel2Samples[0] + channel3Samples[0] + channel4Samples[0]) / 4f;
-            final float rightChannelSample = (channel1Samples[1] + channel2Samples[1] + channel3Samples[1] + channel4Samples[1]) / 4f;
+            // CHANNEL PANNING
+            if ((this.channelSelectionRegister & 0b1000_0000) == 0) {
+                // channel 4 left
+                channel4Samples[0] = 0f;
+            }
+            if ((this.channelSelectionRegister & 0b0100_0000) == 0) {
+                // channel 3 left
+                channel3Samples[0] = 0f;
+            }
+            if ((this.channelSelectionRegister & 0b0010_0000) == 0) {
+                // channel 2 left
+                channel2Samples[0] = 0f;
+            }
+            if ((this.channelSelectionRegister & 0b0001_0000) == 0) {
+                // channel 1 left
+                channel1Samples[0] = 0f;
+            }
+            if ((this.channelSelectionRegister & 0b0000_1000) == 0) {
+                // channel 4 right
+                channel4Samples[1] = 0f;
+            }
+            if ((this.channelSelectionRegister & 0b0000_0100) == 0) {
+                // channel 3 right
+                channel3Samples[1] = 0f;
+            }
+            if ((this.channelSelectionRegister & 0b0000_0010) == 0) {
+                // channel 2 right
+                channel2Samples[1] = 0f;
+            }
+            if ((this.channelSelectionRegister & 0b0000_0001) == 0) {
+                // channel 1 right
+                channel1Samples[1] = 0f;
+            }
+
+            // MIX CHANNELS
+            float leftChannelSample = (channel1Samples[0] + channel2Samples[0] + channel3Samples[0] + channel4Samples[0]) / 4f;
+            float rightChannelSample = (channel1Samples[1] + channel2Samples[1] + channel3Samples[1] + channel4Samples[1]) / 4f;
+
+            // MASTER PANNING
+            final float leftPanFactor = (this.channelControlRegister >>> 4 & 0b111) / 7f;
+            final float rightPanFactor = (this.channelControlRegister & 0b111) / 7f;
+            leftChannelSample *= leftPanFactor;
+            rightChannelSample *= rightPanFactor;
 
             this.internalBuffer[this.bufferPosition] = (byte) (int) (128f + leftChannelSample * 127f);
             this.bufferPosition++;
@@ -104,34 +146,38 @@ public class APU implements Memory {
     }
 
 
+    private void enabledAPU(boolean enabled) {
+        if (this.enabled && !enabled) {
+            // TURN OFF
+            this.enabled = false;
+            for (int i = 0xFF10; i < 0xFF25; i++) {
+                this.writeByte(i, 0);
+            }
+
+        } else if (!this.enabled && enabled) {
+            // TURN ON
+            this.enabled = true;
+            this.frameSequencer = 0;
+            this.channel1.setDutyPosition(0);
+            this.channel2.setDutyPosition(0);
+            this.channel3.setDutyPosition(0);
+        }
+    }
+
+
     @Override
     public boolean acceptsAddress(int address) {
-        if (this.channel1.acceptsAddress(address)) {
-            return true;
-        }
-        if (this.channel2.acceptsAddress(address)) {
-            return true;
-        }
-        if (this.channel3.acceptsAddress(address)) {
-            return true;
-        }
-        if (this.channel4.acceptsAddress(address)) {
-            return true;
-        }
-
-        switch (address) {
-            case Memory.NR50:
-            case Memory.NR51:
-            case Memory.NR52:
-                return true;
-        }
-
-        return false;
+        return address == Memory.NR50 || address == Memory.NR51 || address == Memory.NR52 || address == Memory.NR20 || address == Memory.NR40
+                || this.channel1.acceptsAddress(address) || this.channel2.acceptsAddress(address) || this.channel3.acceptsAddress(address)
+                || this.channel4.acceptsAddress(address) || address >= 0xFF27 && address <= 0xFF2F;
     }
 
 
     @Override
     public int readByte(int address) {
+        if (!this.enabled && address != Memory.NR52) {
+            return 0xFF;
+        }
         if (this.channel1.acceptsAddress(address)) {
             return this.channel1.readByte(address);
         }
@@ -144,14 +190,37 @@ public class APU implements Memory {
         if (this.channel4.acceptsAddress(address)) {
             return this.channel4.readByte(address);
         }
+        if (address == Memory.NR50) {
+            return this.channelControlRegister;
+        }
+        if (address == Memory.NR51) {
+            return this.channelSelectionRegister;
+        }
+        if (address == Memory.NR52) {
+            int result = (this.enabled ? 1 : 0) << 7;
+            result |= 0b0111_0000;
+            result |= (this.channel4.isEnabled() ? 1 : 0) << 3;
+            result |= (this.channel3.isEnabled() ? 1 : 0) << 2;
+            result |= (this.channel2.isEnabled() ? 1 : 0) << 1;
+            result |= this.channel1.isEnabled() ? 1 : 0;
+            return result;
+        }
+        if (address == Memory.NR20 || address == Memory.NR40) {
+            return 0xFF;
+        }
+        if (address >= 0xFF27 && address <= 0xFF2F) {
+            return 0xFF;
+        }
 
-        // TODO: IMPLEMENT PROPERLY
-        return this.memory[address];
+        throw new RuntimeException("Invalid address: " + Integer.toHexString(address));
     }
 
 
     @Override
     public void writeByte(int address, int value) {
+        if (!this.enabled && address != Memory.NR52) {
+            return;
+        }
         if (this.channel1.acceptsAddress(address)) {
             this.channel1.writeByte(address, value);
             return;
@@ -168,9 +237,32 @@ public class APU implements Memory {
             this.channel4.writeByte(address, value);
             return;
         }
+        if (address == Memory.NR50) {
+            this.channelControlRegister = value;
+            return;
+        }
+        if (address == Memory.NR51) {
+            this.channelSelectionRegister = value;
+            return;
+        }
+        if (address == Memory.NR52) {
+            this.enabledAPU((value & 0b1000_0000) > 0);
+            return;
+        }
+        if (address == Memory.NR20 || address == Memory.NR40) {
+            return;
+        }
+        if (address >= 0xFF27 && address <= 0xFF2F) {
+            return;
+        }
 
-        // TODO: IMPLEMENT PROPERLY
-        this.memory[address] = value;
+        throw new RuntimeException("Invalid address: " + Integer.toHexString(address));
+    }
+
+
+    @Override
+    public String toString() {
+        return "APU";
     }
 
 }

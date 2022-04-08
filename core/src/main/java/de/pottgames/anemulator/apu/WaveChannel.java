@@ -7,7 +7,7 @@ public class WaveChannel implements Memory {
     private final float[] samples     = new float[2];
     private int           frequencyTimer;
     private int           frequency;
-    private int           wavePosition;
+    private int           dutyPosition;
     private boolean       dacOn;
     private boolean       lengthEnabled;
     private int           lengthCounter;
@@ -24,13 +24,13 @@ public class WaveChannel implements Memory {
 
         if (this.frequencyTimer == 0) {
             this.frequencyTimer = (2048 - this.frequency) * 2;
-            this.wavePosition = this.wavePosition + 1 & 31;
+            this.dutyPosition = this.dutyPosition + 1 & 31;
         }
         this.frequencyTimer -= 1;
 
         float floatSample = 0f;
         if (this.dacOn && this.enabled) {
-            final int sample = this.wavePattern[this.wavePosition / 2] >> ((this.wavePosition & 1) != 0 ? 4 : 0) & 0x0F;
+            final int sample = this.wavePattern[this.dutyPosition / 2] >> ((this.dutyPosition & 1) != 0 ? 4 : 0) & 0x0F;
             floatSample = (sample >>> this.volumeShift) / 15f;
         }
         this.samples[0] = floatSample;
@@ -47,6 +47,16 @@ public class WaveChannel implements Memory {
                 this.enabled = false;
             }
         }
+    }
+
+
+    public void setDutyPosition(int value) {
+        this.dutyPosition = value;
+    }
+
+
+    public boolean isEnabled() {
+        return this.enabled;
     }
 
 
@@ -78,7 +88,7 @@ public class WaveChannel implements Memory {
             return this.wavePattern[address - 0xFF30]; // TODO: return 0xFF?
         }
 
-        throw new RuntimeException("Invalid address");
+        throw new RuntimeException("Invalid address: " + Integer.toHexString(address));
     }
 
 
@@ -111,7 +121,7 @@ public class WaveChannel implements Memory {
                     this.volumeShift = 2;
                     break;
                 default:
-                    throw new RuntimeException("Invalid outputLevel");
+                    throw new RuntimeException("Invalid address: " + Integer.toHexString(address));
             }
             return;
         }
@@ -137,7 +147,7 @@ public class WaveChannel implements Memory {
             return;
         }
 
-        throw new RuntimeException("Invalid address");
+        throw new RuntimeException("Invalid address: " + Integer.toHexString(address));
     }
 
 }

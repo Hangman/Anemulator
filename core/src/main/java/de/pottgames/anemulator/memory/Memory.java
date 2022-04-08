@@ -91,6 +91,8 @@ public interface Memory {
 
     int NR14 = 0xFF14;
 
+    int NR20 = 0xFF15;
+
     int NR21 = 0xFF16;
 
     int NR22 = 0xFF17;
@@ -108,6 +110,8 @@ public interface Memory {
     int NR33 = 0xFF1D;
 
     int NR34 = 0xFF1E;
+
+    int NR40 = 0xFF1F;
 
     int NR41 = 0xFF20;
 

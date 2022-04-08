@@ -37,7 +37,6 @@ public class NoiseChannel implements Memory {
                 this.lfsr |= xorResult << 6;
             }
         }
-
         this.frequencyTimer -= 1;
 
         float sample = 0f;
@@ -82,6 +81,11 @@ public class NoiseChannel implements Memory {
     }
 
 
+    public boolean isEnabled() {
+        return this.enabled;
+    }
+
+
     @Override
     public boolean acceptsAddress(int address) {
         return address == 0xFF1F || address == Memory.NR41 || address == Memory.NR42 || address == Memory.NR43 || address == Memory.NR44;
@@ -106,7 +110,7 @@ public class NoiseChannel implements Memory {
             return (this.lengthEnabled ? 1 : 0) << 6 | 0b1011_1111;
         }
 
-        throw new RuntimeException("Invalid address");
+        throw new RuntimeException("Invalid address: " + Integer.toHexString(address));
     }
 
 
@@ -151,7 +155,7 @@ public class NoiseChannel implements Memory {
             return;
         }
 
-        throw new RuntimeException("Invalid address");
+        throw new RuntimeException("Invalid address: " + Integer.toHexString(address));
     }
 
 }

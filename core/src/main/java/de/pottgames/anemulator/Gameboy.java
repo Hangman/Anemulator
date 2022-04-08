@@ -73,14 +73,11 @@ public class Gameboy {
         this.memoryList.add(new RandomAccessMemory("? 1", 0xFF7F, 1)); // ?
         this.memoryList.add(new RandomAccessMemory("? 2", 0xFF03, 1)); // ?
         this.memoryList.add(new RandomAccessMemory("? 3", 0xFF08, 7)); // ?
-        this.memoryList.add(new RandomAccessMemory("? 4", 0xFF15, 1)); // ?
-        this.memoryList.add(new RandomAccessMemory("? 5", 0xFF1F, 1)); // ?
-        this.memoryList.add(new RandomAccessMemory("? 6", 0xFF27, 9)); // ?
-        this.memoryList.add(new RandomAccessMemory("? 7", 0xFF4C, 1)); // ?
-        this.memoryList.add(new RandomAccessMemory("? 8", 0xFF4E, 1)); // ?
-        this.memoryList.add(new RandomAccessMemory("? 9", 0xFF57, 17)); // ?
-        this.memoryList.add(new RandomAccessMemory("? 10", 0xFF6C, 4)); // ?
-        this.memoryList.add(new RandomAccessMemory("? 11", 0xFF71, 14)); // ?
+        this.memoryList.add(new RandomAccessMemory("? 4", 0xFF4C, 1)); // ?
+        this.memoryList.add(new RandomAccessMemory("? 5", 0xFF4E, 1)); // ?
+        this.memoryList.add(new RandomAccessMemory("? 6", 0xFF57, 17)); // ?
+        this.memoryList.add(new RandomAccessMemory("? 7", 0xFF6C, 4)); // ?
+        this.memoryList.add(new RandomAccessMemory("? 8", 0xFF71, 14)); // ?
         this.mmu.addMemoryUnits(this.memoryList);
 
         final Booter booter = new Booter(this.cpu.getRegister(), this.mmu, this.mbc);

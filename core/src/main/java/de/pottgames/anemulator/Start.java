@@ -38,10 +38,11 @@ public class Start extends ApplicationAdapter {
         this.texture = new Texture(this.backbuffer);
         this.tileMapTexture = new Texture(this.tileMap);
 
+        // GAMES
         // this.gameboy = new Gameboy("Dr. Mario (World).gb", this.backbuffer);
         // this.gameboy = new Gameboy("Tetris (World) (Rev A).gb", this.backbuffer);
         // this.gameboy = new Gameboy("Kirby's Dream Land (USA, Europe).gb", this.backbuffer);
-        this.gameboy = new Gameboy("Super Mario Land (World) (Rev A).gb", this.backbuffer);
+        // this.gameboy = new Gameboy("Super Mario Land (World) (Rev A).gb", this.backbuffer);
         // this.gameboy = new Gameboy("Donkey Kong Land (USA, Europe) (SGB Enhanced).gb", this.backbuffer);
         // this.gameboy = new Gameboy("Pinball Deluxe (Europe).gb", this.backbuffer);
         // this.gameboy = new Gameboy("F-1 Race (World).gb", this.backbuffer);
@@ -50,6 +51,7 @@ public class Start extends ApplicationAdapter {
         // this.gameboy = new Gameboy("Aladdin (Europe) (En,Fr,De,Es,It,Nl).gbc", this.backbuffer);
         // this.gameboy = new Gameboy("Batman - The Video Game (World).gb", this.backbuffer);
         // this.gameboy = new Gameboy("Boxxle II (USA, Europe).gb", this.backbuffer);
+
         // this.gameboy = new Gameboy("cpu_instrs.gb", this.backbuffer); // PASSED
         // this.gameboy = new Gameboy("instr_timing.gb", this.backbuffer);
         // this.gameboy = new Gameboy("cpu_instrs/01-special.gb", this.backbuffer); // PASSED
@@ -63,6 +65,8 @@ public class Start extends ApplicationAdapter {
         // this.gameboy = new Gameboy("cpu_instrs/09-op r,r.gb", this.backbuffer); // PASSED
         // this.gameboy = new Gameboy("cpu_instrs/10-bit ops.gb", this.backbuffer); // PASSED
         // this.gameboy = new Gameboy("cpu_instrs/11-op a,(hl).gb", this.backbuffer); // PASSED
+
+        // MOONEYE
         // this.gameboy = new Gameboy("mooneye/daa.gb", this.backbuffer); // PASSED
         // this.gameboy = new Gameboy("mooneye/reg_f.gb", this.backbuffer); // PASSED
         // this.gameboy = new Gameboy("mooneye/div_write.gb", this.backbuffer); // PASSED
@@ -72,6 +76,20 @@ public class Start extends ApplicationAdapter {
         // this.gameboy = new Gameboy("mooneye/pop_timing.gb", this.backbuffer);
         // this.gameboy = new Gameboy("mooneye/ei_sequence.gb", this.backbuffer);
         // this.gameboy = new Gameboy("mooneye/tma_write_reloading.gb", this.backbuffer);
+
+        // DMG_SOUND
+        this.gameboy = new Gameboy("dmg_sound/01-registers.gb", this.backbuffer);
+        // this.gameboy = new Gameboy("dmg_sound/02-len ctr.gb", this.backbuffer);
+        // this.gameboy = new Gameboy("dmg_sound/03-trigger.gb", this.backbuffer);
+        // this.gameboy = new Gameboy("dmg_sound/04-sweep.gb", this.backbuffer);
+        // this.gameboy = new Gameboy("dmg_sound/05-sweep details.gb", this.backbuffer);
+        // this.gameboy = new Gameboy("dmg_sound/06-overflow on trigger.gb", this.backbuffer);
+        // this.gameboy = new Gameboy("dmg_sound/07-len sweep period sync.gb", this.backbuffer);
+        // this.gameboy = new Gameboy("dmg_sound/08-len ctr during power.gb", this.backbuffer);
+        // this.gameboy = new Gameboy("dmg_sound/09-wave read while on.gb", this.backbuffer);
+        // this.gameboy = new Gameboy("dmg_sound/10-wave trigger while on.gb", this.backbuffer);
+        // this.gameboy = new Gameboy("dmg_sound/11-regs after power.gb", this.backbuffer);
+        // this.gameboy = new Gameboy("dmg_sound/12-wave write while on.gb", this.backbuffer);
 
         // SETUP GDX
         this.input = new KeyboardInput();
