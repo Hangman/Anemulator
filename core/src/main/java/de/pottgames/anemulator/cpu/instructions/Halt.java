@@ -1,15 +1,15 @@
 package de.pottgames.anemulator.cpu.instructions;
 
-import de.pottgames.anemulator.cpu.CPU;
+import de.pottgames.anemulator.cpu.Cpu;
 import de.pottgames.anemulator.cpu.Instruction;
 import de.pottgames.anemulator.cpu.Register;
 import de.pottgames.anemulator.memory.Memory;
 
 public class Halt extends Instruction {
-    private final CPU cpu;
+    private final Cpu cpu;
 
 
-    public Halt(Register register, Memory memory, CPU cpu) {
+    public Halt(Register register, Memory memory, Cpu cpu) {
         super(register, memory);
         this.cpu = cpu;
     }

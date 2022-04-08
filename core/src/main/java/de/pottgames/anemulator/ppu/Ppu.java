@@ -9,7 +9,7 @@ import de.pottgames.anemulator.memory.Memory;
  * TODO: LY register is always 0 if the lcd is off.
  *
  */
-public class PPU {
+public class Ppu {
     private static final Color TRANSPARENT = new Color(0xFFFFFF00);
     private final Color[]      colors      = { new Color(0xFFFFFFFF), new Color(0xA8A8A8FF), new Color(0x545454FF), new Color(0x000000FF) };
     private final Memory       mmu;
@@ -23,7 +23,7 @@ public class PPU {
     private boolean       wasOff           = false;
 
 
-    public PPU(Memory memory, Pixmap backBuffer) {
+    public Ppu(Memory memory, Pixmap backBuffer) {
         this.mmu = memory;
         this.frontBuffer = backBuffer;
     }
@@ -238,11 +238,21 @@ public class PPU {
                 final int paletteAddress = (objAttributes & 0b10000) > 0 ? 0xFF49 : 0xFF48;
                 objX -= 8;
                 objY -= 16;
-                int tilePixelY = flipY ? objHeight - 1 - (currentLine - objY) : currentLine - objY;
-                int atlasAddressModificator = objHeight == 16 ? flipY ? 16 : 0 : 0;
-                if (tilePixelY >= 8) {
+                final int yInTile = currentLine - objY;
+                final boolean yInFirstTile = yInTile < 8;
+                int atlasAddressModificator = 0;
+                if (!yInFirstTile && !flipY || yInFirstTile && flipY) {
+                    atlasAddressModificator = 16;
+                }
+                int tilePixelY = yInTile;
+                if (!yInFirstTile && !flipY) {
                     tilePixelY -= 8;
-                    atlasAddressModificator = objHeight == 16 ? flipY ? 0 : 16 : 0;
+                } else if (yInFirstTile && !flipY) {
+                    tilePixelY = yInTile;
+                } else if (!yInFirstTile && flipY) {
+                    tilePixelY = 7 - (yInTile - 8);
+                } else if (yInFirstTile && flipY) {
+                    tilePixelY = 7 - yInTile;
                 }
 
                 // FETCH TILE PIXELS FROM ATLAS
@@ -375,7 +385,7 @@ public class PPU {
             case 1:
                 return this.colors[palette >>> 2 & 0b11];
             case 0:
-                return PPU.TRANSPARENT;
+                return Ppu.TRANSPARENT;
         }
 
         return null;

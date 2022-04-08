@@ -37,6 +37,9 @@ public class Start extends ApplicationAdapter {
         this.tileMap = new Pixmap(128, 192, Format.RGBA8888);
         this.texture = new Texture(this.backbuffer);
         this.tileMapTexture = new Texture(this.tileMap);
+        
+        // ANEMULATOR TEST ROMS
+        this.gameboy = new Gameboy("hello-world.gb", this.backbuffer);
 
         // GAMES
         // this.gameboy = new Gameboy("Dr. Mario (World).gb", this.backbuffer);
@@ -78,7 +81,7 @@ public class Start extends ApplicationAdapter {
         // this.gameboy = new Gameboy("mooneye/tma_write_reloading.gb", this.backbuffer);
 
         // DMG_SOUND
-        this.gameboy = new Gameboy("dmg_sound/01-registers.gb", this.backbuffer);
+        // this.gameboy = new Gameboy("dmg_sound/01-registers.gb", this.backbuffer);
         // this.gameboy = new Gameboy("dmg_sound/02-len ctr.gb", this.backbuffer);
         // this.gameboy = new Gameboy("dmg_sound/03-trigger.gb", this.backbuffer);
         // this.gameboy = new Gameboy("dmg_sound/04-sweep.gb", this.backbuffer);

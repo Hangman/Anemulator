@@ -50,7 +50,7 @@ public class SquareChannel implements Memory {
                 this.sweep.step();
             }
 
-            final float[] duty = APU.WAVE_DUTY[this.lengthDutyRegister >>> 6];
+            final float[] duty = Apu.WAVE_DUTY[this.lengthDutyRegister >>> 6];
             int frequency = this.getFrequency();
             if (this.sweep != null) {
                 frequency = this.sweep.getFrequency(frequency);

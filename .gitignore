@@ -1,3 +1,14 @@
+## ROMS:
+assets/*.gb
+assets/*.gbc
+assets/cpu_instrs/*.gb
+assets/cpu_instrs/*.gbc
+assets/dmg_sound/*.gb
+assets/dmg_sound/*.gbc
+assets/mooneye/*.gb
+assets/mooneye/*.gbc
+*.o
+
 ## Gradle
 .gradle
 gradle-app.setting
@@ -69,5 +80,3 @@ nb-configuration.xml
 *~
 *.*#
 *#*#
-*.gb
-*.gbc

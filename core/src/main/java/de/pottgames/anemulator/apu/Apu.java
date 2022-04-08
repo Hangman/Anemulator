@@ -2,7 +2,7 @@ package de.pottgames.anemulator.apu;
 
 import de.pottgames.anemulator.memory.Memory;
 
-public class APU implements Memory {
+public class Apu implements Memory {
     static final float[][]      WAVE_DUTY      = { { 0f, 0f, 0f, 0f, 0f, 0f, 0f, 1f }, { 1f, 0f, 0f, 0f, 0f, 0f, 0f, 1f }, { 1f, 0f, 0f, 0f, 0f, 1f, 1f, 1f },
             { 0f, 1f, 1f, 1f, 1f, 1f, 1f, 0f } };
     private final SquareChannel channel1;
@@ -21,7 +21,7 @@ public class APU implements Memory {
     private boolean             enabled;
 
 
-    public APU() {
+    public Apu() {
         this.channel1 = new SquareChannel(Memory.NR11, Memory.NR12, true, Memory.NR13, Memory.NR14);
         this.channel2 = new SquareChannel(Memory.NR21, Memory.NR22, false, Memory.NR23, Memory.NR24);
         this.channel3 = new WaveChannel();

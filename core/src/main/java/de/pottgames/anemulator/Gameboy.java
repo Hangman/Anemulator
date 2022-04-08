@@ -5,9 +5,9 @@ import java.util.List;
 
 import com.badlogic.gdx.graphics.Pixmap;
 
-import de.pottgames.anemulator.apu.APU;
+import de.pottgames.anemulator.apu.Apu;
 import de.pottgames.anemulator.cpu.Booter;
-import de.pottgames.anemulator.cpu.CPU;
+import de.pottgames.anemulator.cpu.Cpu;
 import de.pottgames.anemulator.cpu.Timer;
 import de.pottgames.anemulator.input.Joypad;
 import de.pottgames.anemulator.memory.Dma;
@@ -19,13 +19,13 @@ import de.pottgames.anemulator.memory.RandomAccessMemory;
 import de.pottgames.anemulator.memory.SerialBus;
 import de.pottgames.anemulator.memory.WRam;
 import de.pottgames.anemulator.ppu.LcdRegisters;
-import de.pottgames.anemulator.ppu.PPU;
+import de.pottgames.anemulator.ppu.Ppu;
 import de.pottgames.anemulator.rom.RomLoader;
 
 public class Gameboy {
-    private final CPU          cpu;
-    private final PPU          ppu;
-    private final APU          apu;
+    private final Cpu          cpu;
+    private final Ppu          ppu;
+    private final Apu          apu;
     private final Mbc          mbc;
     private final Mmu          mmu;
     private final Timer        timer;
@@ -46,9 +46,9 @@ public class Gameboy {
         final Dma dma = new Dma(this.mmu);
 
         // CREATE MAIN SYSTEMS
-        this.cpu = new CPU(this.mmu);
-        this.ppu = new PPU(this.mmu, screen);
-        this.apu = new APU();
+        this.cpu = new Cpu(this.mmu);
+        this.ppu = new Ppu(this.mmu, screen);
+        this.apu = new Apu();
 
         // REGISTER ADDRESS SPACE IN MMU
         this.memoryList.add(new RandomAccessMemory("VRAM", 0x8000, 0xA000 - 0x8000)); // VRAM

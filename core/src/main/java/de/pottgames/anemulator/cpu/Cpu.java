@@ -7,7 +7,7 @@ import de.pottgames.anemulator.cpu.instructions.*;
 import de.pottgames.anemulator.error.UnsupportedFeatureException;
 import de.pottgames.anemulator.memory.Memory;
 
-public class CPU {
+public class Cpu {
     private final Memory              memory;
     private final Register            register;
     private final IntMap<Instruction> instructions     = new IntMap<>();
@@ -15,7 +15,7 @@ public class CPU {
     private boolean                   halted           = false;
 
 
-    public CPU(Memory memory) {
+    public Cpu(Memory memory) {
         System.out.println("CPU initialize...");
         this.memory = memory;
         this.register = new Register();
