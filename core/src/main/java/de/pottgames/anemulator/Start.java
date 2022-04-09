@@ -43,7 +43,7 @@ public class Start extends ApplicationAdapter {
         // this.gameboy = new Gameboy("anemulator/sprite-test.gb", this.backbuffer);
 
         // GAMES
-        this.gameboy = new Gameboy("Dr. Mario (World).gb", this.backbuffer);
+        // this.gameboy = new Gameboy("Dr. Mario (World).gb", this.backbuffer);
         // this.gameboy = new Gameboy("Tetris (World) (Rev A).gb", this.backbuffer);
         // this.gameboy = new Gameboy("Kirby's Dream Land (USA, Europe).gb", this.backbuffer);
         // this.gameboy = new Gameboy("Super Mario Land (World) (Rev A).gb", this.backbuffer);
@@ -54,7 +54,7 @@ public class Start extends ApplicationAdapter {
         // this.gameboy = new Gameboy("Bionic Battler (USA).gb", this.backbuffer);
         // this.gameboy = new Gameboy("Aladdin (Europe) (En,Fr,De,Es,It,Nl).gbc", this.backbuffer);
         // this.gameboy = new Gameboy("Batman - The Video Game (World).gb", this.backbuffer);
-        // this.gameboy = new Gameboy("Boxxle II (USA, Europe).gb", this.backbuffer);
+        this.gameboy = new Gameboy("Boxxle II (USA, Europe).gb", this.backbuffer);
 
         // this.gameboy = new Gameboy("cpu_instrs.gb", this.backbuffer); // PASSED
         // this.gameboy = new Gameboy("instr_timing.gb", this.backbuffer);
@@ -95,7 +95,7 @@ public class Start extends ApplicationAdapter {
         // this.gameboy = new Gameboy("dmg_sound/11-regs after power.gb", this.backbuffer);
         // this.gameboy = new Gameboy("dmg_sound/12-wave write while on.gb", this.backbuffer);
 
-        // TEAMROOM TEST ROMS
+        // TEAROOM TEST ROMS
         // this.gameboy = new Gameboy("tearoom/m2_win_en_toggle.gb", this.backbuffer);
 
         // SETUP GDX
