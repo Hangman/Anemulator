@@ -5,8 +5,8 @@ assets/cpu_instrs/*.gb
 assets/cpu_instrs/*.gbc
 assets/dmg_sound/*.gb
 assets/dmg_sound/*.gbc
-assets/mooneye/*.gb
-assets/mooneye/*.gbc
+assets/mooneye/**/*.gb
+assets/mooneye/**/*.gbc
 assets/tearoom/*.gb
 assets/tearoom/*.gbc
 *.o
