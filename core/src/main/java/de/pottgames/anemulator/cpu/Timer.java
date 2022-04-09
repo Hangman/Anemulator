@@ -13,6 +13,10 @@ public class Timer implements Memory {
 
     public Timer(Mmu mmu) {
         this.mmu = mmu;
+        this.writeInternal(Memory.DIV, 0x18);
+        this.writeInternal(Memory.TIMA, 0x00);
+        this.writeInternal(Memory.TMA, 0x00);
+        this.writeInternal(Memory.TAC, 0xF8);
     }
 
 

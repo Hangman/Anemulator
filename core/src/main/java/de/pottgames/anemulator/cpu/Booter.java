@@ -40,10 +40,7 @@ public class Booter {
         this.memory.writeByte(Memory.JOYPAD, 0xCF);
         this.memory.writeByte(Memory.SB, 0x00);
         this.memory.writeByte(Memory.SC, 0x7E);
-        this.memory.writeByte(Memory.DIV, 0x18);
-        this.memory.writeByte(Memory.TIMA, 0x00);
-        this.memory.writeByte(Memory.TMA, 0x00);
-        this.memory.writeByte(Memory.TAC, 0xF8);
+        // DIV, TIMA, TMA, TAC IS INITIALIZED IN Timer
         this.memory.writeByte(Memory.IF, 0xE1);
         this.memory.writeByte(Memory.NR10, 0x80);
         this.memory.writeByte(Memory.NR11, 0xBF);
