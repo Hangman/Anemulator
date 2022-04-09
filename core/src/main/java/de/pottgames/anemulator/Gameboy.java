@@ -95,17 +95,6 @@ public class Gameboy {
     }
 
 
-    public void renderFrame() {
-        boolean vBlank = false;
-        while (!vBlank) {
-            this.timer.step();
-            this.cpu.step();
-            vBlank = this.ppu.step();
-            this.apu.step();
-        }
-    }
-
-
     public boolean isAudioBufferFull() {
         return this.apu.isBufferFull();
     }
