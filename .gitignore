@@ -7,7 +7,12 @@ assets/dmg_sound/*.gb
 assets/dmg_sound/*.gbc
 assets/mooneye/*.gb
 assets/mooneye/*.gbc
+assets/tearoom/*.gb
+assets/tearoom/*.gbc
 *.o
+core/src/test/asm/*.2bpp
+core/src/test/asm/*.gb
+core/src/test/asm/*.gbc
 
 ## Gradle
 .gradle

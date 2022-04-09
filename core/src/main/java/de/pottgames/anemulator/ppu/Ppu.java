@@ -11,7 +11,7 @@ import de.pottgames.anemulator.memory.Memory;
  */
 public class Ppu {
     private static final Color TRANSPARENT = new Color(0xFFFFFF00);
-    private final Color[]      colors      = { new Color(0xFFFFFFFF), new Color(0xA8A8A8FF), new Color(0x545454FF), new Color(0x000000FF) };
+    private final Color[]      colors      = { new Color(0xFFFFFFFF), new Color(0xAAAAAAFF), new Color(0x555555FF), new Color(0x000000FF) };
     private final Memory       mmu;
 
     private GpuMode state = GpuMode.V_BLANK;
