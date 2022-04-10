@@ -241,7 +241,7 @@ public class Ppu {
                 final int yInTile = currentLine - objY;
                 final boolean yInFirstTile = yInTile < 8;
                 int atlasAddressModificator = 0;
-                if (!yInFirstTile && !flipY || yInFirstTile && flipY) {
+                if (!yInFirstTile && !flipY || yInFirstTile && objHeight == 16 && flipY) {
                     atlasAddressModificator = 16;
                 }
                 int tilePixelY = yInTile;
