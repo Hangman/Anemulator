@@ -260,8 +260,8 @@ public class Ppu {
         final int bgMapStartAddress = this.mmu.isBitSet(Memory.LCDC, 3) ? 0x9C00 : 0x9800;
         final int scrollX = this.mmu.readByte(Memory.SCROLL_X);
         int bgMapY = currentLine + this.mmu.readByte(Memory.SCROLL_Y);
-        if (bgMapY > 255) {
-            bgMapY -= 255;
+        if (bgMapY >= 256) {
+            bgMapY -= 256;
         }
         final int bgMapBlockY = bgMapY / 8;
         final int tilePixelY = bgMapY % 8;
