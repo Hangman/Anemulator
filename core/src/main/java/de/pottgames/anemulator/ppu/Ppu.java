@@ -171,6 +171,56 @@ public class Ppu {
     }
 
 
+    public void renderBgMap(Pixmap target) {
+        final boolean atlasAddressMode = this.mmu.isBitSet(Memory.LCDC, 4);
+        final int bgMapStartAddress = this.mmu.isBitSet(Memory.LCDC, 3) ? 0x9C00 : 0x9800;
+
+        for (int currentLine = 0; currentLine < 256; currentLine++) {
+            final int bgMapY = currentLine;
+            final int bgMapBlockY = bgMapY / 8;
+            final int tilePixelY = bgMapY % 8;
+
+            int lastTileAddress = -1;
+
+            for (int pixelX = 0; pixelX < 256; pixelX++) {
+                // FIND TILE ADDRESS
+                int bgMapX = pixelX;
+                if (bgMapX > 255) {
+                    bgMapX -= 255;
+                }
+                final int bgMapBlockX = bgMapX / 8;
+                final int tilePixelX = bgMapX % 8;
+                final int tileAddress = bgMapStartAddress + bgMapBlockY * 32 + bgMapBlockX;
+
+                // READ TILE DATA
+                if (tileAddress != lastTileAddress) {
+                    int atlasTileAddress;
+                    if (atlasAddressMode) {
+                        final int atlasTileIndex = this.mmu.readByte(tileAddress);
+                        atlasTileAddress = 0x8000 + atlasTileIndex * 16;
+                    } else {
+                        final byte atlasTileIndex = (byte) this.mmu.readByte(tileAddress);
+                        atlasTileAddress = 0x9000 + atlasTileIndex * 16;
+                    }
+
+                    for (int i = 0; i < 16; i++) {
+                        this.tileCache[i] = this.mmu.readByte(atlasTileAddress + i);
+                    }
+                    lastTileAddress = tileAddress;
+                }
+
+                // FETCH COLOR
+                final int colorPaletteIndex = this.getColorPaletteIndexOfTilePixel(this.tileCache, tilePixelX, tilePixelY);
+                final Color color = this.getBGColor(colorPaletteIndex);
+
+                // RENDER
+                target.setColor(color);
+                target.drawPixel(pixelX, currentLine);
+            }
+        }
+    }
+
+
     private void renderBg(int currentLine, boolean atlasAddressMode) {
         final int bgMapStartAddress = this.mmu.isBitSet(Memory.LCDC, 3) ? 0x9C00 : 0x9800;
         final int scrollX = this.mmu.readByte(Memory.SCROLL_X);
@@ -186,8 +236,8 @@ public class Ppu {
         for (int pixelX = 0; pixelX < 160; pixelX++) {
             // FIND TILE ADDRESS
             int bgMapX = pixelX + scrollX;
-            if (bgMapX > 255) {
-                bgMapX -= 255;
+            if (bgMapX >= 256) {
+                bgMapX -= 256;
             }
             final int bgMapBlockX = bgMapX / 8;
             final int tilePixelX = bgMapX % 8;

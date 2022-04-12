@@ -110,6 +110,11 @@ public class Gameboy {
     }
 
 
+    public void renderBgMap(Pixmap pixmap) {
+        this.ppu.renderBgMap(pixmap);
+    }
+
+
     public List<Memory> getMemoryList() {
         return this.memoryList;
     }
