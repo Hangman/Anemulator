@@ -218,6 +218,41 @@ public class Ppu {
                 target.drawPixel(pixelX, currentLine);
             }
         }
+
+        // VIEWPORT LINES
+        final int scrollX = this.mmu.readByte(Memory.SCROLL_X);
+        final int scrollY = this.mmu.readByte(Memory.SCROLL_Y);
+        final int lineTopY = scrollY;
+        int lineBottomY = scrollY + 144;
+        if (lineBottomY >= 256) {
+            lineBottomY -= 256;
+        }
+        final int lineLeftX = scrollX;
+        int lineRightX = scrollX + 160;
+        if (lineRightX >= 256) {
+            lineRightX -= 256;
+        }
+        target.setColor(Color.RED);
+
+        // RENDER TOP & BOTTOM LINE
+        for (int x = 0; x < 160; x++) {
+            int pixelX = x + lineLeftX;
+            if (pixelX >= 256) {
+                pixelX -= 256;
+            }
+            target.drawPixel(pixelX, lineTopY);
+            target.drawPixel(pixelX, lineBottomY);
+        }
+
+        // RENDER LEFT & RIGHT LINE
+        for (int y = 0; y < 144; y++) {
+            int pixelY = y + lineTopY;
+            if (pixelY >= 256) {
+                pixelY -= 256;
+            }
+            target.drawPixel(lineLeftX, pixelY);
+            target.drawPixel(lineRightX, pixelY);
+        }
     }
 
 
