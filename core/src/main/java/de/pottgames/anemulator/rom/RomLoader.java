@@ -95,23 +95,26 @@ public class RomLoader {
             // ROM + MBC3 + RAM + BATTERY
             // // TODO
             // break;
-            // case 0x19:
-            // ROM + MBC5
-            // // TODO
-            // break;
-            // case 0x1a:
-            // ROM + MBC5 + RAM
-            // // TODO
-            // break;
+            case 0x19:
+                // ROM + MBC5
+                System.out.println("ROM + MBC5");
+                controller = new Mbc5(intData);
+                break;
+            case 0x1a:
+                // ROM + MBC5 + RAM
+                System.out.println("ROM + MBC5 + RAM");
+                controller = new Mbc5(intData);
+                break;
             case 0x1b:
                 // // ROM + MBC5 + RAM + BATTERY
                 System.out.println("ROM + MBC5 + RAM + BATTERY");
                 controller = new Mbc5(intData);
                 break;
-            // case 0x1c:
-            // ROM + MBC5 + RUMBLE
-            // // TODO
-            // break;
+            case 0x1c:
+                // ROM + MBC5 + RUMBLE
+                System.out.println("ROM + MBC5 + RUMBLE");
+                controller = new Mbc5(intData);
+                break;
             // case 0x1d:
             // ROM + MBC5 + RUMBLE + SRAM
             // // TODO
