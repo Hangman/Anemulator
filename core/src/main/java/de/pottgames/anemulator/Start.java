@@ -50,7 +50,7 @@ public class Start extends ApplicationAdapter {
         // this.gameboy = new Gameboy("Dr. Mario (World).gb", this.backbuffer);
         // this.gameboy = new Gameboy("Tetris (World) (Rev A).gb", this.backbuffer);
         // this.gameboy = new Gameboy("Kirby's Dream Land (USA, Europe).gb", this.backbuffer);
-        this.gameboy = new Gameboy("Super Mario Land (World) (Rev A).gb", this.backbuffer);
+        // this.gameboy = new Gameboy("Super Mario Land (World) (Rev A).gb", this.backbuffer);
         // this.gameboy = new Gameboy("Donkey Kong Land (USA, Europe) (SGB Enhanced).gb", this.backbuffer);
         // this.gameboy = new Gameboy("Pinball Deluxe (Europe).gb", this.backbuffer);
         // this.gameboy = new Gameboy("F-1 Race (World).gb", this.backbuffer);
@@ -61,6 +61,7 @@ public class Start extends ApplicationAdapter {
         // this.gameboy = new Gameboy("Boxxle II (USA, Europe).gb", this.backbuffer);
         // this.gameboy = new Gameboy("Mega Man - Dr. Wily's Revenge (E) [!].gb", this.backbuffer);
         // this.gameboy = new Gameboy("Super Mario Land 2 - 6 Golden Coins (UE) (V1.2) [!].gb", this.backbuffer);
+        this.gameboy = new Gameboy("Pokemon - Blaue Edition (Germany) (SGB Enhanced).gb", this.backbuffer);
 
         // this.gameboy = new Gameboy("cpu_instrs.gb", this.backbuffer); // PASSED
         // this.gameboy = new Gameboy("instr_timing.gb", this.backbuffer); // FAILED

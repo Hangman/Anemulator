@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import de.pottgames.anemulator.error.UnsupportedFeatureException;
 import de.pottgames.anemulator.memory.Mbc;
 import de.pottgames.anemulator.memory.Mbc1;
+import de.pottgames.anemulator.memory.Mbc5;
 import de.pottgames.anemulator.memory.RomOnly;
 
 public class RomLoader {
@@ -40,8 +41,7 @@ public class RomLoader {
             // // TODO
             // break;
             case 0x3:
-                // // ROM + MBC1 + RAM + BATTERY
-                // // TODO
+                // ROM + MBC1 + RAM + BATTERY
                 System.out.println("MBC1 + RAM + BATTERY");
                 controller = new Mbc1(intData);
                 break;
@@ -50,89 +50,90 @@ public class RomLoader {
             // // TODO
             // break;
             case 0x6:
-                // // ROM + MBC2 + BATTERY
+                // ROM + MBC2 + BATTERY
                 // // TODO
                 System.out.println("MBC2 + BATTERY");
                 controller = new Mbc1(intData);
                 break;
             // case 0x8:
-            // // ROM + RAM
+            // ROM + RAM
             // // TODO
             // break;
             // case 0x9:
-            // // ROM + RAM + BATTERY
+            // ROM + RAM + BATTERY
             // // TODO
             // break;
             // case 0xb:
-            // // ROM + MM01
+            // ROM + MM01
             // // TODO
             // break;
             // case 0xc:
-            // // ROM + MM01 + SRAM
+            // ROM + MM01 + SRAM
             // // TODO
             // break;
             // case 0xd:
-            // // ROM + MM01 + SRAM + BATTERY
+            // ROM + MM01 + SRAM + BATTERY
             // // TODO
             // break;
             // case 0xf:
-            // // ROM + MBC3 + TIMER + BATTERY
+            // ROM + MBC3 + TIMER + BATTERY
             // // TODO
             // break;
             // case 0x10:
-            // // ROM + MBC3 + TIMER + RAM + BATTERY
+            // ROM + MBC3 + TIMER + RAM + BATTERY
             // // TODO
             // break;
             // case 0x11:
-            // // ROM + MBC3
+            // ROM + MBC3
             // // TODO
             // break;
             // case 0x12:
-            // // ROM + MBC3 + RAM
+            // ROM + MBC3 + RAM
             // // TODO
             // break;
             // case 0x13:
-            // // ROM + MBC3 + RAM + BATTERY
+            // ROM + MBC3 + RAM + BATTERY
             // // TODO
             // break;
             // case 0x19:
-            // // ROM + MBC5
+            // ROM + MBC5
             // // TODO
             // break;
             // case 0x1a:
-            // // ROM + MBC5 + RAM
+            // ROM + MBC5 + RAM
             // // TODO
             // break;
-            // case 0x1b:
-            // // ROM + MBC5 + RAM + BATTERY
-            // // TODO
-            // break;
+            case 0x1b:
+                // // ROM + MBC5 + RAM + BATTERY
+                System.out.println("ROM + MBC5 + RAM + BATTERY");
+                controller = new Mbc5(intData);
+                break;
             // case 0x1c:
-            // // ROM + MBC5 + RUMBLE
+            // ROM + MBC5 + RUMBLE
             // // TODO
             // break;
             // case 0x1d:
-            // // ROM + MBC5 + RUMBLE + SRAM
+            // ROM + MBC5 + RUMBLE + SRAM
             // // TODO
             // break;
             // case 0x1e:
-            // // ROM + MBC5 + RUMBLE + SRAM + BATTERY
+            // ROM + MBC5 + RUMBLE + SRAM + BATTERY
             // // TODO
             // break;
             // case 0x1f:
-            // // Pocket Camera
+            // Pocket Camera
             // // TODO
             // break;
             // case 0xfd:
-            // // Bandai TAMA5
+            // Bandai TAMA5
             // // TODO
             // break;
             // case 0xfe:
-            // // Hudson HuC-3
+            // Hudson HuC-3
             // // TODO
             // break;
             // case 0xff:
-            // // Hudson HuC-1
+            // Hudson HuC-1
             // // TODO
             // break;
             default:

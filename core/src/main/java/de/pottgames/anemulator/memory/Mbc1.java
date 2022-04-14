@@ -2,8 +2,8 @@ package de.pottgames.anemulator.memory;
 
 public class Mbc1 implements Mbc {
     private final String  gameName;
-    private final int[][] romBanks;
-    private final int[][] ramBanks;
+    private final int[][] romBanks           = new int[128][0x4000];
+    private final int[][] ramBanks           = new int[4][0x2000];
     private Mode          mode               = Mode.ROM;
     private int           bankSelectRegister = 1;
     private boolean       ramEnabled         = false;
@@ -13,9 +13,6 @@ public class Mbc1 implements Mbc {
 
 
     public Mbc1(int[] cartridgeData) {
-        this.romBanks = new int[128][0x4000];
-        this.ramBanks = new int[4][0x2000];
-
         // COPY ROM BANK 0
         System.arraycopy(cartridgeData, 0, this.romBank0, 0, 0x4000);
 
