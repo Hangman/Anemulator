@@ -10,6 +10,7 @@ assets/mooneye/**/*.gbc
 assets/tearoom/*.gb
 assets/tearoom/*.gbc
 *.o
+*.sav
 core/src/test/asm/*.2bpp
 core/src/test/asm/*.gb
 core/src/test/asm/*.gbc

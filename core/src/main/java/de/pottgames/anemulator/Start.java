@@ -54,14 +54,18 @@ public class Start extends ApplicationAdapter {
         // this.gameboy = new Gameboy("Donkey Kong Land (USA, Europe) (SGB Enhanced).gb", this.backbuffer);
         // this.gameboy = new Gameboy("Pinball Deluxe (Europe).gb", this.backbuffer);
         // this.gameboy = new Gameboy("F-1 Race (World).gb", this.backbuffer);
-        // this.gameboy = new Gameboy("Alleyway (World).gb", this.backbuffer); // ISSUES
+        this.gameboy = new Gameboy("Alleyway (World).gb", this.backbuffer); // ISSUES
         // this.gameboy = new Gameboy("Bionic Battler (USA).gb", this.backbuffer);
         // this.gameboy = new Gameboy("Aladdin (Europe) (En,Fr,De,Es,It,Nl).gbc", this.backbuffer);
         // this.gameboy = new Gameboy("Batman - The Video Game (World).gb", this.backbuffer);
         // this.gameboy = new Gameboy("Boxxle II (USA, Europe).gb", this.backbuffer);
         // this.gameboy = new Gameboy("Mega Man - Dr. Wily's Revenge (E) [!].gb", this.backbuffer);
         // this.gameboy = new Gameboy("Super Mario Land 2 - 6 Golden Coins (UE) (V1.2) [!].gb", this.backbuffer);
-        this.gameboy = new Gameboy("Pokemon - Blaue Edition (Germany) (SGB Enhanced).gb", this.backbuffer);
+        // this.gameboy = new Gameboy("Pokemon - Blaue Edition (Germany) (SGB Enhanced).gb", this.backbuffer);
+        // this.gameboy = new Gameboy("Super Mario Land 4 (J) [!].gb", this.backbuffer);
+        // this.gameboy = new Gameboy("Legend of Zelda, The - Link's Awakening (U) (V1.2) [!].gb", this.backbuffer);
+        // this.gameboy = new Gameboy("Jurassic Park (U) [!].gb", this.backbuffer);
+        // this.gameboy = new Gameboy("Legend of Zelda, The - Link's Awakening DX (Germany) (SGB Enhanced).gbc", this.backbuffer);
 
         // this.gameboy = new Gameboy("cpu_instrs.gb", this.backbuffer); // PASSED
         // this.gameboy = new Gameboy("instr_timing.gb", this.backbuffer); // FAILED

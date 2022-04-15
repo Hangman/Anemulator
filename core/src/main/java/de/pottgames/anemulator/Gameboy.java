@@ -18,7 +18,6 @@ import de.pottgames.anemulator.memory.Mmu;
 import de.pottgames.anemulator.memory.RandomAccessMemory;
 import de.pottgames.anemulator.memory.SerialBus;
 import de.pottgames.anemulator.memory.WRam;
-import de.pottgames.anemulator.ppu.LcdRegisters;
 import de.pottgames.anemulator.ppu.Ppu;
 import de.pottgames.anemulator.rom.RomLoader;
 
@@ -60,7 +59,7 @@ public class Gameboy {
         this.memoryList.add(this.timer); // TIMER & DIV
         this.memoryList.add(this.joypad); // JOYPAD
         this.memoryList.add(dma); // DMA
-        this.memoryList.add(new LcdRegisters());
+        this.memoryList.add(this.ppu); // LCD REGISTERS
         this.memoryList.add(new SerialBus());
         this.memoryList.add(this.apu);
         this.memoryList.add(new RandomAccessMemory("KEY1", Memory.KEY1, 1)); // KEY1

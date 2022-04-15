@@ -9,10 +9,11 @@ import de.pottgames.anemulator.memory.Memory;
  * TODO: LY register is always 0 if the lcd is off.
  *
  */
-public class Ppu {
-    private static final Color TRANSPARENT = new Color(0xFFFFFF00);
-    private final Color[]      colors      = { new Color(0xFFFFFFFF), new Color(0xAAAAAAFF), new Color(0x555555FF), new Color(0x000000FF) };
+public class Ppu implements Memory {
+    private static final Color TRANSPARENT    = new Color(0xFFFFFF00);
+    private final Color[]      colors         = { new Color(0xFFFFFFFF), new Color(0xAAAAAAFF), new Color(0x555555FF), new Color(0x000000FF) };
     private final Memory       mmu;
+    private final int[]        registerMemory = new int[11];
 
     private GpuMode state = GpuMode.V_BLANK;
 
@@ -30,7 +31,7 @@ public class Ppu {
 
 
     public boolean step() {
-        final boolean gpuOn = this.mmu.isBitSet(Memory.LCDC, 7);
+        final boolean gpuOn = this.isBitSet(Memory.LCDC, 7);
 
         if (gpuOn) {
             this.cycleAccumulator += 4;
@@ -96,11 +97,11 @@ public class Ppu {
 
 
     private void pixelTransfer() {
-        final boolean renderBG = this.mmu.isBitSet(Memory.LCDC, 0);
-        final boolean renderWindow = this.mmu.isBitSet(Memory.LCDC, 5);
-        final boolean renderObjects = this.mmu.isBitSet(Memory.LCDC, 1);
-        final int currentLine = this.mmu.readByte(Memory.LCD_LY);
-        final boolean atlasAddressMode = this.mmu.isBitSet(Memory.LCDC, 4);
+        final boolean renderBG = this.isBitSet(Memory.LCDC, 0);
+        final boolean renderWindow = this.isBitSet(Memory.LCDC, 5);
+        final boolean renderObjects = this.isBitSet(Memory.LCDC, 1);
+        final int currentLine = this.readByte(Memory.LCD_LY);
+        final boolean atlasAddressMode = this.isBitSet(Memory.LCDC, 4);
 
         if (renderBG) {
 
@@ -124,9 +125,9 @@ public class Ppu {
 
 
     private void renderWindow(int currentLine, boolean atlasAddressMode) {
-        final int windowMapStartAddress = this.mmu.isBitSet(Memory.LCDC, 6) ? 0x9C00 : 0x9800;
-        final int wx = this.mmu.readByte(Memory.WX) - 7;
-        final int wy = this.mmu.readByte(Memory.WY);
+        final int windowMapStartAddress = this.isBitSet(Memory.LCDC, 6) ? 0x9C00 : 0x9800;
+        final int wx = this.readByte(Memory.WX) - 7;
+        final int wy = this.readByte(Memory.WY);
         int lastTileAddress = -1;
 
         if (currentLine >= wy) {
@@ -172,8 +173,8 @@ public class Ppu {
 
 
     public void renderBgMap(Pixmap target) {
-        final boolean atlasAddressMode = this.mmu.isBitSet(Memory.LCDC, 4);
-        final int bgMapStartAddress = this.mmu.isBitSet(Memory.LCDC, 3) ? 0x9C00 : 0x9800;
+        final boolean atlasAddressMode = this.isBitSet(Memory.LCDC, 4);
+        final int bgMapStartAddress = this.isBitSet(Memory.LCDC, 3) ? 0x9C00 : 0x9800;
 
         for (int currentLine = 0; currentLine < 256; currentLine++) {
             final int bgMapY = currentLine;
@@ -220,8 +221,8 @@ public class Ppu {
         }
 
         // VIEWPORT LINES
-        final int scrollX = this.mmu.readByte(Memory.SCROLL_X);
-        final int scrollY = this.mmu.readByte(Memory.SCROLL_Y);
+        final int scrollX = this.readByte(Memory.SCROLL_X);
+        final int scrollY = this.readByte(Memory.SCROLL_Y);
         final int lineTopY = scrollY;
         int lineBottomY = scrollY + 144;
         if (lineBottomY >= 256) {
@@ -257,9 +258,9 @@ public class Ppu {
 
 
     private void renderBg(int currentLine, boolean atlasAddressMode) {
-        final int bgMapStartAddress = this.mmu.isBitSet(Memory.LCDC, 3) ? 0x9C00 : 0x9800;
-        final int scrollX = this.mmu.readByte(Memory.SCROLL_X);
-        int bgMapY = currentLine + this.mmu.readByte(Memory.SCROLL_Y);
+        final int bgMapStartAddress = this.isBitSet(Memory.LCDC, 3) ? 0x9C00 : 0x9800;
+        final int scrollX = this.readByte(Memory.SCROLL_X);
+        int bgMapY = currentLine + this.readByte(Memory.SCROLL_Y);
         if (bgMapY >= 256) {
             bgMapY -= 256;
         }
@@ -308,7 +309,7 @@ public class Ppu {
 
 
     private void renderObjects(final int currentLine) {
-        final int objHeight = this.mmu.isBitSet(Memory.LCDC, 2) ? 16 : 8;
+        final int objHeight = this.isBitSet(Memory.LCDC, 2) ? 16 : 8;
         for (int i = 0; i < 40; i++) {
             final int oamAddress = 0xFE00 + i * 4;
             int objY = this.mmu.readByte(oamAddress);
@@ -381,7 +382,7 @@ public class Ppu {
 
 
     private void hBlank() {
-        final int currentLine = this.mmu.readByte(Memory.LCD_LY);
+        final int currentLine = this.readByte(Memory.LCD_LY);
         this.setLine(currentLine + 1);
         if (currentLine + 1 > 143) {
             this.setState(GpuMode.V_BLANK);
@@ -393,7 +394,7 @@ public class Ppu {
 
 
     private void vBlank() {
-        final int currentLine = this.mmu.readByte(Memory.LCD_LY);
+        final int currentLine = this.readByte(Memory.LCD_LY);
         if (currentLine + 1 > 153) {
             this.setLine(0);
             this.setState(GpuMode.OAM_SEARCH);
@@ -405,12 +406,12 @@ public class Ppu {
 
 
     private void setLine(int number) {
-        this.mmu.writeByte(Memory.LCD_LY, number);
+        this.writeInternal(Memory.LCD_LY, number);
         final int lyc = this.mmu.readByte(Memory.LCD_LYC);
-        this.mmu.setBit(Memory.LCD_STAT, 2, number == lyc);
+        this.setBit(Memory.LCD_STAT, 2, number == lyc);
 
         // REQUEST INTERRUPT IF LYC = LY
-        if (this.mmu.isBitSet(Memory.LCD_STAT, 6) && lyc == number) {
+        if (this.isBitSet(Memory.LCD_STAT, 6) && lyc == number) {
             this.mmu.setBit(Memory.IF, 1, true);
         }
     }
@@ -420,21 +421,21 @@ public class Ppu {
         this.state = state;
 
         // SET MODE BITS IN LCD_STAT REGISTER
-        int lcdStat = this.mmu.readByte(Memory.LCD_STAT);
+        int lcdStat = this.readByte(Memory.LCD_STAT);
         lcdStat &= ~0b11;
         lcdStat |= state.getFlagBits();
-        this.mmu.writeByte(Memory.LCD_STAT, lcdStat);
+        this.writeInternal(Memory.LCD_STAT, lcdStat);
 
         switch (state) {
             case H_BLANK:
                 // REQUEST INTERRUPT IF HBLANK IS ENABLED AS SOURCE OF INTERRUPTS
-                if (this.mmu.isBitSet(Memory.LCD_STAT, 3)) {
+                if (this.isBitSet(Memory.LCD_STAT, 3)) {
                     this.mmu.setBit(Memory.IF, 1, true);
                 }
                 break;
             case OAM_SEARCH:
                 // REQUEST INTERRUPT IF OAM SEARCH IS ENABLED AS SOURCE OF INTERRUPTS
-                if (this.mmu.isBitSet(Memory.LCD_STAT, 5)) {
+                if (this.isBitSet(Memory.LCD_STAT, 5)) {
                     this.mmu.setBit(Memory.IF, 1, true);
                 }
                 break;
@@ -442,7 +443,7 @@ public class Ppu {
                 break;
             case V_BLANK:
                 // REQUEST INTERRUPT IF VBLANK IS ENABLED AS SOURCE OF INTERRUPTS
-                if (this.mmu.isBitSet(Memory.LCD_STAT, 4)) {
+                if (this.isBitSet(Memory.LCD_STAT, 4)) {
                     this.mmu.setBit(Memory.IF, 1, true);
                 }
                 this.mmu.setBit(Memory.IF, 0, true);
@@ -478,7 +479,7 @@ public class Ppu {
 
 
     private Color getBGColor(final int colorIndex) {
-        final int palette = this.mmu.readByte(Memory.BGP);
+        final int palette = this.readByte(Memory.BGP);
         switch (colorIndex) {
             case 3:
                 return this.colors[palette >>> 6];
@@ -491,6 +492,116 @@ public class Ppu {
         }
 
         throw new RuntimeException("Unknown bg color palette index: " + colorIndex);
+    }
+
+
+    @Override
+    public boolean acceptsAddress(int address) {
+        return address == Memory.LCDC || address == Memory.LCD_STAT || address == Memory.LCD_LY || address == Memory.LCD_LYC || address == Memory.SCROLL_X
+                || address == Memory.SCROLL_Y || address == Memory.BGP || address == Memory.OBP0 || address == Memory.OBP1 || address == Memory.WX
+                || address == Memory.WY;
+    }
+
+
+    @Override
+    public int readByte(int address) {
+        switch (address) {
+            case Memory.LCDC:
+                return this.registerMemory[0];
+            case Memory.LCD_STAT:
+                return this.registerMemory[1];
+            case Memory.LCD_LY:
+                return this.registerMemory[2];
+            case Memory.LCD_LYC:
+                return this.registerMemory[3];
+            case Memory.SCROLL_X:
+                return this.registerMemory[4];
+            case Memory.SCROLL_Y:
+                return this.registerMemory[5];
+            case Memory.BGP:
+                return this.registerMemory[6];
+            case Memory.OBP0:
+                return this.registerMemory[7];
+            case Memory.OBP1:
+                return this.registerMemory[8];
+            case Memory.WX:
+                return this.registerMemory[9];
+            case Memory.WY:
+                return this.registerMemory[10];
+            default:
+                throw new RuntimeException("Invalid address.");
+        }
+    }
+
+
+    @Override
+    public void writeByte(int address, int value) {
+        switch (address) {
+            case Memory.LCDC:
+            case Memory.SCROLL_Y:
+            case Memory.SCROLL_X:
+            case Memory.WY:
+            case Memory.WX:
+            case Memory.LCD_LYC:
+            case Memory.BGP:
+            case Memory.OBP0:
+            case Memory.OBP1:
+                this.writeInternal(address, value);
+                break;
+            case Memory.LCD_STAT:
+                int oldValue = this.registerMemory[1];
+                oldValue &= 0b0000_0111;
+                value &= 0b0111_1000;
+                value |= oldValue | 0b1000_0000;
+                this.writeInternal(address, value);
+                break;
+            case Memory.LCD_LY:
+                // ignore, writing is not allowed from outside
+                break;
+            default:
+                throw new RuntimeException("Invalid address.");
+        }
+    }
+
+
+    private void writeInternal(int address, int value) {
+        switch (address) {
+            case Memory.LCDC:
+                this.registerMemory[0] = value;
+                break;
+            case Memory.LCD_STAT:
+                this.registerMemory[1] = value;
+                break;
+            case Memory.LCD_LY:
+                this.registerMemory[2] = value;
+                break;
+            case Memory.LCD_LYC:
+                this.registerMemory[3] = value;
+                break;
+            case Memory.SCROLL_X:
+                this.registerMemory[4] = value;
+                break;
+            case Memory.SCROLL_Y:
+                this.registerMemory[5] = value;
+                break;
+            case Memory.BGP:
+                this.registerMemory[6] = value;
+                break;
+            case Memory.OBP0:
+                this.registerMemory[7] = value;
+                break;
+            case Memory.OBP1:
+                this.registerMemory[8] = value;
+                break;
+            case Memory.WX:
+                this.registerMemory[9] = value;
+                break;
+            case Memory.WY:
+                this.registerMemory[10] = value;
+                break;
+            default:
+                throw new RuntimeException("Invalid address.");
+        }
     }
 
 }
