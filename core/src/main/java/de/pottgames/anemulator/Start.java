@@ -46,6 +46,8 @@ public class Start extends ApplicationAdapter {
         // this.gameboy = new Gameboy("anemulator/hello-world.gb", this.backbuffer);
         // this.gameboy = new Gameboy("anemulator/sprite-test.gb", this.backbuffer);
 
+        // this.gameboy = new Gameboy("bgbtest.gb", this.backbuffer);
+
         // GAMES
         // this.gameboy = new Gameboy("Dr. Mario (World).gb", this.backbuffer);
         // this.gameboy = new Gameboy("Tetris (World) (Rev A).gb", this.backbuffer);
@@ -54,7 +56,7 @@ public class Start extends ApplicationAdapter {
         // this.gameboy = new Gameboy("Donkey Kong Land (USA, Europe) (SGB Enhanced).gb", this.backbuffer);
         // this.gameboy = new Gameboy("Pinball Deluxe (Europe).gb", this.backbuffer);
         // this.gameboy = new Gameboy("F-1 Race (World).gb", this.backbuffer);
-        this.gameboy = new Gameboy("Alleyway (World).gb", this.backbuffer); // ISSUES
+        // this.gameboy = new Gameboy("Alleyway (World).gb", this.backbuffer); // ISSUES PROBABLY RELATED TO SERIAL IO STUFF
         // this.gameboy = new Gameboy("Bionic Battler (USA).gb", this.backbuffer);
         // this.gameboy = new Gameboy("Aladdin (Europe) (En,Fr,De,Es,It,Nl).gbc", this.backbuffer);
         // this.gameboy = new Gameboy("Batman - The Video Game (World).gb", this.backbuffer);
@@ -158,7 +160,13 @@ public class Start extends ApplicationAdapter {
         // this.gameboy = new Gameboy("mooneye/acceptance/timer/tma_write_reloading.gb", this.backbuffer); // FAILED
         // this.gameboy = new Gameboy("mooneye/manual-only/sprite_priority.gb", this.backbuffer); // ?
 
-        // DMG_SOUND
+        // BLARGG MEM_TIMING
+        // this.gameboy = new Gameboy("mem_timing/mem_timing.gb", this.backbuffer); // FAILED
+        // this.gameboy = new Gameboy("mem_timing/01-read_timing.gb", this.backbuffer); // FAILED
+        // this.gameboy = new Gameboy("mem_timing/02-write_timing.gb", this.backbuffer); // FAILED
+        // this.gameboy = new Gameboy("mem_timing/03-modify_timing.gb", this.backbuffer); // FAILED
+
+        // BLARGG DMG_SOUND
         // this.gameboy = new Gameboy("dmg_sound/01-registers.gb", this.backbuffer); // FAILED
         // this.gameboy = new Gameboy("dmg_sound/02-len ctr.gb", this.backbuffer); // FAILED
         // this.gameboy = new Gameboy("dmg_sound/03-trigger.gb", this.backbuffer); // FAILED

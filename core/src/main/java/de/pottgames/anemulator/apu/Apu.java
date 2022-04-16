@@ -149,10 +149,32 @@ public class Apu implements Memory {
     private void enabledAPU(boolean enabled) {
         if (this.enabled && !enabled) {
             // TURN OFF
-            this.enabled = false;
-            for (int i = 0xFF10; i < 0xFF25; i++) {
+            this.writeByte(Memory.NR10, 0);
+            this.writeByte(Memory.NR11, 0);
+            this.writeByte(Memory.NR12, 0);
+            this.writeByte(Memory.NR13, 0);
+            this.writeByte(Memory.NR14, 0);
+            this.writeByte(Memory.NR20, 0);
+            this.writeByte(Memory.NR21, 0);
+            this.writeByte(Memory.NR22, 0);
+            this.writeByte(Memory.NR23, 0);
+            this.writeByte(Memory.NR24, 0);
+            this.writeByte(Memory.NR30, 0);
+            this.writeByte(Memory.NR31, 0);
+            this.writeByte(Memory.NR32, 0);
+            this.writeByte(Memory.NR33, 0);
+            this.writeByte(Memory.NR34, 0);
+            this.writeByte(Memory.NR40, 0);
+            this.writeByte(Memory.NR41, 0);
+            this.writeByte(Memory.NR42, 0);
+            this.writeByte(Memory.NR43, 0);
+            this.writeByte(Memory.NR44, 0);
+            this.writeByte(Memory.NR50, 0);
+            this.writeByte(Memory.NR51, 0);
+            for (int i = 0xFF30; i < 0xFF40; i++) {
                 this.writeByte(i, 0);
             }
+            this.enabled = false;
 
         } else if (!this.enabled && enabled) {
             // TURN ON
@@ -175,7 +197,7 @@ public class Apu implements Memory {
 
     @Override
     public int readByte(int address) {
-        if (!this.enabled && address != Memory.NR52) {
+        if (!this.enabled && address != Memory.NR52 && (address < 0xFF30 || address >= 0xFF40)) {
             return 0xFF;
         }
         if (this.channel1.acceptsAddress(address)) {
@@ -218,7 +240,7 @@ public class Apu implements Memory {
 
     @Override
     public void writeByte(int address, int value) {
-        if (!this.enabled && address != Memory.NR52) {
+        if (!this.enabled && address != Memory.NR52 && (address < 0xFF30 || address >= 0xFF40)) {
             return;
         }
         if (this.channel1.acceptsAddress(address)) {

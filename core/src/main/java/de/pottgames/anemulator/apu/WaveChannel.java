@@ -85,10 +85,7 @@ public class WaveChannel implements Memory {
             return (this.lengthEnabled ? 1 : 0) << 6 | 0b1011_1111;
         }
         if (address >= 0xFF30 && address < 0xFF40) {
-            if (this.enabled) {
-                return 0xFF;
-            }
-            return this.wavePattern[address - 0xFF30]; // TODO: return 0xFF?
+            return this.wavePattern[address - 0xFF30];
         }
 
         throw new RuntimeException("Invalid address: " + Integer.toHexString(address));
