@@ -36,4 +36,10 @@ public class Or_HL_ extends Instruction {
         return "Or_HL_";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

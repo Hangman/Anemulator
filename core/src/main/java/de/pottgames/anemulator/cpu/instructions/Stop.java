@@ -15,6 +15,7 @@ public class Stop extends Instruction {
     public int run() {
         // we ignore this for now
         // TODO really stop
+        // TODO is this really 2 bytes long?
         return 4;
     }
 
@@ -22,6 +23,12 @@ public class Stop extends Instruction {
     @Override
     public String toString() {
         return "STOP";
+    }
+
+
+    @Override
+    public int getLength() {
+        return 2;
     }
 
 }

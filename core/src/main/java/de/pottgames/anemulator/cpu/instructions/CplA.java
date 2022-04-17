@@ -31,4 +31,10 @@ public class CplA extends Instruction {
         return "CplA";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

@@ -35,4 +35,10 @@ public class OrC extends Instruction {
         return "OrC";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

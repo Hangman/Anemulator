@@ -34,4 +34,10 @@ public class AddHLDE extends Instruction {
         return "AddHLDE";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

@@ -52,4 +52,10 @@ public class DaA extends Instruction {
         return "DaA";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

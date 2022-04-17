@@ -34,4 +34,10 @@ public class CallZa16 extends Instruction {
         return "CallZa16";
     }
 
+
+    @Override
+    public int getLength() {
+        return 3;
+    }
+
 }

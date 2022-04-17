@@ -35,4 +35,10 @@ public class AddAA extends Instruction {
         return "AddAA";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

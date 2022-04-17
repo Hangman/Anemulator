@@ -26,4 +26,10 @@ public class IncBC extends Instruction {
         return "IncBC";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

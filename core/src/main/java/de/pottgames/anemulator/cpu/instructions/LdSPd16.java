@@ -24,4 +24,10 @@ public class LdSPd16 extends Instruction {
         return "LdSPd16";
     }
 
+
+    @Override
+    public int getLength() {
+        return 3;
+    }
+
 }

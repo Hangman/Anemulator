@@ -34,4 +34,10 @@ public class SubL extends Instruction {
         return "SubL";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

@@ -26,4 +26,10 @@ public class LdAL extends Instruction {
         return "LdAL";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

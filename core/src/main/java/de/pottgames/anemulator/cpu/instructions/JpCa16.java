@@ -29,4 +29,10 @@ public class JpCa16 extends Instruction {
         return "JpCa16";
     }
 
+
+    @Override
+    public int getLength() {
+        return 3;
+    }
+
 }

@@ -29,4 +29,10 @@ public class PushHL extends Instruction {
         return "PushHL";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

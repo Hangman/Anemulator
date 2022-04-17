@@ -25,4 +25,10 @@ public class LdSPHL extends Instruction {
         return "LdSPHL";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

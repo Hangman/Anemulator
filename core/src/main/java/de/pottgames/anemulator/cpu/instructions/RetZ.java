@@ -31,4 +31,10 @@ public class RetZ extends Instruction {
         return "RetZ";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

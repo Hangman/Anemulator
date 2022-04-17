@@ -183,6 +183,9 @@ public class Start extends ApplicationAdapter {
         // TEAROOM TEST ROMS
         // this.gameboy = new Gameboy("tearoom/m2_win_en_toggle.gb", this.backbuffer);
 
+        // OTHER TEST ROMS
+        this.gameboy = new Gameboy("other/tellinglys.gb", this.backbuffer);
+
         // SETUP GDX
         this.input = new KeyboardInput();
         this.input.addListener(this.gameboy.getJoypad());

@@ -26,4 +26,10 @@ public class DecHL extends Instruction {
         return "DecHL";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

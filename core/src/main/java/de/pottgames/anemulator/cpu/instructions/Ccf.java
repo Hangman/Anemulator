@@ -27,4 +27,10 @@ public class Ccf extends Instruction {
         return "Ccf";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

@@ -31,4 +31,10 @@ public class RrL extends Instruction {
         return 8;
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

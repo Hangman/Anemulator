@@ -35,4 +35,10 @@ public class AndE extends Instruction {
         return "AndE";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

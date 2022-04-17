@@ -28,4 +28,10 @@ public class RetI extends Instruction {
         return "RetI";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

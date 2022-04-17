@@ -36,4 +36,10 @@ public class Rrca extends Instruction {
         return "Rrca";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

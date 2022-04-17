@@ -21,4 +21,10 @@ public class Res4H extends Instruction {
         return 8;
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

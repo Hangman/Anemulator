@@ -34,4 +34,10 @@ public class AddHLBC extends Instruction {
         return "AddHLBC";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

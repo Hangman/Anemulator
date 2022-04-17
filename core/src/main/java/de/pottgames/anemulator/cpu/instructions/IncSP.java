@@ -24,4 +24,10 @@ public class IncSP extends Instruction {
         return "IncSP";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

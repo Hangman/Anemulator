@@ -24,4 +24,10 @@ public class DecSP extends Instruction {
         return "DecSP";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

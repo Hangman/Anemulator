@@ -21,4 +21,10 @@ public class Set2C extends Instruction {
         return 8;
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

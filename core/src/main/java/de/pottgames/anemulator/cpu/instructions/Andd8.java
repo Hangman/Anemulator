@@ -36,4 +36,10 @@ public class Andd8 extends Instruction {
         return "Andd8";
     }
 
+
+    @Override
+    public int getLength() {
+        return 2;
+    }
+
 }

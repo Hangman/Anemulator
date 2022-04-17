@@ -26,4 +26,10 @@ public class LdCD extends Instruction {
         return "LdCD";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

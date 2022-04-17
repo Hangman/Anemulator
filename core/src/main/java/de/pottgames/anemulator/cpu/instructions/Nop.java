@@ -22,4 +22,10 @@ public class Nop extends Instruction {
         return "Nop";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

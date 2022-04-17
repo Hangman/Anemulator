@@ -21,4 +21,10 @@ public class Res3B extends Instruction {
         return 8;
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

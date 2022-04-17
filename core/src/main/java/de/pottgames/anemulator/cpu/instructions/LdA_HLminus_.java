@@ -28,4 +28,10 @@ public class LdA_HLminus_ extends Instruction {
         return "LdA_HLminus_";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

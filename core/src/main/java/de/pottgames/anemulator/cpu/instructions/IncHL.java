@@ -26,4 +26,10 @@ public class IncHL extends Instruction {
         return "IncHL";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

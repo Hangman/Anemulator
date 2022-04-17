@@ -28,4 +28,10 @@ public class PopAF extends Instruction {
         return "PopAF";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

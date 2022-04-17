@@ -30,4 +30,10 @@ public class RrcE extends Instruction {
         return 8;
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

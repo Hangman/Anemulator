@@ -25,4 +25,10 @@ public class Bit6_HL_ extends Instruction {
         return 16;
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

@@ -24,4 +24,10 @@ public class Ei extends Instruction {
         return "Ei";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

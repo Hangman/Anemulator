@@ -11,6 +11,8 @@ assets/mooneye/**/*.gb
 assets/mooneye/**/*.gbc
 assets/tearoom/*.gb
 assets/tearoom/*.gbc
+assets/other/*.gb
+assets/other/*.gbc
 *.o
 *.sav
 core/src/test/asm/*.2bpp

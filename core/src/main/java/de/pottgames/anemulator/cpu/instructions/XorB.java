@@ -33,4 +33,10 @@ public class XorB extends Instruction {
         return "XorB";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

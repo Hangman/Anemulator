@@ -36,4 +36,10 @@ public class AdcA_HL_ extends Instruction {
         return "AdcA_HL_";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

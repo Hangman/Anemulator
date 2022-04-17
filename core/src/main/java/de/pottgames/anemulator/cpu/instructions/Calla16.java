@@ -30,4 +30,10 @@ public class Calla16 extends Instruction {
         return "Calla16";
     }
 
+
+    @Override
+    public int getLength() {
+        return 3;
+    }
+
 }

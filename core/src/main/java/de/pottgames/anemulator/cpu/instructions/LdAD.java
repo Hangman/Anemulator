@@ -25,4 +25,10 @@ public class LdAD extends Instruction {
         return "LdAD";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

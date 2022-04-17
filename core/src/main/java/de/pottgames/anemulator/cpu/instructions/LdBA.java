@@ -26,4 +26,10 @@ public class LdBA extends Instruction {
         return "LdBA";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

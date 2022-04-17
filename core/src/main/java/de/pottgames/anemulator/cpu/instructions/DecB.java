@@ -32,4 +32,10 @@ public class DecB extends Instruction {
         return "DecB";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

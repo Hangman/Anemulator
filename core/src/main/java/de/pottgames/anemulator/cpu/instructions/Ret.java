@@ -27,4 +27,10 @@ public class Ret extends Instruction {
         return "Ret";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

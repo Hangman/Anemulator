@@ -33,4 +33,10 @@ public class Cpd8 extends Instruction {
         return "Cpd8";
     }
 
+
+    @Override
+    public int getLength() {
+        return 2;
+    }
+
 }

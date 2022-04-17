@@ -34,4 +34,10 @@ public class Xord8 extends Instruction {
         return "Xord8";
     }
 
+
+    @Override
+    public int getLength() {
+        return 2;
+    }
+
 }

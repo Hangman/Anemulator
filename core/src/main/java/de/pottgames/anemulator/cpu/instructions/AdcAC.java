@@ -36,4 +36,10 @@ public class AdcAC extends Instruction {
         return "AdcAC";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

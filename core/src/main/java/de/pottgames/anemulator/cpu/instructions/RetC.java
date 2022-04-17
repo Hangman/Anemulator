@@ -31,4 +31,10 @@ public class RetC extends Instruction {
         return "RetC";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

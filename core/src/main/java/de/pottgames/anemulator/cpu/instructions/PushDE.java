@@ -29,4 +29,10 @@ public class PushDE extends Instruction {
         return "PushDE";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

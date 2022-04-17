@@ -34,4 +34,10 @@ public class CallNZa16 extends Instruction {
         return "CallNZa16";
     }
 
+
+    @Override
+    public int getLength() {
+        return 3;
+    }
+
 }

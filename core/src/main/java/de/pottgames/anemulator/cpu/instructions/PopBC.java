@@ -28,4 +28,10 @@ public class PopBC extends Instruction {
         return "PopBC";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

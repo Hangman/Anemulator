@@ -35,4 +35,9 @@ public class OrD extends Instruction {
         return "OrD";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
 }

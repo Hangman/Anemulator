@@ -36,4 +36,10 @@ public class SbcAL extends Instruction {
         return "SbcAL";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

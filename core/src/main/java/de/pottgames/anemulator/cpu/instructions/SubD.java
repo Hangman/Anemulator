@@ -34,4 +34,10 @@ public class SubD extends Instruction {
         return "SubD";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

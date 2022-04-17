@@ -26,4 +26,10 @@ public class DecBC extends Instruction {
         return "DecBC";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

@@ -36,4 +36,10 @@ public class AddAd8 extends Instruction {
         return "AddAd8";
     }
 
+
+    @Override
+    public int getLength() {
+        return 2;
+    }
+
 }

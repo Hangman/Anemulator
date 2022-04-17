@@ -37,4 +37,10 @@ public class AdcAd8 extends Instruction {
         return "AdcAd8";
     }
 
+
+    @Override
+    public int getLength() {
+        return 2;
+    }
+
 }

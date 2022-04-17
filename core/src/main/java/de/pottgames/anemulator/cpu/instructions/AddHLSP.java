@@ -34,4 +34,10 @@ public class AddHLSP extends Instruction {
         return "AddHLSP";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

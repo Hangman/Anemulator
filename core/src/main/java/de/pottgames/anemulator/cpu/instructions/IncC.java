@@ -33,4 +33,10 @@ public class IncC extends Instruction {
         return "IncC";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

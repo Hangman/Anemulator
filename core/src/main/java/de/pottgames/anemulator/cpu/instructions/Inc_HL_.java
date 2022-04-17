@@ -34,4 +34,10 @@ public class Inc_HL_ extends Instruction {
         return "Inc_HL_";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

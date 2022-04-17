@@ -28,4 +28,10 @@ public class PopDE extends Instruction {
         return "PopDE";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

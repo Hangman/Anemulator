@@ -32,4 +32,10 @@ public class Cp_HL_ extends Instruction {
         return "Cp_HL_";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

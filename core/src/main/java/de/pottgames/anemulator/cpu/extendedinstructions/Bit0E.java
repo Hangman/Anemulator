@@ -25,4 +25,10 @@ public class Bit0E extends Instruction {
         return 8;
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

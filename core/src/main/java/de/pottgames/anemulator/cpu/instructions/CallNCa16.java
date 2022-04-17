@@ -34,4 +34,10 @@ public class CallNCa16 extends Instruction {
         return "CallNCa16";
     }
 
+
+    @Override
+    public int getLength() {
+        return 3;
+    }
+
 }

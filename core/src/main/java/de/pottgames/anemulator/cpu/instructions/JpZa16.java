@@ -29,4 +29,10 @@ public class JpZa16 extends Instruction {
         return "JpZa16";
     }
 
+
+    @Override
+    public int getLength() {
+        return 3;
+    }
+
 }

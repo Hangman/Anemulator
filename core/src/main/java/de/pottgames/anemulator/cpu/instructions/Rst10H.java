@@ -29,4 +29,10 @@ public class Rst10H extends Instruction {
         return "Rst10H";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

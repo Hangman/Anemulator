@@ -28,4 +28,10 @@ public class PopHL extends Instruction {
         return "PopHL";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

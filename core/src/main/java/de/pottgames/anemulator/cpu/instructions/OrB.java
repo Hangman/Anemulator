@@ -35,4 +35,10 @@ public class OrB extends Instruction {
         return "OrB";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

@@ -34,4 +34,10 @@ public class AddSPr8 extends Instruction {
         return "AddSPr8";
     }
 
+
+    @Override
+    public int getLength() {
+        return 2;
+    }
+
 }

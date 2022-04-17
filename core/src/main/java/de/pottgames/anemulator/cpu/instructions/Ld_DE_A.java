@@ -27,4 +27,10 @@ public class Ld_DE_A extends Instruction {
         return "Ld_DE_A";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

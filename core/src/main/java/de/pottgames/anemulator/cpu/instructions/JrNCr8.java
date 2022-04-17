@@ -31,4 +31,10 @@ public class JrNCr8 extends Instruction {
         return "JrNCr8";
     }
 
+
+    @Override
+    public int getLength() {
+        return 2;
+    }
+
 }

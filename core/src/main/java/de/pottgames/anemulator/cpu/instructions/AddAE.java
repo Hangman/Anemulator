@@ -35,4 +35,10 @@ public class AddAE extends Instruction {
         return "AddAE";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

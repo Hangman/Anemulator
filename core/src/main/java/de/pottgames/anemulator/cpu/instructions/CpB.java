@@ -32,4 +32,10 @@ public class CpB extends Instruction {
         return "CpB";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

@@ -37,4 +37,10 @@ public class SbcAd8 extends Instruction {
         return "SbcAd8";
     }
 
+
+    @Override
+    public int getLength() {
+        return 2;
+    }
+
 }

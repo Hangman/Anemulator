@@ -26,4 +26,10 @@ public class LdDA extends Instruction {
         return "LdDA";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

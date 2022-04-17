@@ -36,4 +36,10 @@ public class SbcAA extends Instruction {
         return "SbcAA";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

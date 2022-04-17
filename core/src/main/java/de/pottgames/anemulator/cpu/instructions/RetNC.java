@@ -31,4 +31,10 @@ public class RetNC extends Instruction {
         return "RetNC";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

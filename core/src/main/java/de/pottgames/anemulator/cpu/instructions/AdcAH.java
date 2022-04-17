@@ -36,4 +36,10 @@ public class AdcAH extends Instruction {
         return "AdcAH";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

@@ -128,4 +128,9 @@ public class Gameboy {
         return this.mbc.getGameName();
     }
 
+
+    public Mmu getMmu() {
+        return this.mmu;
+    }
+
 }

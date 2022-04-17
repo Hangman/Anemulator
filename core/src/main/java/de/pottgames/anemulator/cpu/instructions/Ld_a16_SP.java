@@ -28,4 +28,10 @@ public class Ld_a16_SP extends Instruction {
         return "Ld_a16_SP";
     }
 
+
+    @Override
+    public int getLength() {
+        return 3;
+    }
+
 }

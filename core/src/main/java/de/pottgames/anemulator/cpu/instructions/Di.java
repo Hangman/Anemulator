@@ -24,4 +24,10 @@ public class Di extends Instruction {
         return "Di";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

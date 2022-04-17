@@ -36,4 +36,10 @@ public class AdcAB extends Instruction {
         return "AdcAB";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

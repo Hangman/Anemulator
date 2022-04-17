@@ -33,4 +33,10 @@ public class Dec_HL_ extends Instruction {
         return "Dec_HL_";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

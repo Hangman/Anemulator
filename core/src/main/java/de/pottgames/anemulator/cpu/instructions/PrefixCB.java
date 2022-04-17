@@ -315,4 +315,16 @@ public class PrefixCB extends Instruction {
         return "PrefixCB";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
+
+    @Override
+    public boolean isPrefix() {
+        return true;
+    }
+
 }

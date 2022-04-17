@@ -28,4 +28,10 @@ public class Halt extends Instruction {
         return "Halt";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

@@ -29,4 +29,10 @@ public class PushBC extends Instruction {
         return "PushBC";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

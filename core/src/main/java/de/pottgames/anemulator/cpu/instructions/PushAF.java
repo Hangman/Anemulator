@@ -29,4 +29,10 @@ public class PushAF extends Instruction {
         return "PushAF";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

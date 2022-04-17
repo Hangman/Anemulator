@@ -15,4 +15,12 @@ public abstract class Instruction {
 
     public abstract int run();
 
+
+    public abstract int getLength();
+
+
+    public boolean isPrefix() {
+        return false;
+    }
+
 }

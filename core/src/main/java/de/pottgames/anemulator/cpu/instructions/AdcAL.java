@@ -36,4 +36,10 @@ public class AdcAL extends Instruction {
         return "AdcAL";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

@@ -36,4 +36,10 @@ public class AdcAE extends Instruction {
         return "AdcAE";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

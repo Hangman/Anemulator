@@ -33,4 +33,10 @@ public class XorE extends Instruction {
         return "XorE";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

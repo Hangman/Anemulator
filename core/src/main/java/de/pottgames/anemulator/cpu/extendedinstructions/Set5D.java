@@ -21,4 +21,10 @@ public class Set5D extends Instruction {
         return 8;
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

@@ -21,4 +21,10 @@ public class Set7B extends Instruction {
         return 8;
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

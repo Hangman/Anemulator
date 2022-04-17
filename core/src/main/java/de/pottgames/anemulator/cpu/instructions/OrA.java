@@ -35,4 +35,10 @@ public class OrA extends Instruction {
         return "OrA";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

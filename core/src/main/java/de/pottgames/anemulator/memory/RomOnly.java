@@ -37,6 +37,10 @@ public class RomOnly implements Mbc {
             return this.externalRam[address - 0xA000];
         }
 
+        if (address == Memory.DISABLE_BOOT_ROM) {
+            return this.rom[0x8000];
+        }
+
         return this.rom[address];
     }
 

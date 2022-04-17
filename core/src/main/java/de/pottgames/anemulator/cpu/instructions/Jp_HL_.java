@@ -25,4 +25,10 @@ public class Jp_HL_ extends Instruction {
         return "Jp_HL_";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

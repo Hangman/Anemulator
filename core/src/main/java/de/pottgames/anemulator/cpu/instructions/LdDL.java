@@ -26,4 +26,10 @@ public class LdDL extends Instruction {
         return "LdDL";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

@@ -27,4 +27,10 @@ public class Ld_HLplus_A extends Instruction {
         return "Ld_HLplus_A";
     }
 
+
+    @Override
+    public int getLength() {
+        return 1;
+    }
+
 }

@@ -34,4 +34,10 @@ public class LdHLSPr8 extends Instruction {
         return "LdHLSPr8";
     }
 
+
+    @Override
+    public int getLength() {
+        return 2;
+    }
+
 }
