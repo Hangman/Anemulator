@@ -2,7 +2,6 @@ package de.pottgames.anemulator.cpu;
 
 import com.badlogic.gdx.utils.IntMap;
 
-import de.pottgames.anemulator.EmulatorState;
 import de.pottgames.anemulator.cpu.instructions.*;
 import de.pottgames.anemulator.error.UnsupportedFeatureException;
 import de.pottgames.anemulator.memory.Memory;
@@ -287,47 +286,26 @@ public class Cpu {
     }
 
 
-    public EmulatorState step() {
+    public void step() {
         this.cycleAccumulator += 4;
 
         if (this.cycleAccumulator > 0) {
             this.register.step();
 
             if (this.handleInterrupts()) {
-                return null;
+                return;
             }
 
             if (this.halted) {
                 this.cycleAccumulator -= 4;
-                return null;
+                return;
             }
 
             final int opCode = this.memory.readByte(this.register.getPc());
             this.register.setPc(this.register.getPc() + 1);
 
             this.cycleAccumulator -= this.runInstruction(opCode);
-
-            // final int a = this.register.get(RegisterId.A);
-            // final int f = this.register.get(RegisterId.F);
-            // final int c = this.register.get(RegisterId.C);
-            // final int d = this.register.get(RegisterId.D);
-            // final int e = this.register.get(RegisterId.E);
-            // final int h = this.register.get(RegisterId.H);
-            // final int l = this.register.get(RegisterId.L);
-            // final int af = this.register.get(RegisterId.AF);
-            // final int bc = this.register.get(RegisterId.BC);
-            // final int de = this.register.get(RegisterId.DE);
-            // final int hl = this.register.get(RegisterId.HL);
-            // final int pc = this.register.getPc();
-            // final int sp = this.register.getSp();
-            // if (opCode == 0xCB) {
-            // opCode = (0xCB << 8) + PrefixCB.lastInstructionOpcode;
-            // }
-            // final EmulatorState myState = new EmulatorState(a, f, c, d, e, h, l, af, bc, de, hl, opCode, pc, sp);
-            // return myState;
         }
-
-        return null;
     }
 
 

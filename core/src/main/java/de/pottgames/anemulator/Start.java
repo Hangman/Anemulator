@@ -4,10 +4,13 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 import de.pottgames.anemulator.input.KeyboardInput;
 import de.pottgames.tuningfork.Audio;
@@ -27,6 +30,7 @@ public class Start extends ApplicationAdapter {
     private Gameboy                gameboy;
     private Audio                  audio;
     private PcmSoundSource         soundSource;
+    private Viewport               viewport;
 
 
     @Override
@@ -41,12 +45,13 @@ public class Start extends ApplicationAdapter {
         this.texture = new Texture(this.backbuffer);
         this.tileMapTexture = new Texture(this.tileMap);
         this.bgMapTexture = new Texture(this.bgMap);
+        this.viewport = new FitViewport(3840f, 2160f, new OrthographicCamera());
 
         // ANEMULATOR TEST ROMS
         // this.gameboy = new Gameboy("anemulator/hello-world.gb", this.backbuffer);
         // this.gameboy = new Gameboy("anemulator/sprite-test.gb", this.backbuffer);
 
-        // this.gameboy = new Gameboy("bgbtest.gb", this.backbuffer);
+        this.gameboy = new Gameboy("bgbtest.gb", this.backbuffer);
 
         // GAMES
         // this.gameboy = new Gameboy("Dr. Mario (World).gb", this.backbuffer);
@@ -158,7 +163,7 @@ public class Start extends ApplicationAdapter {
         // this.gameboy = new Gameboy("mooneye/acceptance/timer/tima_reload.gb", this.backbuffer); // FAILED
         // this.gameboy = new Gameboy("mooneye/acceptance/timer/tima_write_reloading.gb", this.backbuffer); // FAILED
         // this.gameboy = new Gameboy("mooneye/acceptance/timer/tma_write_reloading.gb", this.backbuffer); // FAILED
-        // this.gameboy = new Gameboy("mooneye/manual-only/sprite_priority.gb", this.backbuffer); // ?
+        // this.gameboy = new Gameboy("mooneye/manual-only/sprite_priority.gb", this.backbuffer); // FAILED
 
         // BLARGG MEM_TIMING
         // this.gameboy = new Gameboy("mem_timing/mem_timing.gb", this.backbuffer); // FAILED
@@ -184,7 +189,7 @@ public class Start extends ApplicationAdapter {
         // this.gameboy = new Gameboy("tearoom/m2_win_en_toggle.gb", this.backbuffer);
 
         // OTHER TEST ROMS
-        this.gameboy = new Gameboy("other/tellinglys.gb", this.backbuffer);
+        // this.gameboy = new Gameboy("other/tellinglys.gb", this.backbuffer);
 
         // SETUP GDX
         this.input = new KeyboardInput();
@@ -234,6 +239,12 @@ public class Start extends ApplicationAdapter {
         this.batch.draw(this.bgMapTexture, 0f, 170f);
 
         this.batch.end();
+    }
+
+
+    @Override
+    public void resize(int width, int height) {
+        this.viewport.update(width, height, true);
     }
 
 
