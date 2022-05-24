@@ -14,12 +14,9 @@ Due to the special reason for Anemulator's existence (see [Motivation](https://g
 * No GUI support for loading ROMs
 * GPU/PPU renders a full scanline per tick
 
-## Does it work?
-Sure!
-
-## But how well does it work?
-Surprisingly well, taking into account that I didn't really care too much about hardware accuracy.  
-Most games run fine, though most Test Roms fail.
+## Test results
+Taking into account that I didn't really care too much about hardware accuracy, most games run just fine.  
+On the other side... most Test Roms fail.
 A few games I've tested:
 | ROM                                        |   Result   |
 | :----------------------------------------- | :--------: |
