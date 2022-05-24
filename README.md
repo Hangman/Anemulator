@@ -1,4 +1,5 @@
 # Anemulator
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)  
 A Game Boy emulator written in Java.  
 Render engine: [libGDX](https://github.com/libgdx/libgdx)  
 Sound engine: [TuningFork](https://github.com/Hangman/TuningFork)  
