@@ -1,5 +1,6 @@
 # Anemulator
-A Game Boy emulator written in Java.
+A Game Boy emulator written in Java.  
+![Screenshot](https://github.com/Hangman/Anemulator/blob/master/assets/mario.png)
 
 ## Motivation
 The Rust programming language is sexy as hell. The problem is, I can't speak or write it. To change that and make learning a new language not quite so boring, I wrote this emulator as a base for a port. The plan is to rewrite Anemulator in Rust, hopefully learning the language in the process.
