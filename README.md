@@ -15,7 +15,7 @@ Due to the special reason for Anemulator's existence (see [Motivation](https://g
 * GPU/PPU renders a full scanline per tick
 
 ## Test results
-Taking into account that I didn't really care too much about hardware accuracy, most games run just fine.  
+Taking into account that I didn't really care too much about hardware accuracy, most games run surprisingly well.  
 On the other side... most Test Roms fail.
 A few games I've tested:
 | ROM                                        |   Result   |
