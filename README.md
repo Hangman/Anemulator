@@ -1,5 +1,7 @@
 # Anemulator
 A Game Boy emulator written in Java.  
+Render engine: [libGDX](https://github.com/libgdx/libgdx)  
+Sound engine: [TuningFork](https://github.com/Hangman/TuningFork)  
 ![Screenshot](https://github.com/Hangman/Anemulator/blob/master/assets/mario.png)
 
 ## Motivation
