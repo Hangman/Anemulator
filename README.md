@@ -6,7 +6,7 @@ Sound engine: [TuningFork](https://github.com/Hangman/TuningFork)
 ![Screenshot](https://github.com/Hangman/Anemulator/blob/master/assets/mario.png)
 
 ## Motivation
-The Rust programming language is damn sexy in my opinion. The problem is, I can't speak or write it. To change that and make learning a new language not quite so boring, I wrote this emulator as a base for a port. The plan is to rewrite Anemulator in Rust, hopefully learning the language in the process.
+The Rust programming language is kinda sexy, isn't it? The problem is, I can't speak nor write it. To change that and make learning a new language not quite so boring, I wrote this emulator as a base for a port. The plan is to rewrite Anemulator in Rust, hopefully learning the language in the process.
 
 ## Particularities
 Due to the special reason for Anemulator's existence (see [Motivation](https://github.com/Hangman/Anemulator#motivation)), the code has a few oddities:
