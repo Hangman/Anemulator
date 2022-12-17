@@ -65,8 +65,8 @@ public class Timer implements Memory {
                 if (timer > 0xFF) {
                     final int timerInitialValue = this.readByte(Memory.TMA);
                     this.writeByte(Memory.TIMA, timerInitialValue);
-                    int ifRegister = this.mmu.readByte(Memory.IF);
-                    this.mmu.writeByte(Memory.IF, ifRegister |= 1 << Interrupt.TIMER.getBitnum());
+                    final int ifRegister = this.mmu.readByte(Memory.IF);
+                    this.mmu.writeByte(Memory.IF, ifRegister | 1 << Interrupt.TIMER.getBitnum());
                     return;
                 }
                 this.writeByte(Memory.TIMA, timer);
