@@ -28,7 +28,7 @@ public class JrZr8 extends Instruction {
 
     @Override
     public int run() {
-        if (this.register.isFlagSet(FlagId.Z) == true) {
+        if (this.register.isFlagSet(FlagId.Z)) {
             final byte offset = (byte) this.memory.readByte(this.register.getPc());
             this.register.setPc(this.register.getPc() + 1);
             this.register.setPc(this.register.getPc() + offset);

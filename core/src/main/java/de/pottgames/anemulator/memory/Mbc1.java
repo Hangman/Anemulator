@@ -154,4 +154,10 @@ public class Mbc1 implements Mbc {
         ROM, RAM;
     }
 
+
+    @Override
+    public String toString() {
+        return "MBC1";
+    }
+
 }

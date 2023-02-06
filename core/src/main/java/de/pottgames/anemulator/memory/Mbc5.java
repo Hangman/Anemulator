@@ -127,4 +127,10 @@ public class Mbc5 implements Mbc {
         return this.gameName;
     }
 
+
+    @Override
+    public String toString() {
+        return "MBC5";
+    }
+
 }
